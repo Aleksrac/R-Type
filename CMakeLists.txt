@@ -4,7 +4,7 @@ project(R_Type)
 
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(.)
+include_directories(. GameEngine/Components GameEngine/Systems GameEngine/)
 
 add_executable(R_Type
         main.cpp
@@ -34,4 +34,13 @@ add_executable(R_Type
         GameEngine/Entity.cpp
         GameEngine/Entity.hpp
         GameEngine/EcsManager.cpp
-        GameEngine/EcsManager.hpp)
+        GameEngine/EcsManager.hpp
+        GameEngine/Components/Sprite.cpp
+        GameEngine/Components/Sprite.hpp
+        GameEngine/Components/Sprite.hpp
+        GameEngine/Components/Enemy.cpp
+        GameEngine/Components/Enemy.hpp)
+
+find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
+
+target_link_libraries(R_Type PRIVATE sfml-graphics sfml-window sfml-system)
