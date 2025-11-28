@@ -22,6 +22,12 @@ class Entity {
         return component;
     }
     template <typename T>
+    std::shared_ptr<T> addComponent() {
+        auto component = std::make_shared<T>();
+        _components.push_back(component);
+        return component;
+    }
+    template <typename T>
     std::shared_ptr<T> getComponent() {
         for (const auto& component : _components) {
             if (std::shared_ptr<T> casted = std::dynamic_pointer_cast<T>(component)) {
