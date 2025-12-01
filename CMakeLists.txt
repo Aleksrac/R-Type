@@ -41,7 +41,7 @@ if(BUILD_TESTS)
     enable_testing()
 
     add_executable(EngineTests
-        tests/EcsManager.cpp
+        tests/TestsEcsManager.cpp
         tests/TestsHealth.cpp
         tests/TestsPosition.cpp
         tests/TestsSprite.cpp
