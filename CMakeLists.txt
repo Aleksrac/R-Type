@@ -45,6 +45,7 @@ if(BUILD_TESTS)
         tests/TestsHealth.cpp
         tests/TestsPosition.cpp
         tests/TestsSprite.cpp
+        tests/TestsInputPlayer.cpp
     )
     target_link_libraries(EngineTests PRIVATE
             gtest
