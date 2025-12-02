@@ -8,6 +8,7 @@
 
 #include "System.hpp"
 #include "EcsManager.hpp"
+#include "InputPlayer.hpp"
 #include "Position.hpp"
 #include "Sprite.hpp"
 #include "SFML/Graphics.hpp"
@@ -20,6 +21,7 @@ class RenderSystem : public System
     explicit RenderSystem(sf::RenderWindow &window) : _window(window) {};
     ~RenderSystem() override = default;
     void update(EcsManager &ecs) override;
+    static void renderPlayer(InputPlayer& player, float dt, sf::Sprite& sprite);
   private:
     sf::RenderWindow &_window;
 };
