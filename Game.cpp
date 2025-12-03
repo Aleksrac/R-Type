@@ -14,6 +14,7 @@
 #include "systems/InputSystem.hpp"
 #include "systems/MovementSystem.hpp"
 #include "systems/RenderSystem.hpp"
+#include "systems/CollisionSystem.hpp"
 #include "VelocitySystem.hpp"
 #include "Collision.hpp"
 
@@ -33,6 +34,7 @@ void Game::run() {
 
     _ecs.addSystem<ECS::InputSystem>();
     _ecs.addSystem<ECS::MovementSystem>();
+    _ecs.addSystem<ECS::CollisionSystem>();
     _ecs.addSystem<ECS::RenderSystem>(window);
     _ecs.addSystem<ECS::VelocitySystem>();
 
