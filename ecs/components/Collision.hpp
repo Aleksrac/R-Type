@@ -23,7 +23,7 @@ namespace ECS {
 
 class Collision: public Component {
   public:
-    explicit Collision(TypeCollision typeColision, float height, float length): _typeCollision(typeColision), _height(height), _length(length) {};
+    explicit Collision(TypeCollision typeColision, float height, float width): _typeCollision(typeColision), _height(height), _width(width) {};
     ~Collision() = default;
 
     [[nodiscard]] TypeCollision getTypeCollision() const;
@@ -35,14 +35,14 @@ class Collision: public Component {
     [[nodiscard]] float getHeight() const;
     void setHeight(float height);
 
-    [[nodiscard]] float getLength() const;
-    void setLength(float length);
+    [[nodiscard]] float getWidth() const;
+    void setWidth(float width);
 
   private:
     TypeCollision _typeCollision;
     bool _isTrigger = false;
     float _height;
-    float _length;
+    float _width;
 };
 }
 

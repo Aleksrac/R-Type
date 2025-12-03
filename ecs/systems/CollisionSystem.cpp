@@ -8,6 +8,12 @@
 #include "CollisionSystem.hpp"
 
 namespace ECS {
+
+/**
+ * Check if the entity can have a collision, and is there is one
+ * check if there is a collision with an another entity
+ * @param ecs
+ */
 void CollisionSystem::update(ECS::EcsManager &ecs)
 {
     for (auto& entity: ecs.getEntities()) {
@@ -17,7 +23,7 @@ void CollisionSystem::update(ECS::EcsManager &ecs)
         auto X = pos->getX();
         auto Y = pos->getY();
         auto height = collision->getHeight();
-        auto length = collision->getLength();
+        auto length = collision->getWidth();
 
         for (auto entity2: ecs.getEntities()) {
             if (entity == entity2) continue;
@@ -30,7 +36,7 @@ void CollisionSystem::update(ECS::EcsManager &ecs)
             if (collision->getTypeCollision() == ECS::TypeCollision::ENEMY && collision2->getTypeCollision() == ECS::TypeCollision::ENEMY_BULLET) continue;
             if (collision->getTypeCollision() == ECS::TypeCollision::ENEMY && collision2->getTypeCollision() == ECS::TypeCollision::ENEMY) continue;
 
-            if (X < (pos2->getX() + collision2->getLength()) &&
+            if (X < (pos2->getX() + collision2->getWidth()) &&
                 (X + length) > pos2->getX() &&
                 Y < (pos2->getY() + collision2->getHeight()) &&
                 (Y + collision->getHeight()) > pos2->getY()
