@@ -16,8 +16,8 @@ namespace ECS {
     enum TypeCollision {
         PLAYER,
         ENEMY,
-        PLAYER_BULLET,
-        ENEMY_BULLET,
+        PLAYER_PROJECTILE,
+        ENEMY_PROJECTILE,
         OBSTACLE,
     };
 
