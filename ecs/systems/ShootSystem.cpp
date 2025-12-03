@@ -8,6 +8,11 @@
 #include "ShootSystem.hpp"
 
 namespace ECS {
+/**
+ * @brief Shoot a project
+ * If the player touch the key space a projectile is send
+ * @param ecs
+ */
 void ShootSystem::update(EcsManager &ecs)
 {
     for (auto const &entity : ecs.getEntitiesWithComponent<InputPlayer>()) {
