@@ -16,6 +16,8 @@
 #include "systems/InputSystem.hpp"
 #include "systems/MovementSystem.hpp"
 #include "systems/RenderSystem.hpp"
+#include "systems/CollisionSystem.hpp"
+#include "Collision.hpp"
 
 void Game::run() {
     auto player = _ecs.createEntity();
@@ -29,9 +31,11 @@ void Game::run() {
     player->addComponent<ECS::Position>(200, WINDOW_Y / 2);
     player->addComponent<ECS::InputPlayer>();
     player->addComponent<ECS::Sprite>("./assets/r-typesheet30a.gif");
+    player->addComponent<ECS::Collision>(ECS::TypeCollision::PLAYER, 20, 50);
 
     _ecs.addSystem<ECS::InputSystem>();
     _ecs.addSystem<ECS::MovementSystem>();
+    _ecs.addSystem<ECS::CollisionSystem>();
     _ecs.addSystem<ECS::RenderSystem>(window);
     _ecs.addSystem<ECS::DestroySystem>();
 
@@ -52,6 +56,8 @@ void Game::run() {
             newEnemy->addComponent<ECS::Position>(2000, randNum);
             newEnemy->addComponent<ECS::Enemy>();
             newEnemy->addComponent<ECS::Sprite>("./assets/r-typesheet28.gif");
+            newEnemy->addComponent<ECS::Collision>(ECS::TypeCollision::ENEMY, 10, 10);
+
         }
         // --------
         _ecs.setDeltaTime(deltaTime);
