@@ -40,6 +40,8 @@ add_executable(r-type_client
         ecs/components/Position.hpp
         ecs/components/Velocity.cpp
         ecs/components/Velocity.hpp
+        ecs/components/Shoot.cpp
+        ecs/components/Shoot.hpp
         ecs/components/Component.cpp
         ecs/components/Component.hpp
         ecs/Entity.cpp
