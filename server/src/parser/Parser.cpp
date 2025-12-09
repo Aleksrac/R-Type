@@ -56,7 +56,7 @@ namespace server {
     {
         constexpr std::string_view programName{"r-type_server"};
 
-        std::cout << "========================================\n";
+        std::cout << "\n========================================\n";
         std::cout << "            R-Type Server Usage          \n";
         std::cout << "========================================\n\n";
 
@@ -64,7 +64,7 @@ namespace server {
         std::cout << "  " << programName << " <port>\n\n";
 
         std::cout << "Arguments:\n";
-        std::cout << "  <port>       UDP port number to start the server on.\n\n";
+        std::cout << "  <port>       TCP/UDP port number to start the server on.\n\n";
 
         std::cout << "Examples:\n";
         std::cout << "  " << programName << " 4242\n";

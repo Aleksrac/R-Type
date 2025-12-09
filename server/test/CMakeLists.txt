@@ -6,7 +6,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 add_executable(rtype_server_tests
-        TestParcer.cpp
+        TestParser.cpp
+        TestServer.cpp
 )
 
 target_link_libraries(rtype_server_tests
