@@ -48,6 +48,12 @@ add_executable(r-type_client
         ecs/components/Enemy.cpp
         ecs/components/Enemy.hpp
         ecs/systems/ShootSystem.cpp
-        ecs/systems/ShootSystem.hpp)
+        ecs/systems/ShootSystem.hpp
+        ecs/components/Animation.cpp
+        ecs/components/Animation.hpp
+        ecs/systems/PlayerAnimationSystem.cpp
+        ecs/systems/PlayerAnimationSystem.hpp
+        ecs/systems/SpriteAnimationSystem.cpp
+        ecs/systems/SpriteAnimationSystem.hpp)
 
 target_link_libraries(r-type_client PRIVATE sfml-graphics sfml-window sfml-system)
