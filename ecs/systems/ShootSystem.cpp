@@ -18,19 +18,25 @@ void ShootSystem::update(EcsManager &ecs)
 {
     for (auto const &entity : ecs.getEntitiesWithComponent<InputPlayer>()) {
         auto input = entity->getComponent<InputPlayer>();
+        if (!entity->getComponent<Shoot>()) continue;
         if (input) {
-            if (input->getSpacebar()) {
-                entity->getComponent<Shoot>()->setTimeSinceLastShot(0);
-                auto projectile = ecs.createEntity();
+            entity->getComponent<Shoot>()->setTimeSinceLastShot(
+                entity->getComponent<Shoot>()->getTimeSinceLastShot() + ecs.deltaTime());
 
-                projectile->addComponent<ECS::Position>(entity->getComponent<Position>()->getX(), entity->getComponent<Position>()->getY());
-                projectile->addComponent<Velocity>(25, 1);
-                projectile->addComponent<Shoot>(entity->getComponent<Shoot>()->getDamage(), entity->getComponent<Shoot>()->getCooldown());
-                projectile->addComponent<Sprite>("./assets/r-typesheet30a.gif");
-                projectile->addComponent<Collision>(ECS::TypeCollision::PLAYER_PROJECTILE, 10, 10);
+            if (input->getSpacebar()) {
+                if (entity->getComponent<Shoot>()->getTimeSinceLastShot() >= entity->getComponent<Shoot>()->getCooldown()) {
+                    auto shoot= entity->getComponent<Shoot>();
+                    auto projectile = ecs.createEntity();
+
+                    shoot->setTimeSinceLastShot(0);
+                    projectile->addComponent<ECS::Position>(entity->getComponent<Position>()->getX(),
+                        entity->getComponent<Position>()->getY());
+                    projectile->addComponent<Velocity>(400, 1);
+                    projectile->addComponent<Sprite>("./assets/r-typesheet30a.gif");
+                    projectile->addComponent<Collision>(ECS::TypeCollision::PLAYER_PROJECTILE, 10, 10);
+                }
             }
         }
     }
-
 }
 }
