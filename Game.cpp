@@ -10,6 +10,7 @@
 #include "components/Health.hpp"
 #include "components/Position.hpp"
 #include "components/Sprite.hpp"
+#include "components/Sound.hpp"
 #include "systems/InputSystem.hpp"
 #include "systems/MovementSystem.hpp"
 #include "systems/RenderSystem.hpp"
@@ -32,6 +33,7 @@ void Game::run() {
     player->addComponent<ECS::InputPlayer>();
     player->addComponent<ECS::Sprite>("./assets/r-typesheet30a.gif");
     player->addComponent<ECS::Collision>(ECS::TypeCollision::PLAYER, 20, 50);
+    player->addComponent<ECS::Sound>("./sound/shoot.wav");
     player->addComponent<ECS::Shoot>(50, 1);
 
     _ecs.addSystem<ECS::InputSystem>();

@@ -59,4 +59,4 @@ add_executable(r-type_client
         ecs/systems/VelocitySystem.hpp
         )
 
-target_link_libraries(r-type_client PRIVATE sfml-graphics sfml-window sfml-system)
+target_link_libraries(r-type_client PRIVATE sfml-graphics sfml-window sfml-audio sfml-system)
