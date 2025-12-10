@@ -13,10 +13,12 @@
 namespace ECS {
 class Health : public Component {
   public:
-    Health(int const health) : _health(health) {};
-    ~Health() = default;
-    int getHealth() const;
+    explicit Health(int const health) : _health(health) {};
+    ~Health() override = default;
+
+    [[nodiscard]] int getHealth() const;
     void setHealth(int const health);
+
   private:
     int _health = 0;
 };

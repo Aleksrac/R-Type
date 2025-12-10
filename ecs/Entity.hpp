@@ -9,9 +9,7 @@
 #define BOOTSTRAP_ENTITY_HPP
 #include <memory>
 #include <vector>
-
-#include "components/Component.hpp"
-
+#include "Component.hpp"
 
 namespace ECS {
 class Entity {

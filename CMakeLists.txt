@@ -1,18 +1,14 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.30.8)
 
-project(r-type_client)
+project(
+        R_Type
+)
 
-set(CMAKE_CXX_STANDARD 20)
+if (NOT DEFINED CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 20)
+endif()
 
-include(FetchContent)
-FetchContent_Declare(SFML
-        GIT_REPOSITORY https://github.com/SFML/SFML.git
-        GIT_TAG 3.0.2
-        GIT_SHALLOW ON
-        EXCLUDE_FROM_ALL
-        SYSTEM)
-FetchContent_MakeAvailable(SFML)
-include_directories(. ecs/components ecs/systems ecs/)
+add_subdirectory(server)
 
 add_executable(r-type_client
         main.cpp
@@ -57,3 +53,4 @@ add_executable(r-type_client
         ecs/systems/DestroySystem.hpp)
 
 target_link_libraries(r-type_client PRIVATE sfml-graphics sfml-window sfml-system)
+enable_testing()
