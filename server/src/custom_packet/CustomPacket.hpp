@@ -13,8 +13,11 @@ namespace server {
 
     class CustomPacket : public sf::Packet
     {
+      public:
         const void* onSend(std::size_t &size) override;
         void onReceive(const void *data, std::size_t size) override;
+
+      private:
     };
 
 }// namespace server

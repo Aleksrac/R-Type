@@ -21,6 +21,8 @@ add_library(r-type_server_lib
         server/Server.hpp
         custom_packet/CustomPacket.cpp
         custom_packet/CustomPacket.hpp
+        packet_data/PacketData.cpp
+        packet_data/PacketData.hpp
 )
 
 target_include_directories(r-type_server_lib PUBLIC
@@ -37,6 +39,10 @@ add_executable(r-type_server
         server/Server.hpp
         custom_packet/CustomPacket.cpp
         custom_packet/CustomPacket.hpp
+        packet_handler/PacketHandler.cpp
+        packet_handler/PacketHandler.hpp
+        packet_data/PacketData.cpp
+        packet_data/PacketData.hpp
 )
 
 target_link_libraries(r-type_server PRIVATE r-type_server_lib)
