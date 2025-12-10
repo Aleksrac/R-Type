@@ -29,7 +29,7 @@ namespace ecs {
                         shoot->setTimeSinceLastShot(0);
                         projectile->addComponent<ecs::Position>(
                             entity->getComponent<Position>()->getX(), entity->getComponent<Position>()->getY());
-                        projectile->addComponent<Velocity>(400, 1);
+                        projectile->addComponent<Velocity>(400, 0.5);
                         projectile->addComponent<Shoot>(
                             entity->getComponent<Shoot>()->getDamage(), entity->getComponent<Shoot>()->getCooldown());
                         projectile->addComponent<Sprite>("./assets/r-typesheet30a.gif");

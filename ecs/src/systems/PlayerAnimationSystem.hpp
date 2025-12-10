@@ -8,10 +8,10 @@
 #ifndef R_TYPE_CLIENT_PLAYERANIMATIONSYSTEM_HPP
 #define R_TYPE_CLIENT_PLAYERANIMATIONSYSTEM_HPP
 #include "System.hpp"
-#include "Animation.hpp"
+#include "components/Animation.hpp"
 #include "EcsManager.hpp"
-#include "InputPlayer.hpp"
-#include "Sprite.hpp"
+#include "components/InputPlayer.hpp"
+#include "components/Sprite.hpp"
 
 namespace ecs {
 class PlayerAnimationSystem : public System

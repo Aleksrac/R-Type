@@ -34,8 +34,20 @@ add_library(r-type_ecs_lib
         systems/ShootSystem.hpp
         components/Destroy.cpp
         components/Destroy.hpp
+        components/Shoot.cpp
+        components/Shoot.hpp
+        components/Animation.cpp
+        components/Animation.hpp
+        components/Velocity.hpp
+        components/Velocity.cpp
         systems/DestroySystem.cpp
         systems/DestroySystem.hpp
+        systems/PlayerAnimationSystem.hpp
+        systems/PlayerAnimationSystem.cpp
+        systems/SpriteAnimationSystem.cpp
+        systems/SpriteAnimationSystem.hpp
+        systems/VelocitySystem.hpp
+        systems/VelocitySystem.cpp
 )
 
 target_include_directories(r-type_ecs_lib PUBLIC
