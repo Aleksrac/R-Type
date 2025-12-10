@@ -26,16 +26,22 @@ add_executable(r-type_client
         ecs/systems/MovementSystem.hpp
         ecs/systems/InputSystem.cpp
         ecs/systems/InputSystem.hpp
+        ecs/systems/CollisionSystem.cpp
+        ecs/systems/CollisionSystem.hpp
         ecs/components/Sound.cpp
         ecs/components/Sound.hpp
-        ecs/components/Collider.cpp
-        ecs/components/Collider.hpp
+        ecs/components/Collision.cpp
+        ecs/components/Collision.hpp
         ecs/components/InputPlayer.cpp
         ecs/components/InputPlayer.hpp
         ecs/components/Health.cpp
         ecs/components/Health.hpp
         ecs/components/Position.cpp
         ecs/components/Position.hpp
+        ecs/components/Velocity.cpp
+        ecs/components/Velocity.hpp
+        ecs/components/Shoot.cpp
+        ecs/components/Shoot.hpp
         ecs/components/Component.cpp
         ecs/components/Component.hpp
         ecs/Entity.cpp
@@ -54,6 +60,10 @@ add_executable(r-type_client
         ecs/systems/PlayerAnimationSystem.cpp
         ecs/systems/PlayerAnimationSystem.hpp
         ecs/systems/SpriteAnimationSystem.cpp
-        ecs/systems/SpriteAnimationSystem.hpp)
+        ecs/systems/SpriteAnimationSystem.hpp
+        ecs/systems/VelocitySystem.cpp
+        ecs/systems/VelocitySystem.hpp
+        )
 
-target_link_libraries(r-type_client PRIVATE sfml-graphics sfml-window sfml-system)
+
+target_link_libraries(r-type_client PRIVATE sfml-graphics sfml-window sfml-audio sfml-system)
