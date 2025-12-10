@@ -6,13 +6,6 @@
 */
 
 #include "MovementSystem.hpp"
-#include "Collision.hpp"
-#include "Destroy.hpp"
-#include "EcsManager.hpp"
-#include "Enemy.hpp"
-#include "Game.hpp"
-#include "InputPlayer.hpp"
-#include "Position.hpp"
 
 namespace ecs {
 void MovementSystem::update(EcsManager &ecs)
