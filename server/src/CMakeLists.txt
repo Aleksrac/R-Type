@@ -19,6 +19,8 @@ add_library(r-type_server_lib
         parser/Parser.hpp
         server/Server.cpp
         server/Server.hpp
+        custom_packet/CustomPacket.cpp
+        custom_packet/CustomPacket.hpp
 )
 
 target_include_directories(r-type_server_lib PUBLIC
@@ -33,6 +35,8 @@ add_executable(r-type_server
         parser/Parser.hpp
         server/Server.cpp
         server/Server.hpp
+        custom_packet/CustomPacket.cpp
+        custom_packet/CustomPacket.hpp
 )
 
 target_link_libraries(r-type_server PRIVATE r-type_server_lib)
