@@ -33,17 +33,25 @@ void CollisionSystem::update(ecs::EcsManager &ecs)
             if (collision->getTypeCollision() == ecs::TypeCollision::PLAYER && otherCollision->getTypeCollision() == ecs::TypeCollision::PLAYER) continue;
             if (collision->getTypeCollision() == ecs::TypeCollision::ENEMY && otherCollision->getTypeCollision() == ecs::TypeCollision::OBSTACLE) continue;
             if (collision->getTypeCollision() == ecs::TypeCollision::PLAYER && otherCollision->getTypeCollision() == ecs::TypeCollision::PLAYER_PROJECTILE) continue;
+            if (collision->getTypeCollision() == ecs::TypeCollision::PLAYER_PROJECTILE && otherCollision->getTypeCollision() == ecs::TypeCollision::PLAYER) continue;
             if (collision->getTypeCollision() == ecs::TypeCollision::ENEMY && otherCollision->getTypeCollision() == ecs::TypeCollision::ENEMY_PROJECTILE) continue;
             if (collision->getTypeCollision() == ecs::TypeCollision::ENEMY && otherCollision->getTypeCollision() == ecs::TypeCollision::ENEMY) continue;
-
+            if (collision->getTypeCollision() == ecs::TypeCollision::ENEMY && otherCollision->getTypeCollision() == ecs::TypeCollision::PLAYER_PROJECTILE) continue;
             if (X < (posOtherEntity->getX() + otherCollision->getWidth()) &&
                 (X + length) > posOtherEntity->getX() &&
                 Y < (posOtherEntity->getY() + otherCollision->getHeight()) &&
                 (Y + collision->getHeight()) > posOtherEntity->getY()
-                ) {
-                std::cout << "COLLLLISION !!!!" << std::endl;
-                collision->setIsTrigger(true);
+            ) {
                 otherCollision->setIsTrigger(true);
+                collision->setIsTrigger(true);
+                const auto& typeCollisionFirstEntity = collision->getTypeCollision();
+                const auto& typeCollisionSecondEntity = otherCollision->getTypeCollision();
+                std::cout << "first " << typeCollisionFirstEntity << " second " << typeCollisionSecondEntity << std::endl;
+                if (typeCollisionFirstEntity == ecs::TypeCollision::PLAYER_PROJECTILE && typeCollisionSecondEntity == ecs::TypeCollision::ENEMY)
+                {
+                    otherEntity->getComponent<Health>()->setHealth(otherEntity->getComponent<Health>()->getHealth() - entity->getComponent<Shoot>()->getDamage());
+                    entity->addComponent<Destroy>();
+                }
             }
         }
     }

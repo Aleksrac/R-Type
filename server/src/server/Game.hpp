@@ -10,7 +10,6 @@
 #include <random>
 #include "EcsManager.hpp"
 #include "components/Enemy.hpp"
-#include "components/Health.hpp"
 #include "components/Position.hpp"
 #include "components/Sprite.hpp"
 #include "components/Sound.hpp"

@@ -9,6 +9,9 @@
 
 #include "EcsManager.hpp"
 #include "components/Animation.hpp"
+#include "components/Health.hpp"
+#include "systems/DestroySystem.hpp"
+#include "systems/HealthSystem.hpp"
 #include "systems/PlayerAnimationSystem.hpp"
 #include "systems/SpriteAnimationSystem.hpp"
 
@@ -28,7 +31,6 @@ void Game::run() {
 
     player->addComponent<ecs::Sprite>("./assets/r-typesheet42.gif");
     player->addComponent<ecs::Animation>(std::pair<int, int>(36, 36), 0, 1);
-    player->addComponent<ecs::Sprite>("./assets/r-typesheet30a.gif");
     player->addComponent<ecs::Collision>(ecs::TypeCollision::PLAYER, SIZE_X_PLAYER, SIZE_Y_PLAYER);
     player->addComponent<ecs::Sound>("./sound/shoot.wav");
     player->addComponent<ecs::Shoot>(50, 0.5);
@@ -41,6 +43,8 @@ void Game::run() {
     _ecs.addSystem<ecs::SpriteAnimationSystem>();
     _ecs.addSystem<ecs::RenderSystem>(window);
     _ecs.addSystem<ecs::VelocitySystem>();
+    _ecs.addSystem<ecs::HealthSystem>();
+    _ecs.addSystem<ecs::DestroySystem>();
 
     while (window.isOpen()) {
         float const deltaTime = clock.restart().asSeconds();
@@ -56,12 +60,12 @@ void Game::run() {
             int const randNum = generator() % (WINDOW_Y + 1);
             auto newEnemy = _ecs.createEntity();
 
-            newEnemy->addComponent<ecs::Health>(100);
-            newEnemy->addComponent<ecs::Position>(2000, randNum);
+            newEnemy->addComponent<ecs::Position>(WINDOW_X + 100, randNum);
             newEnemy->addComponent<ecs::Enemy>();
+            newEnemy->addComponent<ecs::Health>(100);
             newEnemy->addComponent<ecs::Sprite>("./assets/r-typesheet5.gif");
             newEnemy->addComponent<ecs::Animation>(std::pair<int, int>(32, 36), 0, 8);
-            newEnemy->addComponent<ecs::Collision>(ecs::TypeCollision::ENEMY, 10, 10);
+            newEnemy->addComponent<ecs::Collision>(ecs::TypeCollision::ENEMY, 14, 18);
         }
         // --------
         _ecs.setDeltaTime(deltaTime);
