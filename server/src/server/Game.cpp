@@ -29,7 +29,7 @@ void Game::run() {
     player->addComponent<ecs::Sprite>("./assets/r-typesheet42.gif");
     player->addComponent<ecs::Animation>(std::pair<int, int>(36, 36), 0, 1);
     player->addComponent<ecs::Sprite>("./assets/r-typesheet30a.gif");
-    player->addComponent<ecs::Collision>(ecs::TypeCollision::PLAYER, 20, 50);
+    player->addComponent<ecs::Collision>(ecs::TypeCollision::PLAYER, SIZE_X_PLAYER, SIZE_Y_PLAYER);
     player->addComponent<ecs::Sound>("./sound/shoot.wav");
     player->addComponent<ecs::Shoot>(50, 0.5);
 

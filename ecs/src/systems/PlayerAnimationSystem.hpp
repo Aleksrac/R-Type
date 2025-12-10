@@ -13,6 +13,9 @@
 #include "components/InputPlayer.hpp"
 #include "components/Sprite.hpp"
 
+#define SIZE_X_PLAYER 33
+#define SIZE_Y_PLAYER 17
+
 namespace ecs {
 class PlayerAnimationSystem : public System
 {
