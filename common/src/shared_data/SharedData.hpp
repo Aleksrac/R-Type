@@ -14,7 +14,7 @@
 #include <unordered_map>
 #include "../packet_data/PacketData.hpp"
 
-namespace server {
+namespace cmn {
     /**
      * @brief Class used to safely share data across multiple threads.
      *
