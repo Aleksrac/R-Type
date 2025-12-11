@@ -7,6 +7,8 @@
 
 #include "PlayerAnimationSystem.hpp"
 
+#include "components/PlayerAnimation.hpp"
+
 #define SIZE_X_PLAYER 33
 #define SIZE_Y_PLAYER 17
 
@@ -19,14 +21,15 @@ void PlayerAnimationSystem::update(EcsManager& ecs)
     for (const auto & entity : ecs.getEntitiesWithComponent<InputPlayer>()) {
         const auto player  = entity->getComponent<InputPlayer>();
         const auto sprite = entity->getComponent<Sprite>();
-        auto anim   = entity->getComponent<Animation>();
+        auto anim   = entity->getComponent<PlayerAnimation>();
 
         if (!sprite || !player || !anim)
             continue;
 
-        player->updateAnimation(deltaTime);
-        int const animFrame = player->getAnimFrame();
-        const int playerId = player->getId();
+
+        anim->updateAnimation(deltaTime, player->getDown(), player->getUp());
+        int const animFrame = anim->getAnimFrame();
+        const int playerId = anim->getId();
         int x = 0;
 
         if (player->getUp()) {
