@@ -9,7 +9,8 @@
 #include "PlayerAnimation.hpp"
 
 namespace ecs {
-    std::size_t PlayerAnimation::getId() const {
+    std::size_t PlayerAnimation::getId() const
+    {
         return _id;
     }
 
