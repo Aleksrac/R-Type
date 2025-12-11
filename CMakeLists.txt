@@ -33,7 +33,7 @@ endif()
 
 add_subdirectory(server)
 add_subdirectory(ecs)
-add_subdirectory(client)
 add_subdirectory(common)
+add_subdirectory(client)
 
 enable_testing()

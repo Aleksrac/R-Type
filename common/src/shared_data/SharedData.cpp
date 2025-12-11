@@ -12,7 +12,7 @@
 
 #include "SharedData.hpp"
 
-namespace server {
+namespace cmn {
 
     /**
      * @brief Adds a packet to the received queue using a lock_guard for synchronization.
