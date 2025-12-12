@@ -7,9 +7,10 @@
 #ifndef R_TYPE_KEYSTATE_HPP
 #define R_TYPE_KEYSTATE_HPP
 
+#include <cstdint>
 namespace cmn {
 
-    enum class KeyState {
+    enum class KeyState : uint8_t {
         Released,
         Pressed,
     };

@@ -18,7 +18,7 @@ namespace cmn {
      * @brief Adds a packet to the received queue using a lock_guard for synchronization.
      * @param data The packet to add.
      */
-    void SharedData::addReceivedPacket(const CustomPacket &data)
+    void SharedData::addReceivedPacket(const packetData &data)
     {
         std::lock_guard const lock(_mutex);
         _receivedQueue.push(data);
@@ -28,13 +28,13 @@ namespace cmn {
      * @brief Retrieves the next packet from the received queue using a lock_guard.
      * @return The packet if the queue is not empty, otherwise std::nullopt.
      */
-    std::optional<CustomPacket> SharedData::getReceivedPacket()
+    std::optional<packetData> SharedData::getReceivedPacket()
     {
         std::lock_guard const lock(_mutex);
         if (_receivedQueue.empty()) {
             return std::nullopt;
         }
-        CustomPacket packetData = _receivedQueue.front();
+        packetData packetData = _receivedQueue.front();
         _receivedQueue.pop();
         return packetData;
     }
@@ -43,7 +43,7 @@ namespace cmn {
      * @brief Adds a packet to the send queue using a lock_guard.
      * @param data The packet to add.
      */
-    void SharedData::addSendPacket(const CustomPacket &data)
+    void SharedData::addSendPacket(const packetData &data)
     {
         std::lock_guard const lock(_mutex);
         _sendQueue.push(data);
@@ -53,13 +53,13 @@ namespace cmn {
      * @brief Retrieves the next packet from the send queue using a lock_guard.
      * @return The packet if the queue is not empty, otherwise std::nullopt.
      */
-    std::optional<CustomPacket> SharedData::getSendPacket()
+    std::optional<packetData> SharedData::getSendPacket()
     {
         std::lock_guard const lock(_mutex);
         if (_sendQueue.empty()) {
             return std::nullopt;
         }
-        CustomPacket packetData = _sendQueue.front();
+        packetData packetData = _sendQueue.front();
         _sendQueue.pop();
         return packetData;
     }

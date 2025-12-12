@@ -22,8 +22,6 @@ add_executable(r-type_server
         parser/Parser.hpp
         server/Server.cpp
         server/Server.hpp
-        packet_handler/PacketHandler.cpp
-        packet_handler/PacketHandler.hpp
 )
 
 target_link_libraries(r-type_server PRIVATE r-type_server_lib r-type_ecs_lib r-type_common_lib)

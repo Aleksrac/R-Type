@@ -6,8 +6,6 @@
 */
 #include "Server.hpp"
 
-#include "custom_packet/CustomPacket.hpp"
-#include "SFML/Network/Packet.hpp"
 #include "SFML/Network/TcpSocket.hpp"
 #include <iostream>
 #include <thread>

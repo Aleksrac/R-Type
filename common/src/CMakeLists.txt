@@ -8,6 +8,9 @@ add_library(r-type_common_lib
         custom_packet/CustomPacket.hpp
         parser/AParser.cpp
         parser/AParser.hpp
+        packet_data/PacketData.hpp
+        shared_data/SharedData.cpp
+        shared_data/SharedData.hpp
 )
 
 target_include_directories(r-type_common_lib PUBLIC

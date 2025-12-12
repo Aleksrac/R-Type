@@ -12,11 +12,11 @@
 
 namespace cmn {
 
-    typedef struct inputPacket
+    using inputPacket = struct inputPacket
     {
         uint8_t key;
         uint8_t keyState;
-    } inputPacket;
+    };
 
     sf::Packet &operator << (sf::Packet &packet, const inputPacket &packetStruct)
     {

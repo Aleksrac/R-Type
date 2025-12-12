@@ -8,13 +8,11 @@
 #ifndef R_TYPE_SHAREDDATA_HPP
 #define R_TYPE_SHAREDDATA_HPP
 
-#include "../custom_packet/CustomPacket.hpp"
-
-
 #include <mutex>
 #include <optional>
 #include <queue>
 #include <unordered_map>
+#include "../packet_data/PacketData.hpp"
 
 namespace cmn {
     /**
@@ -29,25 +27,25 @@ namespace cmn {
              * @brief Adds a received packet to the queue.
              * @param data The received packet data (PacketData).
              */
-            void addReceivedPacket(const CustomPacket &data);
+            void addReceivedPacket(const packetData &data);
 
             /**
              * @brief Retrieves and removes the first received packet from the queue.
              * @return An optional containing the PacketData if available, otherwise std::nullopt.
              */
-            std::optional<CustomPacket> getReceivedPacket();
+            std::optional<packetData> getReceivedPacket();
 
             /**
              * @brief Adds a packet to be sent to the queue.
              * @param data The packet data (PacketData) to send.
              */
-            void addSendPacket(const CustomPacket &data);
+            void addSendPacket(const packetData &data);
 
             /**
              * @brief Retrieves and removes the first packet to be sent from the queue.
              * @return An optional containing the PacketData if available, otherwise std::nullopt.
              */
-            std::optional<CustomPacket> getSendPacket();
+            std::optional<packetData> getSendPacket();
 
             /**
              * @brief Adds a new player to the list.
@@ -65,8 +63,8 @@ namespace cmn {
             std::optional<std::pair<int, std::string>> getPlayer(int playerId);
 
         private:
-            std::queue<CustomPacket> _receivedQueue; ///< Queue for received packets (to be processed).
-            std::queue<CustomPacket> _sendQueue;     ///< Queue for packets to be sent.
+            std::queue<packetData> _receivedQueue; ///< Queue for received packets (to be processed).
+            std::queue<packetData> _sendQueue;     ///< Queue for packets to be sent.
             std::mutex _mutex;                     ///< Mutex for synchronizing data access.
             /**
              * @brief List of connected players.
