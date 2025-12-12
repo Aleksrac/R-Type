@@ -6,7 +6,6 @@
 */
 #include "Server.hpp"
 
-#include "EcsManager.hpp"
 #include "SFML/Network/Packet.hpp"
 #include "SFML/Network/TcpSocket.hpp"
 #include <iostream>
@@ -57,7 +56,7 @@ namespace server {
             auto &sock = **it;
 
             if (_socketSelector.isReady(sock)) {
-                CustomPacket packet;
+                sf::Packet packet;
                 if (sock.receive(packet) != sf::Socket::Status::Done) {
                     std::cerr << "[ERROR]: failed to receive TCP packet" << "\n";
                     return;
@@ -77,7 +76,7 @@ namespace server {
         while (true) {
             std::optional<sf::IpAddress> sender;
             unsigned short port = 0;
-            CustomPacket packet;
+            cmn::CustomPacket packet;
             if (_udpSocket.receive(packet, sender, port) != sf::Socket::Status::Done) {
                 std::cerr << "[ERROR]: failed to receive UDP packet" << "\n";
                 continue;

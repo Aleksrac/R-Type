@@ -6,6 +6,9 @@ add_library(r-type_common_lib
         enums/KeyState.hpp
         custom_packet/CustomPacket.cpp
         custom_packet/CustomPacket.hpp
+        packet_data/PacketData.hpp
+        shared_data/SharedData.cpp
+        shared_data/SharedData.hpp
 )
 
 target_include_directories(r-type_common_lib PUBLIC

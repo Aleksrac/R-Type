@@ -1,9 +1,11 @@
 #ifndef R_TYPE_KEY_HPP
 #define R_TYPE_KEY_HPP
 
+#include <cstdint>
+
 namespace cmn {
 
-    enum class Keys {
+    enum class Keys : uint8_t {
         R,
         Space,
         Up,
