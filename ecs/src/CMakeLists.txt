@@ -50,6 +50,8 @@ add_library(r-type_ecs_lib
         systems/VelocitySystem.cpp
         systems/HealthSystem.cpp
         systems/HealthSystem.hpp
+        components/PlayerAnimation.cpp
+        components/PlayerAnimation.hpp
 )
 
 target_include_directories(r-type_ecs_lib PUBLIC

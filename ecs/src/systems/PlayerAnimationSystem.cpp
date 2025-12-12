@@ -7,7 +7,10 @@
 
 #include "PlayerAnimationSystem.hpp"
 
+#include "components/PlayerAnimation.hpp"
 
+constexpr int  SIZE_X_PLAYER = 33;
+constexpr int SIZE_Y_PLAYER = 17;
 
 namespace ecs {
 
