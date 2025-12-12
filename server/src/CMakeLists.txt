@@ -26,6 +26,4 @@ add_executable(r-type_server
         packet_handler/PacketHandler.hpp
 )
 
-#target_link_libraries(r-type_server PRIVATE r-type_server_lib)
-#target_link_libraries(r-type_server PRIVATE r-type_server_lib r-type_ecs_lib)
 target_link_libraries(r-type_server PRIVATE r-type_server_lib r-type_ecs_lib r-type_common_lib)
