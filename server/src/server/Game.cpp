@@ -10,11 +10,13 @@
 #include "EcsManager.hpp"
 #include "components/Animation.hpp"
 #include "components/Health.hpp"
+#include "components/PlayerAnimation.hpp"
 #include "systems/DestroySystem.hpp"
 #include "systems/HealthSystem.hpp"
 #include "systems/PlayerAnimationSystem.hpp"
 #include "systems/SpriteAnimationSystem.hpp"
-
+constexpr int  SIZE_X_PLAYER = 33;
+constexpr int SIZE_Y_PLAYER = 17;
 void Game::run() {
     ecs::EcsManager _ecs;
     auto player = _ecs.createEntity();
@@ -37,7 +39,7 @@ void Game::run() {
 
     sf::Vector2f scale1(2.0f, 2.0f);
     player->addComponent<ecs::Sprite>("./assets/r-typesheet42.gif", scale1);
-    player->addComponent<ecs::Animation>(std::pair<int, int>(36, 36), 0, 1);
+    player->addComponent<ecs::PlayerAnimation>();
     player->addComponent<ecs::Collision>(ecs::TypeCollision::PLAYER, SIZE_X_PLAYER, SIZE_Y_PLAYER);
     player->addComponent<ecs::Sound>("./sound/shoot.wav");
     player->addComponent<ecs::Shoot>(50, 0.5);
