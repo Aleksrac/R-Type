@@ -13,6 +13,7 @@ namespace cmn {
         uint8_t type;
         uint16_t posX;
         uint16_t posY;
+        float velocity;
     };
 
     sf::Packet &operator << (sf::Packet &packet, const newEntityPacket &packetStruct);

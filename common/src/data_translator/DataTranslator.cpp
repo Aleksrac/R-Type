@@ -6,12 +6,17 @@
 */
 
 #include "DataTranslator.hpp"
+#include "Constants.hpp"
+#include "components/Animation.hpp"
+#include "components/Destroy.hpp"
 #include "components/InputPlayer.hpp"
+#include "components/PlayerAnimation.hpp"
 #include "components/Position.hpp"
+#include "components/Sound.hpp"
+#include "components/Sprite.hpp"
+#include "enums/EntityType.hpp"
 #include "enums/Key.hpp"
-#include <functional>
 #include <list>
-#include <unordered_map>
 
 namespace cmn {
 
@@ -28,12 +33,13 @@ namespace cmn {
     void DataTranslator::_injectInput(ecs::EcsManager &ecs, inputPacket &input, int id)
     {
         for (auto &entity : ecs.getEntitiesWithComponent<ecs::InputPlayer>()) {
-            if (entity->_id == id) {
+            if (entity->getId() == id) {
                 auto component = entity->getComponent<ecs::InputPlayer>();
                 Keys key = static_cast<Keys>(input.key);
                 for (auto &function : functionList) {
                     function(key, component);
                 }
+                break;
             }
         }
     }
@@ -41,8 +47,45 @@ namespace cmn {
     void DataTranslator::_injectPosition(ecs::EcsManager &ecs, positionPacket &position, int id)
     {
         for (auto &entity : ecs.getEntitiesWithComponent<ecs::Position>()) {
-            if (entity->_id == id) {
+            if (entity->getId() == id) {
+                auto component = entity->getComponent<ecs::Position>();
+                component->setX(position.posX);
+                component->setY(position.posY);
+                break;
+            }
+        }
+    }
 
+    void DataTranslator::_injectNewEntity(ecs::EcsManager &ecs, newEntityPacket &newEntity, int id)
+    {
+        auto entity = ecs.createEntity(id);
+
+        if (static_cast<EntityType>(newEntity.type) == EntityType::YourPlayer) {
+            _yourPlayerEntityId = id;
+        }
+        entity->addComponent<ecs::Position>(newEntity.posX, newEntity.posY);
+        if (static_cast<EntityType>(newEntity.type) == EntityType::Player) {
+            entity->addComponent<ecs::Sprite>(std::string(playerSpriteSheet), playerSpriteScale);
+            entity->addComponent<ecs::PlayerAnimation>();
+            entity->addComponent<ecs::Sound>(std::string(playerShootSound));
+        }
+        if (static_cast<EntityType>(newEntity.type) == EntityType::Monster) {
+            entity->addComponent<ecs::Sprite>(std::string(monsterSpriteSheet), monsterSpriteScale);
+            entity->addComponent<ecs::Animation>(monsterAnimationSize, monsterAnimationOffset, monsterAnimationNumberFrame);
+        }
+        if (static_cast<EntityType>(newEntity.type) == EntityType::PlayerProjectile) {
+            entity->addComponent<ecs::Sprite>(std::string(playerProjectileSpriteSheet), playerProjectileScale);
+            entity->addComponent<ecs::Animation>(playerProjectileAnimationSize, playerProjectileAnimationOffset, playerProjectileAnimationNumberFrame);
+        }
+    }
+
+    void DataTranslator::_deleteEntity(ecs::EcsManager &ecs, deleteEntityPacket &deleteEntity, int id)
+    {
+        for (auto &entity : ecs.getEntitiesWithComponent<ecs::Position>()) {
+            if (entity->getId() == id) {
+                entity->addComponent<ecs::Destroy>();
+                std::cout << "[EASTER_EGG]: " << deleteEntity.easterEgg << "\n";
+                break;
             }
         }
     }
@@ -56,11 +99,14 @@ namespace cmn {
                     inputPacket &input = arg;
                     _injectInput(ecs, input, data.entityId);
                 } else if constexpr (std::is_same_v<T, positionPacket>) {
-                    const positionPacket &position = arg;
+                    positionPacket &position = arg;
+                    _injectPosition(ecs, position, data.entityId);
                 } else if constexpr (std::is_same_v<T, newEntityPacket>) {
-                    const newEntityPacket &newEntity = arg;
+                    newEntityPacket &newEntity = arg;
+                    _injectNewEntity(ecs, newEntity, data.entityId);
                 } else if constexpr (std::is_same_v<T, deleteEntityPacket>) {
-                    const deleteEntityPacket &deleteEntity = arg;
+                    deleteEntityPacket &deleteEntity = arg;
+                    _deleteEntity(ecs, deleteEntity, data.entityId);
                 }
             }, data.content);
     }

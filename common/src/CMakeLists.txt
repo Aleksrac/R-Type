@@ -25,6 +25,7 @@ add_library(r-type_common_lib
         enums/EntityType.hpp
         data_translator/DataTranslator.cpp
         data_translator/DataTranslator.hpp
+        Constants.hpp
 )
 
 target_include_directories(r-type_common_lib PUBLIC
