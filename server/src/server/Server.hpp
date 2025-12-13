@@ -7,10 +7,10 @@
 #ifndef R_TYPE_SERVER_HPP
 #define R_TYPE_SERVER_HPP
 
-#include "custom_packet/CustomPacket.hpp"
-#include "game/Game.hpp"
+#include "packet_data/PacketData.hpp"
 #include "SFML/Network/SocketSelector.hpp"
 #include "SFML/Network/UdpSocket.hpp"
+#include "shared_data/SharedData.hpp"
 #include <SFML/Network/TcpListener.hpp>
 #include <SFML/Network/TcpSocket.hpp>
 #include <thread>
@@ -20,13 +20,17 @@ namespace server {
     class Server
     {
       public:
-        Server() = default;
+        explicit Server(std::shared_ptr<cmn::SharedData> data);
+        Server();
         [[nodiscard]]int bindPorts(uint16_t port);
         void close();
         [[noreturn]] void run();
 
-        int sendUdp(const cmn::CustomPacket& packet, const sf::IpAddress& recipient, uint16_t port);
-        int sendTcp(const cmn::CustomPacket& packet);
+        int sendUdp(const cmn::packetData& packet, const sf::IpAddress& clientIp, uint16_t port);
+        static int sendTcp(const cmn::packetData& packet, sf::TcpSocket& clientSocket);
+
+        int broadcastUdp(const cmn::packetData&packet, uint16_t port);
+        int broadcastTcp(const cmn::packetData& packet)const;
 
       private:
         sf::TcpListener _listener;
@@ -38,6 +42,7 @@ namespace server {
         std::jthread _tcpThread;
         void _checkSocket();
         void _handleNewTcpPacket();
+        std::shared_ptr<cmn::SharedData> _sharedData;
     };
 
 }// namespace server
