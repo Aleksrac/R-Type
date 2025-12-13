@@ -17,6 +17,13 @@ std::shared_ptr<Entity> EcsManager::createEntity() {
     return entity;
 }
 
+std::shared_ptr<Entity> EcsManager::createEntity(std::size_t id)
+{
+    auto entity = std::make_shared<Entity>(id);
+    _entities.push_back(entity);
+    return entity;
+}
+
 std::vector<std::shared_ptr<Entity>> &EcsManager::getEntities() {
     return _entities;
 }
