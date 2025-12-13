@@ -8,7 +8,11 @@
 #include "Game.hpp"
 
 namespace server {
+     Game::Game(std::shared_ptr<cmn::SharedData> data):
+        _ecs(ecs::EcsManager()), _sharedData(std::move(data)) {}
+
     void Game::run()
     {
+         while (true) {}
     }
 }

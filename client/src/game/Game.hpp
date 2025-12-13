@@ -10,15 +10,17 @@
 #define WINDOW_X 1920
 #define WINDOW_Y 1080
 #include "EcsManager.hpp"
+#include "shared_data/SharedData.hpp"
 
 namespace client {
     class Game {
     public:
-        Game() : _ecs(ecs::EcsManager()) {}
+        Game(std::shared_ptr<cmn::SharedData>);
         ~Game() = default;
-        void run();
+        [[noreturn]] static void run();
     private:
         ecs::EcsManager _ecs;
+        std::shared_ptr<cmn::SharedData> _sharedData;
     };
 }
 

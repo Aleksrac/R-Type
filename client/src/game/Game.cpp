@@ -10,7 +10,11 @@
 #include "client/Client.hpp"
 
 namespace client {
-    int Client::run()
+
+     Game::Game(std::shared_ptr<cmn::SharedData> data):
+        _ecs(ecs::EcsManager()), _sharedData(std::move(data)) {}
+
+    void Game::run()
     {
         while (true) {
 
