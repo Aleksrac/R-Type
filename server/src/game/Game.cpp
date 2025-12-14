@@ -44,7 +44,8 @@ namespace server {
         size_t currentNbPlayerEntities = 0;
         size_t playerListSize = _sharedData->getPlayerListSize();
 
-        while (_readyPlayersId.size() != playerListSize && playerListSize != 0) {
+        while ((_readyPlayersId.size() != playerListSize) || (playerListSize == 0)) {
+            std::cout << _readyPlayersId.size() << " " << playerListSize << "\n";
             playerListSize = _sharedData->getPlayerListSize();
             if (currentNbPlayerEntities != playerListSize) {
                 _createNewPlayers(_sharedData->getAllPlayerIds(), currentNbPlayerEntities);

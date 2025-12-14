@@ -127,8 +127,10 @@ TEST(ClientTest, SendUdpSuccess)
 
     cmn::packetData data {};
     data.packetId = 2;
+    cmn::CustomPacket packet;
+    packet << data;
 
-    EXPECT_EQ(client.sendUdp(data), 0);
+    EXPECT_EQ(client.sendUdp(packet), 0);
 
     udpThread.join();
     tcpThread.join();

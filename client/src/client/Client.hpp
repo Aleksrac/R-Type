@@ -25,7 +25,7 @@ namespace client {
             [[nodiscard]] int connectToHost(const std::string &address, uint16_t port);
             [[noreturn]] int run();
 
-            int sendUdp(const cmn::packetData& dataPacket);
+            int sendUdp(cmn::CustomPacket &packet);
             int sendTcp(const cmn::packetData& dataPacket);
 
         private:

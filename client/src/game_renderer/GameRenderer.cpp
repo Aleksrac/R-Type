@@ -19,6 +19,7 @@
 #include "systems/RenderSystem.hpp"
 #include "systems/SpriteAnimationSystem.hpp"
 #include "systems/VelocitySystem.hpp"
+#include "packet_factory/PacketFactory.hpp"
 
 #include <functional>
 
@@ -117,15 +118,7 @@ namespace client {
 
         for (const auto& [key, check] : bindings) {
             if (check(*inputComp)) {
-                cmn::packetData data{};
-                cmn::inputPacket input{};
-
-                data.packetId = 0;
-                input.key = static_cast<uint8_t>(key);
-                input.keyState = 1;
-                input.playerId = _playerId;
-                data.content = input;
-                _sharedData->addUdpPacketToSend(data);
+                _sharedData->addUdpPacketToSend(cmn::PacketFactory::createInputPacket(_playerId, key, cmn::KeyState::Pressed));
             }
         }
     }

@@ -14,7 +14,7 @@
 
 namespace server {
 
-     Server::Server(const std::shared_ptr<cmn::SharedData> &data):
+     Server::Server(std::shared_ptr<cmn::SharedData> &data):
     _sharedData(data) {}
 
 
@@ -153,17 +153,13 @@ namespace server {
         cmn::CustomPacket packet;
 
         while (true) {
-            auto sendPacket = _sharedData->getUdpPacketToSend();
-            if (sendPacket.has_value()) {
-                cmn::CustomPacket packetUdp;
-                packetUdp << sendPacket.value();
-                broadcastUdp(packetUdp);
+            auto udpPacket = _sharedData->getUdpPacketToSend();
+            if (udpPacket.has_value()) {
+                broadcastUdp(udpPacket.value());
             }
-            auto send = _sharedData->getTcpPacketToSend();
-            if (send.has_value()) {
-                cmn::CustomPacket packetTcp;
-                packetTcp << send.value();
-                broadcastTcp(packetTcp);
+            auto tcpPacket = _sharedData->getTcpPacketToSend();
+            if (tcpPacket.has_value()) {
+                broadcastTcp(tcpPacket.value());
             }
             if (_udpSocket.receive(packet, sender, port) != sf::Socket::Status::Done) {
                 std::cerr << "[ERROR]: failed to receive UDP packet" << "\n";

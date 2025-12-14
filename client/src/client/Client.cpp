@@ -60,11 +60,8 @@ namespace client {
         return 0;
     }
 
-    int Client::sendUdp(const cmn::packetData& dataPacket)
+    int Client::sendUdp(cmn::CustomPacket &packet)
     {
-        cmn::CustomPacket packet;
-        packet << dataPacket;
-
         if (_udpSocket.send(packet, _serverIp, _serverUdpPort) != sf::Socket::Status::Done) {
             std::cerr << "[ERROR]: Failed to send UDP packet.\n";
             return 1;
@@ -110,10 +107,9 @@ namespace client {
         std::optional sender = sf::IpAddress::LocalHost;
         unsigned short port = 0;
         cmn::CustomPacket packet = {};
-        std::optional<cmn::packetData> receivedData = {};
 
         while (true) {
-            receivedData = _sharedData->getUdpPacketToSend();
+            auto receivedData = _sharedData->getUdpPacketToSend();
             if (receivedData.has_value()) {
                 sendUdp(receivedData.value());
             }
