@@ -36,16 +36,19 @@ namespace cmn {
                 positionPacket position;
                 packet >> position;
                 data = position;
+                break;
             }
             case 2: {
                 newEntityPacket newEntity;
                 packet >> newEntity;
                 data = newEntity;
+                break;
             }
             case 3: {
                 deleteEntityPacket deleteEntity;
                 packet >> deleteEntity;
                 data = deleteEntity;
+                break;
             }
             default: {
                 throw std::exception();
