@@ -35,8 +35,8 @@ namespace client {
         void _initKeyboard();
         void _checkPlayerInput() const;
         void _updateNetwork();
-        void _updateLobby();
-        void _updateGame(float deltaTime) const;
+        void _updateLobby() const;
+        void _updateGame() const;
 
         bool _isRunning = false;
         uint32_t _playerId = 0;
