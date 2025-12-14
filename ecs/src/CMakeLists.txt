@@ -25,6 +25,8 @@ add_library(r-type_ecs_lib
         Entity.hpp
         EcsManager.cpp
         EcsManager.hpp
+        ResourceManager.cpp
+        ResourceManager.hpp
         components/Sprite.cpp
         components/Sprite.hpp
         components/Sprite.hpp
@@ -48,6 +50,10 @@ add_library(r-type_ecs_lib
         systems/SpriteAnimationSystem.hpp
         systems/VelocitySystem.hpp
         systems/VelocitySystem.cpp
+        systems/HealthSystem.cpp
+        systems/HealthSystem.hpp
+        components/PlayerAnimation.cpp
+        components/PlayerAnimation.hpp
 )
 
 target_include_directories(r-type_ecs_lib PUBLIC

@@ -15,13 +15,15 @@ namespace ecs {
 class Sprite : public Component
 {
   public:
-    explicit Sprite(const std::string &texturePath);
+    explicit Sprite(sf::Texture &texture, sf::Vector2f &scale);
     ~Sprite() override = default;
     const sf::Sprite &getSprite() const;
     void setTextureRect(int x, int y, int width, int height);
+	const sf::Vector2f &getScale() const;
+
   private:
     sf::Sprite _sprite;
-    sf::Texture _texture;
+	sf::Vector2f _scale;
 };
 }
 
