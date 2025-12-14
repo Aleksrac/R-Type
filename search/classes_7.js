@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['level_0',['Level',['../classserver_1_1Level.html',1,'server']]],
-  ['levelmanager_1',['LevelManager',['../classserver_1_1LevelManager.html',1,'server']]]
+  ['inputplayer_0',['InputPlayer',['../classecs_1_1InputPlayer.html',1,'ecs']]],
+  ['inputsystem_1',['InputSystem',['../classecs_1_1InputSystem.html',1,'ecs']]]
 ];

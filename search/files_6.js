@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['inputplayer_2ecpp_0',['InputPlayer.cpp',['../InputPlayer_8cpp.html',1,'']]],
-  ['inputplayer_2ehpp_1',['InputPlayer.hpp',['../InputPlayer_8hpp.html',1,'']]],
-  ['inputsystem_2ecpp_2',['InputSystem.cpp',['../InputSystem_8cpp.html',1,'']]],
-  ['inputsystem_2ehpp_3',['InputSystem.hpp',['../InputSystem_8hpp.html',1,'']]]
+  ['health_2ecpp_0',['Health.cpp',['../Health_8cpp.html',1,'']]],
+  ['health_2ehpp_1',['Health.hpp',['../Health_8hpp.html',1,'']]],
+  ['healthsystem_2ecpp_2',['HealthSystem.cpp',['../HealthSystem_8cpp.html',1,'']]],
+  ['healthsystem_2ehpp_3',['HealthSystem.hpp',['../HealthSystem_8hpp.html',1,'']]]
 ];

@@ -116,28 +116,27 @@ $(document).ready(function(){initNavTree('Sprite_8hpp_source.html',''); initResi
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="classecs_1_1Sprite.html">   15</a></span><span class="keyword">class </span><a class="code hl_class" href="classecs_1_1Sprite.html">Sprite</a> : <span class="keyword">public</span> <a class="code hl_class" href="classecs_1_1Component.html">Component</a></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>{</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>  <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keyword">explicit</span> <a class="code hl_class" href="classecs_1_1Sprite.html">Sprite</a>(<span class="keyword">const</span> std::string &amp;texturePath, sf::Vector2f scale);</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keyword">explicit</span> <a class="code hl_class" href="classecs_1_1Sprite.html">Sprite</a>(sf::Texture &amp;texture, <span class="keyword">const</span> sf::Vector2f &amp;scale);</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="classecs_1_1Sprite.html#a8a17a11edf14ed4278c0feb94644f058">   19</a></span>    <a class="code hl_function" href="classecs_1_1Sprite.html#a8a17a11edf14ed4278c0feb94644f058">~Sprite</a>() <span class="keyword">override</span> = <span class="keywordflow">default</span>;</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keyword">const</span> sf::Sprite &amp;<a class="code hl_function" href="classecs_1_1Sprite.html#abc43c860f33035962979d7a14317b98d">getSprite</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1Sprite.html#ab1cae5e349a19eef2529e69e66e86f63">setTextureRect</a>(<span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">int</span> width, <span class="keywordtype">int</span> height);</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    sf::Vector2f <a class="code hl_function" href="classecs_1_1Sprite.html#a4d51a13f9b3f40cc41039c23a48c9c04">getScale</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keyword">const</span> sf::Vector2f &amp;<a class="code hl_function" href="classecs_1_1Sprite.html#a7e85936a6dc9f9be9a48bc337ef51f94">getScale</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>  <span class="keyword">private</span>:</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    sf::Sprite _sprite;</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    sf::Texture _texture;</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    sf::Vector2f _scale;</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>};</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    sf::Vector2f _scale;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>};</div>
 </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>}</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#endif </span><span class="comment">//R_TYPE_SPRITE_HPP</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>}</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#endif </span><span class="comment">//R_TYPE_SPRITE_HPP</span></div>
 <div class="ttc" id="aComponent_8hpp_html"><div class="ttname"><a href="Component_8hpp.html">Component.hpp</a></div></div>
 <div class="ttc" id="aclassecs_1_1Component_html"><div class="ttname"><a href="classecs_1_1Component.html">ecs::Component</a></div><div class="ttdef"><b>Definition</b> Component.hpp:12</div></div>
 <div class="ttc" id="aclassecs_1_1Sprite_html"><div class="ttname"><a href="classecs_1_1Sprite.html">ecs::Sprite</a></div><div class="ttdef"><b>Definition</b> Sprite.hpp:16</div></div>
-<div class="ttc" id="aclassecs_1_1Sprite_html_a4d51a13f9b3f40cc41039c23a48c9c04"><div class="ttname"><a href="classecs_1_1Sprite.html#a4d51a13f9b3f40cc41039c23a48c9c04">ecs::Sprite::getScale</a></div><div class="ttdeci">sf::Vector2f getScale() const</div><div class="ttdef"><b>Definition</b> Sprite.cpp:33</div></div>
+<div class="ttc" id="aclassecs_1_1Sprite_html_a7e85936a6dc9f9be9a48bc337ef51f94"><div class="ttname"><a href="classecs_1_1Sprite.html#a7e85936a6dc9f9be9a48bc337ef51f94">ecs::Sprite::getScale</a></div><div class="ttdeci">const sf::Vector2f &amp; getScale() const</div><div class="ttdef"><b>Definition</b> Sprite.cpp:27</div></div>
 <div class="ttc" id="aclassecs_1_1Sprite_html_a8a17a11edf14ed4278c0feb94644f058"><div class="ttname"><a href="classecs_1_1Sprite.html#a8a17a11edf14ed4278c0feb94644f058">ecs::Sprite::~Sprite</a></div><div class="ttdeci">~Sprite() override=default</div></div>
-<div class="ttc" id="aclassecs_1_1Sprite_html_ab1cae5e349a19eef2529e69e66e86f63"><div class="ttname"><a href="classecs_1_1Sprite.html#ab1cae5e349a19eef2529e69e66e86f63">ecs::Sprite::setTextureRect</a></div><div class="ttdeci">void setTextureRect(int x, int y, int width, int height)</div><div class="ttdef"><b>Definition</b> Sprite.cpp:28</div></div>
-<div class="ttc" id="aclassecs_1_1Sprite_html_abc43c860f33035962979d7a14317b98d"><div class="ttname"><a href="classecs_1_1Sprite.html#abc43c860f33035962979d7a14317b98d">ecs::Sprite::getSprite</a></div><div class="ttdeci">const sf::Sprite &amp; getSprite() const</div><div class="ttdef"><b>Definition</b> Sprite.cpp:23</div></div>
+<div class="ttc" id="aclassecs_1_1Sprite_html_ab1cae5e349a19eef2529e69e66e86f63"><div class="ttname"><a href="classecs_1_1Sprite.html#ab1cae5e349a19eef2529e69e66e86f63">ecs::Sprite::setTextureRect</a></div><div class="ttdeci">void setTextureRect(int x, int y, int width, int height)</div><div class="ttdef"><b>Definition</b> Sprite.cpp:22</div></div>
+<div class="ttc" id="aclassecs_1_1Sprite_html_abc43c860f33035962979d7a14317b98d"><div class="ttname"><a href="classecs_1_1Sprite.html#abc43c860f33035962979d7a14317b98d">ecs::Sprite::getSprite</a></div><div class="ttdeci">const sf::Sprite &amp; getSprite() const</div><div class="ttdef"><b>Definition</b> Sprite.cpp:17</div></div>
 <div class="ttc" id="anamespaceecs_html"><div class="ttname"><a href="namespaceecs.html">ecs</a></div><div class="ttdef"><b>Definition</b> Animation.cpp:11</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

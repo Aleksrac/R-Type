@@ -18,11 +18,9 @@ title: server::Level
 | -------------- | -------------- |
 | uint8_t | **[getLevelId](Classes/classserver_1_1Level.md#function-getlevelid)**() const |
 | bool | **[getIsBossPresent](Classes/classserver_1_1Level.md#function-getisbosspresent)**() const |
-| std::string | **[getEnemySpritePath](Classes/classserver_1_1Level.md#function-getenemyspritepath)**() const |
 | uint8_t | **[getEnemySpawnRate](Classes/classserver_1_1Level.md#function-getenemyspawnrate)**() const |
-| std::string | **[getBossSpritePath](Classes/classserver_1_1Level.md#function-getbossspritepath)**() const |
 | uint32_t | **[getBossApparitionTime](Classes/classserver_1_1Level.md#function-getbossapparitiontime)**() const |
-| | **[Level](Classes/classserver_1_1Level.md#function-level)**(uint8_t levelId, std::string enemySpritePath, uint8_t enemySpawnRate, bool isBossPresent, std::string bossSpritePath, uint32_t bossApparitionTime) |
+| | **[Level](Classes/classserver_1_1Level.md#function-level)**(uint8_t levelId, uint8_t enemySpawnRate, bool isBossPresent, uint32_t bossApparitionTime) |
 
 ## Public Functions Documentation
 
@@ -40,24 +38,10 @@ bool getIsBossPresent() const
 ```
 
 
-### function getEnemySpritePath
-
-```cpp
-std::string getEnemySpritePath() const
-```
-
-
 ### function getEnemySpawnRate
 
 ```cpp
 uint8_t getEnemySpawnRate() const
-```
-
-
-### function getBossSpritePath
-
-```cpp
-std::string getBossSpritePath() const
 ```
 
 
@@ -73,10 +57,8 @@ uint32_t getBossApparitionTime() const
 ```cpp
 Level(
     uint8_t levelId,
-    std::string enemySpritePath,
     uint8_t enemySpawnRate,
     bool isBossPresent,
-    std::string bossSpritePath,
     uint32_t bossApparitionTime
 )
 ```
@@ -84,4 +66,4 @@ Level(
 
 -------------------------------
 
-Updated on 2025-12-13 at 18:06:21 +0000
+Updated on 2025-12-14 at 20:10:14 +0000

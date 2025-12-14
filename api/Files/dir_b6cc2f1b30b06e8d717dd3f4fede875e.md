@@ -33,6 +33,8 @@ title: ecs/src/systems
 | **[ecs/src/systems/DestroySystem.cpp](Files/DestroySystem_8cpp.md#file-destroysystem.cpp)**  |
 | **[ecs/src/systems/CollisionSystem.hpp](Files/CollisionSystem_8hpp.md#file-collisionsystem.hpp)**  |
 | **[ecs/src/systems/CollisionSystem.cpp](Files/CollisionSystem_8cpp.md#file-collisionsystem.cpp)**  |
+| **[ecs/src/systems/BackgroundSystem.hpp](Files/BackgroundSystem_8hpp.md#file-backgroundsystem.hpp)**  |
+| **[ecs/src/systems/BackgroundSystem.cpp](Files/BackgroundSystem_8cpp.md#file-backgroundsystem.cpp)**  |
 
 
 
@@ -41,4 +43,4 @@ title: ecs/src/systems
 
 -------------------------------
 
-Updated on 2025-12-13 at 18:06:21 +0000
+Updated on 2025-12-14 at 20:10:14 +0000

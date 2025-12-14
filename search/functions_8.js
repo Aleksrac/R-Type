@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['level_0',['Level',['../classserver_1_1Level.html#aca3884ae26c49cf540814a8f09cc34cc',1,'server::Level']]]
+  ['level_0',['Level',['../classserver_1_1Level.html#af7049cb778451797e186c68ac77cc29f',1,'server::Level']]]
 ];

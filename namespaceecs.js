@@ -1,6 +1,8 @@
 var namespaceecs =
 [
     [ "Animation", "classecs_1_1Animation.html", "classecs_1_1Animation" ],
+    [ "Background", "classecs_1_1Background.html", "classecs_1_1Background" ],
+    [ "BackgroundSystem", "classecs_1_1BackgroundSystem.html", "classecs_1_1BackgroundSystem" ],
     [ "Collision", "classecs_1_1Collision.html", "classecs_1_1Collision" ],
     [ "CollisionSystem", "classecs_1_1CollisionSystem.html", "classecs_1_1CollisionSystem" ],
     [ "Component", "classecs_1_1Component.html", "classecs_1_1Component" ],
@@ -20,6 +22,7 @@ var namespaceecs =
     [ "PlayerAnimationSystem", "classecs_1_1PlayerAnimationSystem.html", "classecs_1_1PlayerAnimationSystem" ],
     [ "Position", "classecs_1_1Position.html", "classecs_1_1Position" ],
     [ "RenderSystem", "classecs_1_1RenderSystem.html", "classecs_1_1RenderSystem" ],
+    [ "ResourceManager", "classecs_1_1ResourceManager.html", "classecs_1_1ResourceManager" ],
     [ "Shoot", "classecs_1_1Shoot.html", "classecs_1_1Shoot" ],
     [ "ShootSystem", "classecs_1_1ShootSystem.html", "classecs_1_1ShootSystem" ],
     [ "Sound", "classecs_1_1Sound.html", "classecs_1_1Sound" ],
@@ -41,11 +44,9 @@ var namespaceecs =
     [ "TEST", "namespaceecs.html#a9de15e78d92d018edd42187c2b7ae220", null ],
     [ "TEST", "namespaceecs.html#a108435ad827d4491f797c94d2face06c", null ],
     [ "TEST", "namespaceecs.html#aa5e11460e278d3c8e1ae91ac7efb50d5", null ],
-    [ "TEST", "namespaceecs.html#adc243ce69939aa583e3fd0b82886cc88", null ],
     [ "TEST", "namespaceecs.html#aba9c4e98f0b8677ecea411d042aff9c0", null ],
     [ "TEST", "namespaceecs.html#aa6ecccc90c123ae2623fe70fa3555b9a", null ],
     [ "TEST", "namespaceecs.html#a631cd7ddaed82be770d98ad03a1a5bca", null ],
     [ "TEST", "namespaceecs.html#a0a16bfcb7ac2ecb53fd6979b4282950c", null ],
-    [ "TEST", "namespaceecs.html#ad4997ede705c6001fc3e35fd035980a0", null ],
-    [ "TEST", "namespaceecs.html#ab51ee5f8107ab7449564e53193783477", null ]
+    [ "TEST", "namespaceecs.html#ad4997ede705c6001fc3e35fd035980a0", null ]
 ];

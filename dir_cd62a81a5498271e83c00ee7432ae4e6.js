@@ -5,5 +5,7 @@ var dir_cd62a81a5498271e83c00ee7432ae4e6 =
     [ "EcsManager.cpp", "EcsManager_8cpp.html", null ],
     [ "EcsManager.hpp", "EcsManager_8hpp.html", "EcsManager_8hpp" ],
     [ "Entity.cpp", "Entity_8cpp.html", null ],
-    [ "Entity.hpp", "Entity_8hpp.html", "Entity_8hpp" ]
+    [ "Entity.hpp", "Entity_8hpp.html", "Entity_8hpp" ],
+    [ "ResourceManager.cpp", "ResourceManager_8cpp.html", null ],
+    [ "ResourceManager.hpp", "ResourceManager_8hpp.html", "ResourceManager_8hpp" ]
 ];

@@ -21,8 +21,8 @@ Inherits from [ecs::Component](Classes/classecs_1_1Component.md)
 | | **[~Sprite](Classes/classecs_1_1Sprite.md#function-~sprite)**() override =default |
 | void | **[setTextureRect](Classes/classecs_1_1Sprite.md#function-settexturerect)**(int x, int y, int width, int height) |
 | const sf::Sprite & | **[getSprite](Classes/classecs_1_1Sprite.md#function-getsprite)**() const |
-| sf::Vector2f | **[getScale](Classes/classecs_1_1Sprite.md#function-getscale)**() const |
-| | **[Sprite](Classes/classecs_1_1Sprite.md#function-sprite)**(const std::string & texturePath, sf::Vector2f scale) |
+| const sf::Vector2f & | **[getScale](Classes/classecs_1_1Sprite.md#function-getscale)**() const |
+| | **[Sprite](Classes/classecs_1_1Sprite.md#function-sprite)**(sf::Texture & texture, const sf::Vector2f & scale) |
 
 ## Additional inherited members
 
@@ -65,7 +65,7 @@ const sf::Sprite & getSprite() const
 ### function getScale
 
 ```cpp
-sf::Vector2f getScale() const
+const sf::Vector2f & getScale() const
 ```
 
 
@@ -73,12 +73,12 @@ sf::Vector2f getScale() const
 
 ```cpp
 explicit Sprite(
-    const std::string & texturePath,
-    sf::Vector2f scale
+    sf::Texture & texture,
+    const sf::Vector2f & scale
 )
 ```
 
 
 -------------------------------
 
-Updated on 2025-12-13 at 18:06:21 +0000
+Updated on 2025-12-14 at 20:10:14 +0000

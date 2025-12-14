@@ -14,9 +14,13 @@ title: Files
         * **file [ecs/src/EcsManager.hpp](Files/EcsManager_8hpp.md#file-ecsmanager.hpp)** 
         * **file [ecs/src/Entity.cpp](Files/Entity_8cpp.md#file-entity.cpp)** 
         * **file [ecs/src/Entity.hpp](Files/Entity_8hpp.md#file-entity.hpp)** 
+        * **file [ecs/src/ResourceManager.cpp](Files/ResourceManager_8cpp.md#file-resourcemanager.cpp)** 
+        * **file [ecs/src/ResourceManager.hpp](Files/ResourceManager_8hpp.md#file-resourcemanager.hpp)** 
         * **dir [ecs/src/components](Files/dir_79c5a346a0c3740c5441f87bb4d2087a.md#dir-ecs/src/components)** 
             * **file [ecs/src/components/Animation.cpp](Files/Animation_8cpp.md#file-animation.cpp)** 
             * **file [ecs/src/components/Animation.hpp](Files/Animation_8hpp.md#file-animation.hpp)** 
+            * **file [ecs/src/components/Background.cpp](Files/Background_8cpp.md#file-background.cpp)** 
+            * **file [ecs/src/components/Background.hpp](Files/Background_8hpp.md#file-background.hpp)** 
             * **file [ecs/src/components/Collision.cpp](Files/Collision_8cpp.md#file-collision.cpp)** 
             * **file [ecs/src/components/Collision.hpp](Files/Collision_8hpp.md#file-collision.hpp)** 
             * **file [ecs/src/components/Component.cpp](Files/Component_8cpp.md#file-component.cpp)** 
@@ -42,6 +46,8 @@ title: Files
             * **file [ecs/src/components/Velocity.cpp](Files/Velocity_8cpp.md#file-velocity.cpp)** 
             * **file [ecs/src/components/Velocity.hpp](Files/Velocity_8hpp.md#file-velocity.hpp)** 
         * **dir [ecs/src/systems](Files/dir_b6cc2f1b30b06e8d717dd3f4fede875e.md#dir-ecs/src/systems)** 
+            * **file [ecs/src/systems/BackgroundSystem.cpp](Files/BackgroundSystem_8cpp.md#file-backgroundsystem.cpp)** 
+            * **file [ecs/src/systems/BackgroundSystem.hpp](Files/BackgroundSystem_8hpp.md#file-backgroundsystem.hpp)** 
             * **file [ecs/src/systems/CollisionSystem.cpp](Files/CollisionSystem_8cpp.md#file-collisionsystem.cpp)** 
             * **file [ecs/src/systems/CollisionSystem.hpp](Files/CollisionSystem_8hpp.md#file-collisionsystem.hpp)** 
             * **file [ecs/src/systems/DestroySystem.cpp](Files/DestroySystem_8cpp.md#file-destroysystem.cpp)** 
@@ -97,4 +103,4 @@ title: Files
 
 -------------------------------
 
-Updated on 2025-12-13 at 18:06:21 +0000
+Updated on 2025-12-14 at 20:10:14 +0000

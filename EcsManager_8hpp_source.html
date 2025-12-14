@@ -108,74 +108,83 @@ $(document).ready(function(){initNavTree('EcsManager_8hpp_source.html',''); init
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#ifndef ECSMANAGER_HPP</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">    #define ECSMANAGER_HPP</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &quot;<a class="code" href="Entity_8hpp.html">Entity.hpp</a>&quot;</span></div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &quot;<a class="code" href="System_8hpp.html">systems/System.hpp</a>&quot;</span></div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceecs.html">ecs</a> {</div>
-<div class="foldopen" id="foldopen00016" data-start="{" data-end="};">
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="classecs_1_1EcsManager.html">   16</a></span><span class="keyword">class </span><a class="code hl_class" href="classecs_1_1EcsManager.html">EcsManager</a> {</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>  <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="classecs_1_1EcsManager.html#a47dac0b2eb01cca30bd26593be3fe940">   18</a></span>    <a class="code hl_function" href="classecs_1_1EcsManager.html#a47dac0b2eb01cca30bd26593be3fe940">EcsManager</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="classecs_1_1EcsManager.html#a812c7e9bcf5bb6e9e35cbc0156f42bc1">   19</a></span>    <a class="code hl_function" href="classecs_1_1EcsManager.html#a812c7e9bcf5bb6e9e35cbc0156f42bc1">~EcsManager</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    std::shared_ptr&lt;Entity&gt; <a class="code hl_function" href="classecs_1_1EcsManager.html#a2a2e15d8e7a352cdb6ff1915bf60b7e8">createEntity</a>();</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    std::vector&lt;std::shared_ptr&lt;Entity&gt;&gt; &amp;<a class="code hl_function" href="classecs_1_1EcsManager.html#a07a7925eaa065a35249b1c6ae2adf4e6">getEntities</a>();</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1EcsManager.html#a4334a98ba68617230e1e6006258f237a">updateSystems</a>();</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1EcsManager.html#ad3c55f9e3eb750529c9d57a5d40cfa58">setDeltaTime</a>(<span class="keywordtype">float</span> dt);</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="keywordtype">float</span> <a class="code hl_function" href="classecs_1_1EcsManager.html#acc9a7d12b587598a1e099c2700d61636">getDeltaTime</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Args&gt;</div>
-<div class="foldopen" id="foldopen00027" data-start="{" data-end="}">
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classecs_1_1EcsManager.html#a5cc872a200e584f840a24b4bcdb4c7bd">   27</a></span>    std::shared_ptr&lt;T&gt; <a class="code hl_function" href="classecs_1_1EcsManager.html#a5cc872a200e584f840a24b4bcdb4c7bd">addSystem</a>(Args&amp;&amp;... args) {</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        <span class="keyword">auto</span> system = std::make_shared&lt;T&gt;(std::forward&lt;Args&gt;(args)...);</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>        _systems.push_back(system);</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        <span class="keywordflow">return</span> system;</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    }</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &quot;<a class="code" href="ResourceManager_8hpp.html">ResourceManager.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;<a class="code" href="System_8hpp.html">systems/System.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceecs.html">ecs</a> {</div>
+<div class="foldopen" id="foldopen00017" data-start="{" data-end="};">
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="classecs_1_1EcsManager.html">   17</a></span><span class="keyword">class </span><a class="code hl_class" href="classecs_1_1EcsManager.html">EcsManager</a> {</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>  <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="classecs_1_1EcsManager.html#a47dac0b2eb01cca30bd26593be3fe940">   19</a></span>    <a class="code hl_function" href="classecs_1_1EcsManager.html#a47dac0b2eb01cca30bd26593be3fe940">EcsManager</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="classecs_1_1EcsManager.html#a812c7e9bcf5bb6e9e35cbc0156f42bc1">   20</a></span>    <a class="code hl_function" href="classecs_1_1EcsManager.html#a812c7e9bcf5bb6e9e35cbc0156f42bc1">~EcsManager</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    std::shared_ptr&lt;Entity&gt; <a class="code hl_function" href="classecs_1_1EcsManager.html#a2a2e15d8e7a352cdb6ff1915bf60b7e8">createEntity</a>();</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    std::shared_ptr&lt;Entity&gt; <a class="code hl_function" href="classecs_1_1EcsManager.html#a2a2e15d8e7a352cdb6ff1915bf60b7e8">createEntity</a>(std::size_t <span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    std::vector&lt;std::shared_ptr&lt;Entity&gt;&gt; &amp;<a class="code hl_function" href="classecs_1_1EcsManager.html#a07a7925eaa065a35249b1c6ae2adf4e6">getEntities</a>();</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1EcsManager.html#a4334a98ba68617230e1e6006258f237a">updateSystems</a>();</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classecs_1_1EcsManager.html#ad3c55f9e3eb750529c9d57a5d40cfa58">setDeltaTime</a>(<span class="keywordtype">float</span> dt);</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="keywordtype">float</span> <a class="code hl_function" href="classecs_1_1EcsManager.html#acc9a7d12b587598a1e099c2700d61636">getDeltaTime</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <a class="code hl_class" href="classecs_1_1ResourceManager.html">ResourceManager</a> &amp;<a class="code hl_function" href="classecs_1_1EcsManager.html#a5ab3e315a5b5f8a6906823e26ed9fe6d">getResourceManager</a>();</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Args&gt;</div>
+<div class="foldopen" id="foldopen00030" data-start="{" data-end="}">
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="classecs_1_1EcsManager.html#a5cc872a200e584f840a24b4bcdb4c7bd">   30</a></span>    std::shared_ptr&lt;T&gt; <a class="code hl_function" href="classecs_1_1EcsManager.html#a5cc872a200e584f840a24b4bcdb4c7bd">addSystem</a>(Args&amp;&amp;... args) {</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        <span class="keyword">auto</span> system = std::make_shared&lt;T&gt;(std::forward&lt;Args&gt;(args)...);</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        _systems.push_back(system);</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        <span class="keywordflow">return</span> system;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    }</div>
 </div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="foldopen" id="foldopen00034" data-start="{" data-end="}">
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="classecs_1_1EcsManager.html#aa44e84e55ba47781402b09073d2314c0">   34</a></span>    std::shared_ptr&lt;T&gt; <a class="code hl_function" href="classecs_1_1EcsManager.html#aa44e84e55ba47781402b09073d2314c0">addSystem</a>() {</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        <span class="keyword">auto</span> system = std::make_shared&lt;T&gt;();</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        _systems.push_back(system);</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        <span class="keywordflow">return</span> system;</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    }</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="foldopen" id="foldopen00037" data-start="{" data-end="}">
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="classecs_1_1EcsManager.html#aa44e84e55ba47781402b09073d2314c0">   37</a></span>    std::shared_ptr&lt;T&gt; <a class="code hl_function" href="classecs_1_1EcsManager.html#aa44e84e55ba47781402b09073d2314c0">addSystem</a>() {</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        <span class="keyword">auto</span> system = std::make_shared&lt;T&gt;();</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        _systems.push_back(system);</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        <span class="keywordflow">return</span> system;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    }</div>
 </div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="foldopen" id="foldopen00041" data-start="{" data-end="}">
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="classecs_1_1EcsManager.html#ab5e639c33a3e584201192a8687c50401">   41</a></span>    std::vector&lt;std::shared_ptr&lt;Entity&gt;&gt; <a class="code hl_function" href="classecs_1_1EcsManager.html#ab5e639c33a3e584201192a8687c50401">getEntitiesWithComponent</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>        std::vector&lt;std::shared_ptr&lt;Entity&gt;&gt; result;</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; entity : _entities) {</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>            <span class="keywordflow">if</span> (entity-&gt;getComponent&lt;T&gt;()) {</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>                result.push_back(entity);</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>            }</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        }</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        <span class="keywordflow">return</span> result;</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    }</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="foldopen" id="foldopen00044" data-start="{" data-end="}">
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="classecs_1_1EcsManager.html#ab5e639c33a3e584201192a8687c50401">   44</a></span>    std::vector&lt;std::shared_ptr&lt;Entity&gt;&gt; <a class="code hl_function" href="classecs_1_1EcsManager.html#ab5e639c33a3e584201192a8687c50401">getEntitiesWithComponent</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        std::vector&lt;std::shared_ptr&lt;Entity&gt;&gt; result;</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; entity : _entities) {</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>            <span class="keywordflow">if</span> (entity-&gt;getComponent&lt;T&gt;()) {</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>                result.push_back(entity);</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            }</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        }</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        <span class="keywordflow">return</span> result;</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    }</div>
 </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>  <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keywordtype">float</span> _deltaTime = 0.0f;</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    std::vector&lt;std::shared_ptr&lt;System&gt;&gt; _systems;</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    std::vector&lt;std::shared_ptr&lt;Entity&gt;&gt; _entities;</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>};</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>  <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keywordtype">float</span> _deltaTime = 0.0f;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    std::vector&lt;std::shared_ptr&lt;System&gt;&gt; _systems;</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    std::vector&lt;std::shared_ptr&lt;Entity&gt;&gt; _entities;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <a class="code hl_class" href="classecs_1_1ResourceManager.html">ResourceManager</a> _resourceManager;</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="keywordtype">size_t</span> _nextEntityId = 0;</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>};</div>
 </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>}</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="preprocessor">#endif </span><span class="comment">//ECSMANAGER_HPP</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>}</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="preprocessor">#endif </span><span class="comment">//ECSMANAGER_HPP</span></div>
 <div class="ttc" id="aEntity_8hpp_html"><div class="ttname"><a href="Entity_8hpp.html">Entity.hpp</a></div></div>
+<div class="ttc" id="aResourceManager_8hpp_html"><div class="ttname"><a href="ResourceManager_8hpp.html">ResourceManager.hpp</a></div></div>
 <div class="ttc" id="aSystem_8hpp_html"><div class="ttname"><a href="System_8hpp.html">System.hpp</a></div></div>
-<div class="ttc" id="aclassecs_1_1EcsManager_html"><div class="ttname"><a href="classecs_1_1EcsManager.html">ecs::EcsManager</a></div><div class="ttdef"><b>Definition</b> EcsManager.hpp:16</div></div>
-<div class="ttc" id="aclassecs_1_1EcsManager_html_a07a7925eaa065a35249b1c6ae2adf4e6"><div class="ttname"><a href="classecs_1_1EcsManager.html#a07a7925eaa065a35249b1c6ae2adf4e6">ecs::EcsManager::getEntities</a></div><div class="ttdeci">std::vector&lt; std::shared_ptr&lt; Entity &gt; &gt; &amp; getEntities()</div><div class="ttdef"><b>Definition</b> EcsManager.cpp:19</div></div>
-<div class="ttc" id="aclassecs_1_1EcsManager_html_a2a2e15d8e7a352cdb6ff1915bf60b7e8"><div class="ttname"><a href="classecs_1_1EcsManager.html#a2a2e15d8e7a352cdb6ff1915bf60b7e8">ecs::EcsManager::createEntity</a></div><div class="ttdeci">std::shared_ptr&lt; Entity &gt; createEntity()</div><div class="ttdef"><b>Definition</b> EcsManager.cpp:13</div></div>
-<div class="ttc" id="aclassecs_1_1EcsManager_html_a4334a98ba68617230e1e6006258f237a"><div class="ttname"><a href="classecs_1_1EcsManager.html#a4334a98ba68617230e1e6006258f237a">ecs::EcsManager::updateSystems</a></div><div class="ttdeci">void updateSystems()</div><div class="ttdef"><b>Definition</b> EcsManager.cpp:32</div></div>
+<div class="ttc" id="aclassecs_1_1EcsManager_html"><div class="ttname"><a href="classecs_1_1EcsManager.html">ecs::EcsManager</a></div><div class="ttdef"><b>Definition</b> EcsManager.hpp:17</div></div>
+<div class="ttc" id="aclassecs_1_1EcsManager_html_a07a7925eaa065a35249b1c6ae2adf4e6"><div class="ttname"><a href="classecs_1_1EcsManager.html#a07a7925eaa065a35249b1c6ae2adf4e6">ecs::EcsManager::getEntities</a></div><div class="ttdeci">std::vector&lt; std::shared_ptr&lt; Entity &gt; &gt; &amp; getEntities()</div><div class="ttdef"><b>Definition</b> EcsManager.cpp:28</div></div>
+<div class="ttc" id="aclassecs_1_1EcsManager_html_a2a2e15d8e7a352cdb6ff1915bf60b7e8"><div class="ttname"><a href="classecs_1_1EcsManager.html#a2a2e15d8e7a352cdb6ff1915bf60b7e8">ecs::EcsManager::createEntity</a></div><div class="ttdeci">std::shared_ptr&lt; Entity &gt; createEntity()</div><div class="ttdef"><b>Definition</b> EcsManager.cpp:14</div></div>
+<div class="ttc" id="aclassecs_1_1EcsManager_html_a4334a98ba68617230e1e6006258f237a"><div class="ttname"><a href="classecs_1_1EcsManager.html#a4334a98ba68617230e1e6006258f237a">ecs::EcsManager::updateSystems</a></div><div class="ttdeci">void updateSystems()</div><div class="ttdef"><b>Definition</b> EcsManager.cpp:41</div></div>
 <div class="ttc" id="aclassecs_1_1EcsManager_html_a47dac0b2eb01cca30bd26593be3fe940"><div class="ttname"><a href="classecs_1_1EcsManager.html#a47dac0b2eb01cca30bd26593be3fe940">ecs::EcsManager::EcsManager</a></div><div class="ttdeci">EcsManager()=default</div></div>
-<div class="ttc" id="aclassecs_1_1EcsManager_html_a5cc872a200e584f840a24b4bcdb4c7bd"><div class="ttname"><a href="classecs_1_1EcsManager.html#a5cc872a200e584f840a24b4bcdb4c7bd">ecs::EcsManager::addSystem</a></div><div class="ttdeci">std::shared_ptr&lt; T &gt; addSystem(Args &amp;&amp;... args)</div><div class="ttdef"><b>Definition</b> EcsManager.hpp:27</div></div>
+<div class="ttc" id="aclassecs_1_1EcsManager_html_a5ab3e315a5b5f8a6906823e26ed9fe6d"><div class="ttname"><a href="classecs_1_1EcsManager.html#a5ab3e315a5b5f8a6906823e26ed9fe6d">ecs::EcsManager::getResourceManager</a></div><div class="ttdeci">ResourceManager &amp; getResourceManager()</div><div class="ttdef"><b>Definition</b> EcsManager.cpp:47</div></div>
+<div class="ttc" id="aclassecs_1_1EcsManager_html_a5cc872a200e584f840a24b4bcdb4c7bd"><div class="ttname"><a href="classecs_1_1EcsManager.html#a5cc872a200e584f840a24b4bcdb4c7bd">ecs::EcsManager::addSystem</a></div><div class="ttdeci">std::shared_ptr&lt; T &gt; addSystem(Args &amp;&amp;... args)</div><div class="ttdef"><b>Definition</b> EcsManager.hpp:30</div></div>
 <div class="ttc" id="aclassecs_1_1EcsManager_html_a812c7e9bcf5bb6e9e35cbc0156f42bc1"><div class="ttname"><a href="classecs_1_1EcsManager.html#a812c7e9bcf5bb6e9e35cbc0156f42bc1">ecs::EcsManager::~EcsManager</a></div><div class="ttdeci">~EcsManager()=default</div></div>
-<div class="ttc" id="aclassecs_1_1EcsManager_html_aa44e84e55ba47781402b09073d2314c0"><div class="ttname"><a href="classecs_1_1EcsManager.html#aa44e84e55ba47781402b09073d2314c0">ecs::EcsManager::addSystem</a></div><div class="ttdeci">std::shared_ptr&lt; T &gt; addSystem()</div><div class="ttdef"><b>Definition</b> EcsManager.hpp:34</div></div>
-<div class="ttc" id="aclassecs_1_1EcsManager_html_ab5e639c33a3e584201192a8687c50401"><div class="ttname"><a href="classecs_1_1EcsManager.html#ab5e639c33a3e584201192a8687c50401">ecs::EcsManager::getEntitiesWithComponent</a></div><div class="ttdeci">std::vector&lt; std::shared_ptr&lt; Entity &gt; &gt; getEntitiesWithComponent() const</div><div class="ttdef"><b>Definition</b> EcsManager.hpp:41</div></div>
-<div class="ttc" id="aclassecs_1_1EcsManager_html_acc9a7d12b587598a1e099c2700d61636"><div class="ttname"><a href="classecs_1_1EcsManager.html#acc9a7d12b587598a1e099c2700d61636">ecs::EcsManager::getDeltaTime</a></div><div class="ttdeci">float getDeltaTime() const</div><div class="ttdef"><b>Definition</b> EcsManager.cpp:27</div></div>
-<div class="ttc" id="aclassecs_1_1EcsManager_html_ad3c55f9e3eb750529c9d57a5d40cfa58"><div class="ttname"><a href="classecs_1_1EcsManager.html#ad3c55f9e3eb750529c9d57a5d40cfa58">ecs::EcsManager::setDeltaTime</a></div><div class="ttdeci">void setDeltaTime(float dt)</div><div class="ttdef"><b>Definition</b> EcsManager.cpp:23</div></div>
+<div class="ttc" id="aclassecs_1_1EcsManager_html_aa44e84e55ba47781402b09073d2314c0"><div class="ttname"><a href="classecs_1_1EcsManager.html#aa44e84e55ba47781402b09073d2314c0">ecs::EcsManager::addSystem</a></div><div class="ttdeci">std::shared_ptr&lt; T &gt; addSystem()</div><div class="ttdef"><b>Definition</b> EcsManager.hpp:37</div></div>
+<div class="ttc" id="aclassecs_1_1EcsManager_html_ab5e639c33a3e584201192a8687c50401"><div class="ttname"><a href="classecs_1_1EcsManager.html#ab5e639c33a3e584201192a8687c50401">ecs::EcsManager::getEntitiesWithComponent</a></div><div class="ttdeci">std::vector&lt; std::shared_ptr&lt; Entity &gt; &gt; getEntitiesWithComponent() const</div><div class="ttdef"><b>Definition</b> EcsManager.hpp:44</div></div>
+<div class="ttc" id="aclassecs_1_1EcsManager_html_acc9a7d12b587598a1e099c2700d61636"><div class="ttname"><a href="classecs_1_1EcsManager.html#acc9a7d12b587598a1e099c2700d61636">ecs::EcsManager::getDeltaTime</a></div><div class="ttdeci">float getDeltaTime() const</div><div class="ttdef"><b>Definition</b> EcsManager.cpp:36</div></div>
+<div class="ttc" id="aclassecs_1_1EcsManager_html_ad3c55f9e3eb750529c9d57a5d40cfa58"><div class="ttname"><a href="classecs_1_1EcsManager.html#ad3c55f9e3eb750529c9d57a5d40cfa58">ecs::EcsManager::setDeltaTime</a></div><div class="ttdeci">void setDeltaTime(float dt)</div><div class="ttdef"><b>Definition</b> EcsManager.cpp:32</div></div>
+<div class="ttc" id="aclassecs_1_1ResourceManager_html"><div class="ttname"><a href="classecs_1_1ResourceManager.html">ecs::ResourceManager</a></div><div class="ttdef"><b>Definition</b> ResourceManager.hpp:17</div></div>
 <div class="ttc" id="anamespaceecs_html"><div class="ttname"><a href="namespaceecs.html">ecs</a></div><div class="ttdef"><b>Definition</b> Animation.cpp:11</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

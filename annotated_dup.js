@@ -2,6 +2,8 @@ var annotated_dup =
 [
     [ "ecs", "namespaceecs.html", [
       [ "Animation", "classecs_1_1Animation.html", "classecs_1_1Animation" ],
+      [ "Background", "classecs_1_1Background.html", "classecs_1_1Background" ],
+      [ "BackgroundSystem", "classecs_1_1BackgroundSystem.html", "classecs_1_1BackgroundSystem" ],
       [ "Collision", "classecs_1_1Collision.html", "classecs_1_1Collision" ],
       [ "CollisionSystem", "classecs_1_1CollisionSystem.html", "classecs_1_1CollisionSystem" ],
       [ "Component", "classecs_1_1Component.html", "classecs_1_1Component" ],
@@ -21,6 +23,7 @@ var annotated_dup =
       [ "PlayerAnimationSystem", "classecs_1_1PlayerAnimationSystem.html", "classecs_1_1PlayerAnimationSystem" ],
       [ "Position", "classecs_1_1Position.html", "classecs_1_1Position" ],
       [ "RenderSystem", "classecs_1_1RenderSystem.html", "classecs_1_1RenderSystem" ],
+      [ "ResourceManager", "classecs_1_1ResourceManager.html", "classecs_1_1ResourceManager" ],
       [ "Shoot", "classecs_1_1Shoot.html", "classecs_1_1Shoot" ],
       [ "ShootSystem", "classecs_1_1ShootSystem.html", "classecs_1_1ShootSystem" ],
       [ "Sound", "classecs_1_1Sound.html", "classecs_1_1Sound" ],

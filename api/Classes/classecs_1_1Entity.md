@@ -17,16 +17,11 @@ title: ecs::Entity
 |                | Name           |
 | -------------- | -------------- |
 | | **[~Entity](Classes/classecs_1_1Entity.md#function-~entity)**() =default |
+| uint64_t | **[getId](Classes/classecs_1_1Entity.md#function-getid)**() const |
 | template <typename T \> <br>std::shared_ptr< T > | **[getComponent](Classes/classecs_1_1Entity.md#function-getcomponent)**() |
 | template <typename T ,typename... Args\> <br>std::shared_ptr< T > | **[addComponent](Classes/classecs_1_1Entity.md#function-addcomponent)**(Args &&... args) |
 | template <typename T \> <br>std::shared_ptr< T > | **[addComponent](Classes/classecs_1_1Entity.md#function-addcomponent)**() |
-| | **[Entity](Classes/classecs_1_1Entity.md#function-entity)**() =default |
-
-## Public Attributes
-
-|                | Name           |
-| -------------- | -------------- |
-| size_t | **[_id](Classes/classecs_1_1Entity.md#variable--id)**  |
+| | **[Entity](Classes/classecs_1_1Entity.md#function-entity)**(uint64_t id) |
 
 ## Public Functions Documentation
 
@@ -34,6 +29,13 @@ title: ecs::Entity
 
 ```cpp
 ~Entity() =default
+```
+
+
+### function getId
+
+```cpp
+uint64_t getId() const
 ```
 
 
@@ -67,19 +69,12 @@ inline std::shared_ptr< T > addComponent()
 ### function Entity
 
 ```cpp
-Entity() =default
-```
-
-
-## Public Attributes Documentation
-
-### variable _id
-
-```cpp
-size_t _id;
+inline explicit Entity(
+    uint64_t id
+)
 ```
 
 
 -------------------------------
 
-Updated on 2025-12-13 at 18:06:21 +0000
+Updated on 2025-12-14 at 20:10:14 +0000

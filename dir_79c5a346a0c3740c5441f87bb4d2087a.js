@@ -2,6 +2,8 @@ var dir_79c5a346a0c3740c5441f87bb4d2087a =
 [
     [ "Animation.cpp", "Animation_8cpp.html", null ],
     [ "Animation.hpp", "Animation_8hpp.html", "Animation_8hpp" ],
+    [ "Background.cpp", "Background_8cpp.html", null ],
+    [ "Background.hpp", "Background_8hpp.html", "Background_8hpp" ],
     [ "Collision.cpp", "Collision_8cpp.html", null ],
     [ "Collision.hpp", "Collision_8hpp.html", "Collision_8hpp" ],
     [ "Component.cpp", "Component_8cpp.html", null ],

@@ -10,6 +10,8 @@ title: Classes
 
 * **namespace [ecs](Namespaces/namespaceecs.md)** 
     * **class [Animation](Classes/classecs_1_1Animation.md)** 
+    * **class [Background](Classes/classecs_1_1Background.md)** <br>A component handling background logic, specifically for scrolling/looping effects. 
+    * **class [BackgroundSystem](Classes/classecs_1_1BackgroundSystem.md)** <br>[System](Classes/classecs_1_1System.md) responsible for the infinite scrolling logic of the background. 
     * **class [Collision](Classes/classecs_1_1Collision.md)** 
     * **class [CollisionSystem](Classes/classecs_1_1CollisionSystem.md)** 
     * **class [Component](Classes/classecs_1_1Component.md)** 
@@ -29,6 +31,7 @@ title: Classes
     * **class [PlayerAnimationSystem](Classes/classecs_1_1PlayerAnimationSystem.md)** 
     * **class [Position](Classes/classecs_1_1Position.md)** 
     * **class [RenderSystem](Classes/classecs_1_1RenderSystem.md)** 
+    * **class [ResourceManager](Classes/classecs_1_1ResourceManager.md)** 
     * **class [Shoot](Classes/classecs_1_1Shoot.md)** 
     * **class [ShootSystem](Classes/classecs_1_1ShootSystem.md)** 
     * **class [Sound](Classes/classecs_1_1Sound.md)** 
@@ -49,4 +52,4 @@ title: Classes
 
 -------------------------------
 
-Updated on 2025-12-13 at 18:06:21 +0000
+Updated on 2025-12-14 at 20:10:14 +0000

@@ -19,6 +19,7 @@ title: ecs
 | class | **[ecs::Sound](Classes/classecs_1_1Sound.md)**  |
 | class | **[ecs::ShootSystem](Classes/classecs_1_1ShootSystem.md)**  |
 | class | **[ecs::Shoot](Classes/classecs_1_1Shoot.md)**  |
+| class | **[ecs::ResourceManager](Classes/classecs_1_1ResourceManager.md)**  |
 | class | **[ecs::RenderSystem](Classes/classecs_1_1RenderSystem.md)**  |
 | class | **[ecs::Position](Classes/classecs_1_1Position.md)**  |
 | class | **[ecs::PlayerAnimationSystem](Classes/classecs_1_1PlayerAnimationSystem.md)**  |
@@ -38,6 +39,8 @@ title: ecs
 | class | **[ecs::Component](Classes/classecs_1_1Component.md)**  |
 | class | **[ecs::CollisionSystem](Classes/classecs_1_1CollisionSystem.md)**  |
 | class | **[ecs::Collision](Classes/classecs_1_1Collision.md)**  |
+| class | **[ecs::BackgroundSystem](Classes/classecs_1_1BackgroundSystem.md)** <br>[System](Classes/classecs_1_1System.md) responsible for the infinite scrolling logic of the background.  |
+| class | **[ecs::Background](Classes/classecs_1_1Background.md)** <br>A component handling background logic, specifically for scrolling/looping effects.  |
 | class | **[ecs::Animation](Classes/classecs_1_1Animation.md)**  |
 
 ## Types
@@ -58,11 +61,9 @@ title: ecs
 | | **[TEST](Namespaces/namespaceecs.md#function-test)**(EcsManagerTest , GetHealth ) |
 | | **[TEST](Namespaces/namespaceecs.md#function-test)**(EcsManagerTest , SetHealth ) |
 | | **[TEST](Namespaces/namespaceecs.md#function-test)**(EcsManagerTest , SetNegHealth ) |
-| | **[TEST](Namespaces/namespaceecs.md#function-test)**(EcsManagerTest , SetDecimalHealth ) |
 | | **[TEST](Namespaces/namespaceecs.md#function-test)**(EcsManagerTest , GetPosition ) |
 | | **[TEST](Namespaces/namespaceecs.md#function-test)**(EcsManagerTest , SetPosition ) |
 | | **[TEST](Namespaces/namespaceecs.md#function-test)**(SpriteTest , GetSpriteReturnsReference ) |
-| | **[TEST](Namespaces/namespaceecs.md#function-test)**(SpriteTest , InvalidTextureDoesNotCrash ) |
 
 ## Types Documentation
 
@@ -167,16 +168,6 @@ TEST(
 ```cpp
 TEST(
     EcsManagerTest ,
-    SetDecimalHealth 
-)
-```
-
-
-### function TEST
-
-```cpp
-TEST(
-    EcsManagerTest ,
     GetPosition 
 )
 ```
@@ -202,20 +193,10 @@ TEST(
 ```
 
 
-### function TEST
-
-```cpp
-TEST(
-    SpriteTest ,
-    InvalidTextureDoesNotCrash 
-)
-```
-
-
 
 
 
 
 -------------------------------
 
-Updated on 2025-12-13 at 18:06:21 +0000
+Updated on 2025-12-14 at 20:10:14 +0000

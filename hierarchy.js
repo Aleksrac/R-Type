@@ -5,6 +5,7 @@ var hierarchy =
     ] ],
     [ "ecs::Component", "classecs_1_1Component.html", [
       [ "ecs::Animation", "classecs_1_1Animation.html", null ],
+      [ "ecs::Background", "classecs_1_1Background.html", null ],
       [ "ecs::Collision", "classecs_1_1Collision.html", null ],
       [ "ecs::Destroy", "classecs_1_1Destroy.html", null ],
       [ "ecs::DummyComponent", "classecs_1_1DummyComponent.html", null ],
@@ -23,8 +24,10 @@ var hierarchy =
     [ "server::Game", "classserver_1_1Game.html", null ],
     [ "server::Level", "classserver_1_1Level.html", null ],
     [ "server::LevelManager", "classserver_1_1LevelManager.html", null ],
+    [ "ecs::ResourceManager", "classecs_1_1ResourceManager.html", null ],
     [ "server::Server", "classserver_1_1Server.html", null ],
     [ "ecs::System", "classecs_1_1System.html", [
+      [ "ecs::BackgroundSystem", "classecs_1_1BackgroundSystem.html", null ],
       [ "ecs::CollisionSystem", "classecs_1_1CollisionSystem.html", null ],
       [ "ecs::DestroySystem", "classecs_1_1DestroySystem.html", null ],
       [ "ecs::DummySystem", "classecs_1_1DummySystem.html", null ],

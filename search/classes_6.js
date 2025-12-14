@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['inputplayer_0',['InputPlayer',['../classecs_1_1InputPlayer.html',1,'ecs']]],
-  ['inputsystem_1',['InputSystem',['../classecs_1_1InputSystem.html',1,'ecs']]]
+  ['health_0',['Health',['../classecs_1_1Health.html',1,'ecs']]],
+  ['healthsystem_1',['HealthSystem',['../classecs_1_1HealthSystem.html',1,'ecs']]]
 ];

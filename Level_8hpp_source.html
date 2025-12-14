@@ -118,40 +118,32 @@ $(document).ready(function(){initNavTree('Level_8hpp_source.html',''); initResiz
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>      <span class="keyword">public</span>:</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>        <a class="code hl_class" href="classserver_1_1Level.html">Level</a>(</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>            uint8_t levelId,</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>            std::string enemySpritePath,</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>            uint8_t enemySpawnRate,</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>            <span class="keywordtype">bool</span> isBossPresent,</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>            std::string bossSpritePath,</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>            uint32_t bossApparitionTime</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        );</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        [[nodiscard]] uint8_t <a class="code hl_function" href="classserver_1_1Level.html#aa638ced9d5d35a996557747ac118bfeb">getEnemySpawnRate</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        [[nodiscard]] <span class="keywordtype">bool</span> <a class="code hl_function" href="classserver_1_1Level.html#adf4fb033ccba40a52e39a611541fa24a">getIsBossPresent</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        [[nodiscard]] uint32_t <a class="code hl_function" href="classserver_1_1Level.html#a30536ed2ddc227d5346b3a810b25f9b3">getBossApparitionTime</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>        [[nodiscard]] std::string <a class="code hl_function" href="classserver_1_1Level.html#a6438a6cafe104631ff46c01f469d5c95">getEnemySpritePath</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        [[nodiscard]] std::string <a class="code hl_function" href="classserver_1_1Level.html#a9fde596365e214b5239edf6c52c1cd78">getBossSpritePath</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        [[nodiscard]] uint8_t <a class="code hl_function" href="classserver_1_1Level.html#ab2eb9717922f0ab21e9c36738872cb6b">getLevelId</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>      <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        uint8_t _levelId;</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        uint8_t _enemySpawnRate;</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        <span class="keywordtype">bool</span> _isBossPresent;</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        uint32_t _bossApparitionTime;</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        std::string _enemySpritePath;</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        std::string _bossSpritePath;</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    };</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>            uint8_t enemySpawnRate,</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>            <span class="keywordtype">bool</span> isBossPresent,</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>            uint32_t bossApparitionTime</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        );</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        [[nodiscard]] uint8_t <a class="code hl_function" href="classserver_1_1Level.html#aa638ced9d5d35a996557747ac118bfeb">getEnemySpawnRate</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        [[nodiscard]] <span class="keywordtype">bool</span> <a class="code hl_function" href="classserver_1_1Level.html#adf4fb033ccba40a52e39a611541fa24a">getIsBossPresent</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        [[nodiscard]] uint32_t <a class="code hl_function" href="classserver_1_1Level.html#a30536ed2ddc227d5346b3a810b25f9b3">getBossApparitionTime</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        [[nodiscard]] uint8_t <a class="code hl_function" href="classserver_1_1Level.html#ab2eb9717922f0ab21e9c36738872cb6b">getLevelId</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>      <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        uint8_t _levelId;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        uint8_t _enemySpawnRate;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        <span class="keywordtype">bool</span> _isBossPresent;</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        uint32_t _bossApparitionTime;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    };</div>
 </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>}<span class="comment">// namespace server</span></div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="preprocessor">#endif</span><span class="comment">// R_TYPE_LEVEL_HPP</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>}<span class="comment">// namespace server</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="preprocessor">#endif</span><span class="comment">// R_TYPE_LEVEL_HPP</span></div>
 <div class="ttc" id="aclassserver_1_1Level_html"><div class="ttname"><a href="classserver_1_1Level.html">server::Level</a></div><div class="ttdef"><b>Definition</b> Level.hpp:16</div></div>
-<div class="ttc" id="aclassserver_1_1Level_html_a30536ed2ddc227d5346b3a810b25f9b3"><div class="ttname"><a href="classserver_1_1Level.html#a30536ed2ddc227d5346b3a810b25f9b3">server::Level::getBossApparitionTime</a></div><div class="ttdeci">uint32_t getBossApparitionTime() const</div><div class="ttdef"><b>Definition</b> Level.cpp:38</div></div>
-<div class="ttc" id="aclassserver_1_1Level_html_a6438a6cafe104631ff46c01f469d5c95"><div class="ttname"><a href="classserver_1_1Level.html#a6438a6cafe104631ff46c01f469d5c95">server::Level::getEnemySpritePath</a></div><div class="ttdeci">std::string getEnemySpritePath() const</div><div class="ttdef"><b>Definition</b> Level.cpp:43</div></div>
-<div class="ttc" id="aclassserver_1_1Level_html_a9fde596365e214b5239edf6c52c1cd78"><div class="ttname"><a href="classserver_1_1Level.html#a9fde596365e214b5239edf6c52c1cd78">server::Level::getBossSpritePath</a></div><div class="ttdeci">std::string getBossSpritePath() const</div><div class="ttdef"><b>Definition</b> Level.cpp:48</div></div>
-<div class="ttc" id="aclassserver_1_1Level_html_aa638ced9d5d35a996557747ac118bfeb"><div class="ttname"><a href="classserver_1_1Level.html#aa638ced9d5d35a996557747ac118bfeb">server::Level::getEnemySpawnRate</a></div><div class="ttdeci">uint8_t getEnemySpawnRate() const</div><div class="ttdef"><b>Definition</b> Level.cpp:28</div></div>
-<div class="ttc" id="aclassserver_1_1Level_html_ab2eb9717922f0ab21e9c36738872cb6b"><div class="ttname"><a href="classserver_1_1Level.html#ab2eb9717922f0ab21e9c36738872cb6b">server::Level::getLevelId</a></div><div class="ttdeci">uint8_t getLevelId() const</div><div class="ttdef"><b>Definition</b> Level.cpp:53</div></div>
-<div class="ttc" id="aclassserver_1_1Level_html_adf4fb033ccba40a52e39a611541fa24a"><div class="ttname"><a href="classserver_1_1Level.html#adf4fb033ccba40a52e39a611541fa24a">server::Level::getIsBossPresent</a></div><div class="ttdeci">bool getIsBossPresent() const</div><div class="ttdef"><b>Definition</b> Level.cpp:33</div></div>
-<div class="ttc" id="anamespaceserver_html"><div class="ttname"><a href="namespaceserver.html">server</a></div><div class="ttdef"><b>Definition</b> Game.cpp:10</div></div>
+<div class="ttc" id="aclassserver_1_1Level_html_a30536ed2ddc227d5346b3a810b25f9b3"><div class="ttname"><a href="classserver_1_1Level.html#a30536ed2ddc227d5346b3a810b25f9b3">server::Level::getBossApparitionTime</a></div><div class="ttdeci">uint32_t getBossApparitionTime() const</div><div class="ttdef"><b>Definition</b> Level.cpp:34</div></div>
+<div class="ttc" id="aclassserver_1_1Level_html_aa638ced9d5d35a996557747ac118bfeb"><div class="ttname"><a href="classserver_1_1Level.html#aa638ced9d5d35a996557747ac118bfeb">server::Level::getEnemySpawnRate</a></div><div class="ttdeci">uint8_t getEnemySpawnRate() const</div><div class="ttdef"><b>Definition</b> Level.cpp:24</div></div>
+<div class="ttc" id="aclassserver_1_1Level_html_ab2eb9717922f0ab21e9c36738872cb6b"><div class="ttname"><a href="classserver_1_1Level.html#ab2eb9717922f0ab21e9c36738872cb6b">server::Level::getLevelId</a></div><div class="ttdeci">uint8_t getLevelId() const</div><div class="ttdef"><b>Definition</b> Level.cpp:39</div></div>
+<div class="ttc" id="aclassserver_1_1Level_html_adf4fb033ccba40a52e39a611541fa24a"><div class="ttname"><a href="classserver_1_1Level.html#adf4fb033ccba40a52e39a611541fa24a">server::Level::getIsBossPresent</a></div><div class="ttdeci">bool getIsBossPresent() const</div><div class="ttdef"><b>Definition</b> Level.cpp:29</div></div>
+<div class="ttc" id="anamespaceserver_html"><div class="ttname"><a href="namespaceserver.html">server</a></div><div class="ttdef"><b>Definition</b> Game.cpp:22</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

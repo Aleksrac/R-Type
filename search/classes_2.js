@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['destroy_0',['Destroy',['../classecs_1_1Destroy.html',1,'ecs']]],
-  ['destroysystem_1',['DestroySystem',['../classecs_1_1DestroySystem.html',1,'ecs']]],
-  ['dummycomponent_2',['DummyComponent',['../classecs_1_1DummyComponent.html',1,'ecs']]],
-  ['dummysystem_3',['DummySystem',['../classecs_1_1DummySystem.html',1,'ecs']]]
+  ['collision_0',['Collision',['../classecs_1_1Collision.html',1,'ecs']]],
+  ['collisionsystem_1',['CollisionSystem',['../classecs_1_1CollisionSystem.html',1,'ecs']]],
+  ['component_2',['Component',['../classecs_1_1Component.html',1,'ecs']]]
 ];

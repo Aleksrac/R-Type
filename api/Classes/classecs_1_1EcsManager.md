@@ -19,10 +19,12 @@ title: ecs::EcsManager
 | | **[~EcsManager](Classes/classecs_1_1EcsManager.md#function-~ecsmanager)**() =default |
 | void | **[updateSystems](Classes/classecs_1_1EcsManager.md#function-updatesystems)**() |
 | void | **[setDeltaTime](Classes/classecs_1_1EcsManager.md#function-setdeltatime)**(float dt) |
+| [ResourceManager](Classes/classecs_1_1ResourceManager.md) & | **[getResourceManager](Classes/classecs_1_1EcsManager.md#function-getresourcemanager)**() |
 | template <typename T \> <br>std::vector< std::shared_ptr< [Entity](Classes/classecs_1_1Entity.md) > > | **[getEntitiesWithComponent](Classes/classecs_1_1EcsManager.md#function-getentitieswithcomponent)**() const |
 | std::vector< std::shared_ptr< [Entity](Classes/classecs_1_1Entity.md) > > & | **[getEntities](Classes/classecs_1_1EcsManager.md#function-getentities)**() |
 | float | **[getDeltaTime](Classes/classecs_1_1EcsManager.md#function-getdeltatime)**() const |
 | std::shared_ptr< [Entity](Classes/classecs_1_1Entity.md) > | **[createEntity](Classes/classecs_1_1EcsManager.md#function-createentity)**() |
+| std::shared_ptr< [Entity](Classes/classecs_1_1Entity.md) > | **[createEntity](Classes/classecs_1_1EcsManager.md#function-createentity)**(std::size_t id) |
 | template <typename T ,typename... Args\> <br>std::shared_ptr< T > | **[addSystem](Classes/classecs_1_1EcsManager.md#function-addsystem)**(Args &&... args) |
 | template <typename T \> <br>std::shared_ptr< T > | **[addSystem](Classes/classecs_1_1EcsManager.md#function-addsystem)**() |
 | | **[EcsManager](Classes/classecs_1_1EcsManager.md#function-ecsmanager)**() =default |
@@ -49,6 +51,13 @@ void updateSystems()
 void setDeltaTime(
     float dt
 )
+```
+
+
+### function getResourceManager
+
+```cpp
+ResourceManager & getResourceManager()
 ```
 
 
@@ -81,6 +90,15 @@ std::shared_ptr< Entity > createEntity()
 ```
 
 
+### function createEntity
+
+```cpp
+std::shared_ptr< Entity > createEntity(
+    std::size_t id
+)
+```
+
+
 ### function addSystem
 
 ```cpp
@@ -109,4 +127,4 @@ EcsManager() =default
 
 -------------------------------
 
-Updated on 2025-12-13 at 18:06:21 +0000
+Updated on 2025-12-14 at 20:10:14 +0000

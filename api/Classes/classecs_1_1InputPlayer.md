@@ -22,6 +22,7 @@ Inherits from [ecs::Component](Classes/classecs_1_1Component.md)
 | void | **[setUp](Classes/classecs_1_1InputPlayer.md#function-setup)**(bool up) |
 | void | **[setSpacebar](Classes/classecs_1_1InputPlayer.md#function-setspacebar)**(bool spacebar) |
 | void | **[setRight](Classes/classecs_1_1InputPlayer.md#function-setright)**(bool right) |
+| void | **[setR](Classes/classecs_1_1InputPlayer.md#function-setr)**(bool r) |
 | void | **[setLeft](Classes/classecs_1_1InputPlayer.md#function-setleft)**(bool left) |
 | void | **[setDown](Classes/classecs_1_1InputPlayer.md#function-setdown)**(bool down) |
 | bool | **[getUp](Classes/classecs_1_1InputPlayer.md#function-getup)**() const |
@@ -73,6 +74,15 @@ void setSpacebar(
 ```cpp
 void setRight(
     bool right
+)
+```
+
+
+### function setR
+
+```cpp
+void setR(
+    bool r
 )
 ```
 
@@ -139,4 +149,4 @@ InputPlayer() =default
 
 -------------------------------
 
-Updated on 2025-12-13 at 18:06:21 +0000
+Updated on 2025-12-14 at 20:10:14 +0000
