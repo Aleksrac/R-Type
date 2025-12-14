@@ -6,6 +6,7 @@
 * [User guide](USER_GUIDE.md)
 
 ## Technical documentation
+* [Comparative study](COMPARATIVE_STUDY.md)
 * [API Reference](api/index_classes.md)
 * [Protocol](PROTOCOL.md)
 * [Architecture](ARCHITECTURE.md)
