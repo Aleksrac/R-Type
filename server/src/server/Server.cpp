@@ -100,28 +100,27 @@ namespace server {
         return 0;
     }
 
-    int Server::broadcastTcp(const cmn::CustomPacket& packet) const
+    void Server::broadcastTcp(const cmn::CustomPacket& packet) const
     {
         for (const auto &client : _socketVector) {
             if (sendTcp(packet, *client) == 1) {
-                return 1;
+                std::cerr << "[ERROR]: failed to send tcp message to a player" << "\n";
             }
         }
-        return 0;
     }
 
-    int Server::broadcastUdp(const cmn::CustomPacket& packet, uint16_t port)
+    void Server::broadcastUdp(const cmn::CustomPacket& packet)
     {
         for (const auto &client : _socketVector) {
             auto ip = client->getRemoteAddress();
-            if (!ip.has_value()) {
+            const auto clientPort = client->getRemotePort();
+            if (!ip.has_value() || clientPort == 0) {
                 continue;
             }
-            if (sendUdp(packet, ip.value(), port) == 1) {
-                return 1;
+            if (sendUdp(packet, ip.value(), clientPort) == 1) {
+                std::cerr << "[ERROR]: failed to send udp message to a player" << "\n";
             }
         }
-        return 0;
     }
 
     void Server::_acceptConnection()
@@ -154,6 +153,18 @@ namespace server {
         cmn::CustomPacket packet;
 
         while (true) {
+            auto sendPacket = _sharedData->getUdpPacketToSend();
+            if (sendPacket.has_value()) {
+                cmn::CustomPacket packetUdp;
+                packetUdp << sendPacket.value();
+                broadcastUdp(packetUdp);
+            }
+            auto send = _sharedData->getTcpPacketToSend();
+            if (send.has_value()) {
+                cmn::CustomPacket packetTcp;
+                packetTcp << send.value();
+                broadcastTcp(packetTcp);
+            }
             if (_udpSocket.receive(packet, sender, port) != sf::Socket::Status::Done) {
                 std::cerr << "[ERROR]: failed to receive UDP packet" << "\n";
                 continue;

@@ -28,9 +28,8 @@ namespace server {
 
         int sendUdp(cmn::CustomPacket packet, const sf::IpAddress& clientIp, uint16_t port);
         static int sendTcp(cmn::CustomPacket packet, sf::TcpSocket& clientSocket);
-
-        int broadcastUdp(const cmn::CustomPacket& packet, uint16_t port);
-        int broadcastTcp(const cmn::CustomPacket& packet)const;
+        void broadcastUdp(const cmn::CustomPacket& packet);
+        void broadcastTcp(const cmn::CustomPacket& packet)const;
 
       private:
         sf::TcpListener _listener;
