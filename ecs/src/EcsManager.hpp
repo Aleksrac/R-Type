@@ -8,6 +8,7 @@
 #ifndef ECSMANAGER_HPP
     #define ECSMANAGER_HPP
 #include "Entity.hpp"
+#include "ResourceManager.hpp"
 #include "systems/System.hpp"
 #include <memory>
 #include <vector>
@@ -23,6 +24,7 @@ class EcsManager {
     void updateSystems();
     void setDeltaTime(float dt);
     float getDeltaTime() const;
+    ResourceManager &getResourceManager();
     [[nodiscard]] std::shared_ptr<Entity> getEntityById(uint64_t id) const;
 
     template <typename T, typename... Args>
@@ -53,6 +55,8 @@ class EcsManager {
     float _deltaTime = 0.0f;
     std::vector<std::shared_ptr<System>> _systems;
     std::vector<std::shared_ptr<Entity>> _entities;
+
+    ResourceManager _resourceManager;
     size_t _nextEntityId = 0;
 };
 }

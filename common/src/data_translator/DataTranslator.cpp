@@ -78,16 +78,17 @@ namespace cmn {
         }
         entity->addComponent<ecs::Position>(newEntity.posX, newEntity.posY);
         if (static_cast<EntityType>(newEntity.type) == EntityType::Player) {
-            entity->addComponent<ecs::Sprite>(std::string(playerSpriteSheet), playerSpriteScale);
+
+            entity->addComponent<ecs::Sprite>( ecs.getResourceManager().getTexture(std::string(playerSpriteSheet)), playerSpriteScale);
             entity->addComponent<ecs::PlayerAnimation>();
             entity->addComponent<ecs::Sound>(std::string(playerShootSound));
         }
         if (static_cast<EntityType>(newEntity.type) == EntityType::Monster) {
-            entity->addComponent<ecs::Sprite>(std::string(monsterSpriteSheet), monsterSpriteScale);
+            entity->addComponent<ecs::Sprite>( ecs.getResourceManager().getTexture(std::string(monsterSpriteSheet)), monsterSpriteScale);
             entity->addComponent<ecs::Animation>(monsterAnimationSize, monsterAnimationOffset, monsterAnimationNumberFrame);
         }
         if (static_cast<EntityType>(newEntity.type) == EntityType::PlayerProjectile) {
-            entity->addComponent<ecs::Sprite>(std::string(playerProjectileSpriteSheet), playerProjectileScale);
+            entity->addComponent<ecs::Sprite>( ecs.getResourceManager().getTexture(std::string(playerProjectileSpriteSheet)), playerProjectileScale);
             entity->addComponent<ecs::Animation>(playerProjectileAnimationSize, playerProjectileAnimationOffset, playerProjectileAnimationNumberFrame);
         }
     }
