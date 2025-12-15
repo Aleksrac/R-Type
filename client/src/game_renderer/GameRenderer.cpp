@@ -177,7 +177,6 @@ namespace client {
             _handleEvents();
             if (_isRunning) {
                 if (elapsedTime > inputCooldown) {
-                    std::cout << "yooooooooooooooooooooo" << "\n";
                     _updateGame();
                     inputClock.restart();
                     elapsedTime = 0;
