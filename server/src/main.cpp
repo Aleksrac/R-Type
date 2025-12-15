@@ -20,7 +20,6 @@ int main(int argc, char **argv)
 
     auto data = std::make_shared<cmn::SharedData>();
     server::Server server(data);
-    std::cout << data.use_count() << "\n";
 
     uint16_t const port = parser.getPort();
     if (server.bindPorts(port) != 0) {

@@ -55,7 +55,7 @@ namespace server {
         sf::Clock enemyClock;
         unsigned const seed = std::chrono::system_clock::now().time_since_epoch().count();
         std::minstd_rand0 generator(seed);
-        float elapsedTime = 0;
+        float elapsedTime = 0.0F;
         constexpr float frameTimer = 0.016F;
 
         while (true) {
@@ -71,10 +71,9 @@ namespace server {
             _checkSpaceBar();
 
             if (elapsedTime > frameTimer) {
+                fpsClock.restart();
                 _sendPositions();
                 _sendDestroy();
-                elapsedTime = 0;
-                fpsClock.restart();
             }
             _ecs.setDeltaTime(deltaTime);
             _ecs.updateSystems();
