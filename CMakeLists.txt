@@ -39,4 +39,13 @@ add_subdirectory(ecs)
 add_subdirectory(common)
 add_subdirectory(client)
 
+# Force l'exécutable serveur à la racine
+set_target_properties(r-type_server PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}"
+)
+
+# Force l'exécutable client à la racine
+set_target_properties(r-type_client PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}"
+)
 enable_testing()

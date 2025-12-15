@@ -26,11 +26,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y cmake build-essential clang-tidy git
 
-      - name: Install system dependencies (Linux)
-        if: runner.os == 'Linux'
+      - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libx11-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libflac-dev libvorbis-dev
+          sudo apt-get install -y xvfb libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
 
       - name: Configure CMake
         run: cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
@@ -51,12 +50,11 @@ jobs:
         run: |
           EXIT_CODE=0
 
-          build/server/tests/rtype_server_tests || EXIT_CODE=1
-          build/common/test/rtype_common_tests || EXIT_CODE=1
-          build/ecs/tests/rtype_ecs_tests || EXIT_CODE=1
+          xvfb-run --auto-servernum build/server/tests/rtype_server_tests || EXIT_CODE=1
+          xvfb-run --auto-servernum build/common/test/rtype_common_tests || EXIT_CODE=1
+          xvfb-run --auto-servernum build/ecs/tests/rtype_ecs_tests || EXIT_CODE=1
 
           exit $EXIT_CODE
-
   mirror:
     name: Mirror Repository
     runs-on: ubuntu-latest
