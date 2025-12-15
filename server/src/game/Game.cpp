@@ -44,11 +44,6 @@ namespace server {
         _sharedData->addTcpPacketToSend(cmn::PacketFactory::createStartGamePacket());
         _sendPlayerEntities();
         _initEcsManager();
-
-        for (auto it = _playerIdEntityMap.begin(); it != _playerIdEntityMap.end(); it++) {
-            std::cout << "ID: " << it->first << " ENTITY: " << it->second << "\n";
-        }
-
         _startGame();
     }
 
