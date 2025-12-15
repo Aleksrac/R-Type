@@ -100,7 +100,7 @@ namespace client {
         }
     }
 
-    void GameRenderer::_checkPlayerInput() const
+    void GameRenderer::_checkPlayerInput()
     {
         static const std::array<
             std::pair<cmn::Keys, std::function<bool(const ecs::InputPlayer&)>>,
@@ -148,33 +148,46 @@ namespace client {
         }
     }
 
-    void GameRenderer::_updateLobby() const
+    void GameRenderer::_updateLobby()
     {
         _checkPlayerInput();
     }
 
-    void GameRenderer::_updateGame() const
+    void GameRenderer::_updateGame()
     {
+        // if (_inputClock.getElapsedTime().asSeconds() < _inputCooldown) {
+        //     return;
+        // }
         _checkPlayerInput();
+        //_inputClock.restart();
     }
 
     void GameRenderer::run()
     {
+        sf::Clock inputClock;
+        constexpr float inputCooldown = 0.016f;
+        float elapsedTime = 0;
+
         _initEcsSystem();
         _initBackground();
         _initKeyboard();
-
         while (_window.isOpen()) {
-            const float deltaTime = clock.restart().asSeconds();
+            const float deltaTime = _clock.restart().asSeconds();
             _updateNetwork();
             _handleEvents();
             if (_isRunning) {
-                _updateGame();
+                if (elapsedTime > inputCooldown) {
+                    std::cout << "yooooooooooooooooooooo" << "\n";
+                    _updateGame();
+                    inputClock.restart();
+                    elapsedTime = 0;
+                }
             } else {
                 _updateLobby();
             }
             _ecs.setDeltaTime(deltaTime);
             _ecs.updateSystems();
+            elapsedTime = inputClock.getElapsedTime().asSeconds();
         }
         _window.close();
     }

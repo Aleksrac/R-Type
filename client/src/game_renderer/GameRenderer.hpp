@@ -24,7 +24,7 @@ namespace client {
         ecs::EcsManager _ecs;
         std::shared_ptr<cmn::SharedData> _sharedData;
         sf::RenderWindow _window;
-        sf::Clock clock;
+        sf::Clock _clock;
         sf::Clock enemyClock;
         cmn::DataTranslator _translator{};
         std::shared_ptr<ecs::Entity> _keyboard;
@@ -33,10 +33,10 @@ namespace client {
         void _initEcsSystem();
         void _initBackground();
         void _initKeyboard();
-        void _checkPlayerInput() const;
+        void _checkPlayerInput();
         void _updateNetwork();
-        void _updateLobby() const;
-        void _updateGame() const;
+        void _updateLobby();
+        void _updateGame();
 
         bool _isRunning = false;
         uint32_t _playerId = 0;
