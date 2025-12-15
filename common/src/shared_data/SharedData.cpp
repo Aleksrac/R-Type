@@ -11,6 +11,7 @@
 */
 
 #include "SharedData.hpp"
+#include <iostream>
 
 namespace cmn {
 
@@ -21,6 +22,7 @@ namespace cmn {
     void SharedData::addUdpReceivedPacket(const packetData &data)
     {
         std::lock_guard const lock(_mutex);
+//        std::cout << _udpReceivedQueue.size() << "\n";
         _udpReceivedQueue.push(data);
     }
 
