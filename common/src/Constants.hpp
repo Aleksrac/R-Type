@@ -24,8 +24,8 @@ namespace cmn {
     constexpr float playerHealth = 100;
     constexpr sf::Vector2f playerSpriteScale = {2.0F, 2.0F};
     constexpr std::string_view playerSpriteSheet = "./assets/r-typesheet42.gif";
-    constexpr uint8_t playerHeight= 17;
-    constexpr uint8_t playerWidth = 33;
+    constexpr uint8_t playerHeight= 34;
+    constexpr uint8_t playerWidth = 66;
     constexpr uint8_t playerDamage = 50;
     constexpr float playerCoolDown = 0.5;
     constexpr std::string_view playerShootSound = "./assets/sound/shoot.wav";
