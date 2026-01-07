@@ -175,4 +175,60 @@ namespace cmn {
         }
         return ids;
     }
+
+    void SharedData::deleteLobby(const int lobbyId)
+    {
+        const std::lock_guard lock(_mutex);
+
+        const auto it = _mapLobbiesPlayers.find(lobbyId);
+        if (it == _mapLobbiesPlayers.end()) {
+            std::cout << "Trying to delete invalid lobbyId in player map" << "\n";
+        }
+        _mapLobbiesPlayers.erase(it);
+        const auto itReceived = _mapLobbiesPacketListReceived.find(lobbyId);
+        if (itReceived == _mapLobbiesPacketListReceived.end()) {
+            std::cout << "Trying to delete invalid lobbyId in received map" << "\n";
+        }
+        _mapLobbiesPacketListSend.erase(itReceived);
+        const auto itSend = _mapLobbiesPacketListSend.find(lobbyId);
+        if (itSend == _mapLobbiesPacketListSend.end()) {
+            std::cout << "Trying to delete invalid lobbyId in send map" << "\n";
+        }
+        _mapLobbiesPacketListSend.erase(itSend);
+    }
+
+    void SharedData::addPlayerToLobby(int playerId, int lobbyId)
+    {
+        const std::lock_guard lock(_mutex);
+        _mapLobbiesPlayers[lobbyId].emplace_back(playerId);
+    }
+
+    void SharedData::deletePlayerToLobby(int playerId, int lobbyId)
+    {
+        const std::lock_guard lock(_mutex);
+        auto it = _mapLobbiesPlayers.find(lobbyId);
+        if (it == _mapLobbiesPlayers.end()) {
+            std::cout << "Trying to delete player in invalid lobbyId" << "\n";
+        }
+        _mapLobbiesPlayers[lobbyId].remove(playerId);
+    }
+
+    void SharedData::addMessageUDPToSend(int lobbyId, CustomPacket &message)
+    {
+        const std::lock_guard lock(_mutex);
+        _mapLobbiesPacketListReceived[lobbyId].push(message);
+    }
+
+    std::optional<CustomPacket> SharedData::getMessageUDPToSend(int lobbyId)
+    {
+        const std::lock_guard lock(_mutex);
+        if (_mapLobbiesPacketListReceived[lobbyId].empty()) {
+            return std::nullopt;
+        }
+
+        auto packet = _mapLobbiesPacketListSend[lobbyId].front();
+        _mapLobbiesPacketListSend[lobbyId].pop();
+        return packet;
+    }
+
 }

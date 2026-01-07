@@ -11,10 +11,12 @@
 #include "custom_packet/CustomPacket.hpp"
 #include "packet_data/PacketData.hpp"
 #include <SFML/Network/IpAddress.hpp>
+#include <map>
 #include <mutex>
 #include <optional>
 #include <queue>
 #include <unordered_map>
+#include <list>
 
 namespace cmn {
     /**
@@ -93,12 +95,24 @@ namespace cmn {
             [[nodiscard]] size_t getPlayerListSize();
             [[nodiscard]] std::vector<int> getAllPlayerIds();
 
+            void deleteLobby(int lobbyId);
+
+            void addPlayerToLobby(int playerId, int lobbyId);
+            void deletePlayerToLobby(int playerId, int lobbyId);
+
+            void addMessageUDPToSend(int lobbyId, CustomPacket &message);
+            std::optional<CustomPacket> getMessageUDPToSend(int lobbyId);
+
         private:
             std::queue<packetData> _udpReceivedQueue; ///< Queue for received packets (to be processed).
             std::queue<CustomPacket> _udpSendQueue;     ///< Queue for packets to be sent.
             std::queue<packetData> _tcpReceivedQueue;  ///< Queue for packets to be sent.
             std::queue<CustomPacket> _tcpSendQueue;     ///< Queue for packets to be sent.
             std::mutex _mutex;                     ///< Mutex for synchronizing data access.
+
+            std::map<int, std::queue<CustomPacket>> _mapLobbiesPacketListSend;
+            std::map<int, std::queue<CustomPacket>> _mapLobbiesPacketListReceived;
+            std::map<int, std::list<int>> _mapLobbiesPlayers;
             /**
              * @brief List of connected players.
              * The key is the player ID (int), the value is a pair (port, IP address).
