@@ -16,6 +16,7 @@ namespace server {
     {
       public:
         void addLevel(Level &level);
+        void loadLevelFromFolder();
         Level &getCurrentLevel();
         void changeToNextLevel();
         void setCurrentLevelId(uint8_t id);

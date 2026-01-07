@@ -6,12 +6,26 @@
 */
 
 #include "LevelManager.hpp"
+#include "parser/LevelParser.hpp"
+#include <filesystem>
 
 namespace server {
 
     void LevelManager::addLevel(Level &level)
     {
         _levels.push_back(level);
+    }
+
+    void LevelManager::loadLevelFromFolder()
+    {
+        LevelParser parser;
+
+        for (const auto& entry : std::filesystem::directory_iterator(cmn::folderLevels)) {
+            if (std::filesystem::is_regular_file(entry.path())) {
+                const Level level = parser.createLevel(cmn::folderLevels + '/' + entry.path().filename().string());
+                _levels.push_back(level);
+            }
+        }
     }
 
     Level &LevelManager::getCurrentLevel()
