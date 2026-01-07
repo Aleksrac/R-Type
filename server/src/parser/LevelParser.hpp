@@ -1,0 +1,34 @@
+/*
+** EPITECH PROJECT, 2026
+** R_Type
+** File description:
+** LevelParser
+*/
+
+
+#ifndef R_TYPE_LEVELPARSER_HPP
+#define R_TYPE_LEVELPARSER_HPP
+#include "level/Level.hpp"
+#include <libconfig.h++>
+#include <unordered_set>
+
+namespace server {
+    class LevelParser
+    {
+        public:
+            LevelParser() = default;
+            Level createLevel(const std::string &fileConfigLevel);
+        private:
+            void _parsePrerequisites(const libconfig::Setting& root, Level &newLevel);
+            void _parseWaves(const libconfig::Setting& root, Level &newLevel);
+            void _parseBoss(const libconfig::Setting& root, Level &newLevel);
+            void _checkIdAExists(const int id);
+            void _isValidEnemyType(const std::string& type);
+            void _isValidBossType(const std::string& type);
+            std::unordered_set<int> _idAlreadyExists;
+    };
+}
+
+
+
+#endif// R_TYPE_LEVELPARSER_HPP
