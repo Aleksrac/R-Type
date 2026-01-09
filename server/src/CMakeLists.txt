@@ -13,7 +13,6 @@ add_library(r-type_server_lib
         parser/LevelParser.hpp
         level/TmpEnemy.hpp
 )
-target_link_libraries(r-type_server_lib PRIVATE config++)
 target_include_directories(r-type_server_lib PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
@@ -21,6 +20,7 @@ target_include_directories(r-type_server_lib PUBLIC
 target_link_libraries(r-type_server_lib
         PUBLIC
         SFML::Network
+        config++
         r-type_ecs_lib
         r-type_common_lib
 )
@@ -40,10 +40,4 @@ add_executable(r-type_server
         level_manager/LevelManager.cpp
         level_manager/LevelManager.hpp
 )
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(LIBCONFIG REQUIRED libconfig++)
-
-target_include_directories(r-type_server PRIVATE ${LIBCONFIG_INCLUDE_DIRS})
-target_link_libraries(r-type_server PRIVATE ${LIBCONFIG_LIBRARIES})
-
 target_link_libraries(r-type_server PRIVATE r-type_server_lib r-type_ecs_lib r-type_common_lib)
