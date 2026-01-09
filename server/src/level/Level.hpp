@@ -34,8 +34,9 @@ namespace server {
         void setBoss(std::string boss, uint32_t healthBoss);
         [[nodiscard]] std::pair <std::string, uint32_t> getBoss() const;
         void addWave(uint16_t time, std::list<tmpEnemy> enemies);
+        [[nodiscard]] std::list <std::pair <uint16_t, std::list<tmpEnemy>>> getWaves() const;
       private:
-        uint8_t _levelId;
+        uint8_t _levelId = 0;
         uint8_t _enemySpawnRate;
         bool _isBossPresent = false;
         std::string _nameLevel;

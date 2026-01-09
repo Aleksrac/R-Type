@@ -81,5 +81,10 @@ namespace server {
         _waves.emplace_back(time, enemies);
     }
 
+    std::list<std::pair<uint16_t, std::list<tmpEnemy>>> Level::getWaves() const
+    {
+        return _waves;
+    }
+
 
 }// namespace server
