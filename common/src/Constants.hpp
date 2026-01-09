@@ -57,7 +57,7 @@ namespace cmn {
     constexpr uint16_t windowWidth = 1920;
     constexpr uint16_t windowHeight = 1080;
 
-    constexpr std::string folderLevels = "Levels";
+    constexpr std::string_view folderLevels = "Levels";
     constexpr std::array<std::string_view, 2> nameTypeEnemies = {"basic_enemy", "fast_enemy"};
     constexpr std::array<std::string_view, 2> nameTypeBoss = {"boss_type_1", "boss_type_2"};
 }

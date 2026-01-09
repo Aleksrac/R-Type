@@ -19,11 +19,12 @@ namespace server {
     void LevelManager::loadLevelFromFolder()
     {
         LevelParser parser;
+        const std::string nameFolder = static_cast<std::string>(cmn::folderLevels);
 
         for (const auto& entry : std::filesystem::directory_iterator(cmn::folderLevels)) {
             if (std::filesystem::is_regular_file(entry.path())) {
                 Level level;
-                if (!parser.createLevel(cmn::folderLevels + '/' + entry.path().filename().string(), level)) {
+                if (!parser.createLevel(nameFolder + '/' + entry.path().filename().string(), level)) {
                     continue;
                 }
                 _levels.push_back(level);
@@ -50,6 +51,7 @@ namespace server {
     {
         bool found = false;
         uint8_t nextId = 0;
+        uint8_t tmpCurrent = _currentLevelId;
 
         for (const auto &level : _levels) {
             uint8_t id = level.getLevelId();
@@ -61,7 +63,8 @@ namespace server {
             }
         }
         if (!found) {
-            throw std::exception();
+            _currentLevelId = tmpCurrent;
+            return;
         }
         _currentLevelId = nextId;
     }
