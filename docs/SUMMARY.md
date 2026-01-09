@@ -4,6 +4,7 @@
 
 ## Guide
 * [User guide](USER_GUIDE.md)
+* [Levels](LEVELS.md)
 
 ## Technical documentation
 * [API Reference](api/index_classes.md)
