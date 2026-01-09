@@ -22,7 +22,7 @@ namespace server {
         Level() = default;
         [[nodiscard]] uint8_t getEnemySpawnRate() const;
         [[nodiscard]] bool getIsBossPresent() const;
-        void serIsBossPresent(bool isPresent);
+        void setIsBossPresent(bool isPresent);
         [[nodiscard]] uint8_t getLevelId() const;
         void setLevelId(uint8_t levelId);
         void setNameLevel(const std::string& _nameLevel);

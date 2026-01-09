@@ -21,7 +21,7 @@ namespace server {
         return _isBossPresent;
     }
 
-    void Level::serIsBossPresent(bool isPresent)
+    void Level::setIsBossPresent(bool isPresent)
     {
         _isBossPresent = isPresent;
     }
