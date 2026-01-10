@@ -6,7 +6,7 @@
 */
 
 #include "Game.hpp"
-#include "Constants.hpp"
+#include "constants/GameConstants.hpp"
 #include "components/Collision.hpp"
 #include "components/Health.hpp"
 #include "components/InputPlayer.hpp"
@@ -23,6 +23,8 @@
 #include "systems/VelocitySystem.hpp"
 #include <algorithm>
 #include <random>
+#include "packet_disassembler/PacketDisassembler.hpp"
+#include "packet_data/PacketData.hpp"
 
 namespace server {
 
@@ -60,16 +62,16 @@ namespace server {
 
         while (true) {
             float const deltaTime = clock.restart().asSeconds();
-            std::optional<cmn::packetData> data = _sharedData->getUdpReceivedPacket();
+            std::optional<cmn::CustomPacket> packet = _sharedData->getUdpReceivedPacket();
 
-            if (data.has_value()) {
-                cmn::DataTranslator::translate(_ecs, data.value(), _playerIdEntityMap);
+            if (packet.has_value()) {
+                std::optional<cmn::packetData> data = cmn::PacketDisassembler::disassemble(packet.value());
+                if (data.has_value()) {
+                    cmn::DataTranslator::translate(_ecs, data.value(), _playerIdEntityMap);
+                }
             }
-
             _createEnemy(currentLevel, enemyClock, generator);
-
             _checkSpaceBar();
-
             if (elapsedTime > frameTimer) {
                 fpsClock.restart();
                 _sendPositions();
@@ -203,7 +205,13 @@ namespace server {
                 _createNewPlayers(_sharedData->getAllPlayerIds(), currentNbPlayerEntities);
             }
 
-            std::optional<cmn::packetData> data = _sharedData->getUdpReceivedPacket();
+            std::optional<cmn::CustomPacket> packet = _sharedData->getUdpReceivedPacket();
+
+            if (!packet.has_value()) {
+                continue;
+            }
+
+            std::optional<cmn::packetData> data = cmn::PacketDisassembler::disassemble(packet.value());
 
             if (!data.has_value()) {
                 continue;
@@ -233,10 +241,10 @@ namespace server {
     {
         constexpr uint64_t level1SpawnRate = 1;
 
-        uint8_t levelId = 1;
-        uint8_t enemySpawnRate = level1SpawnRate;
-        bool isBossPresent = false;
-        uint32_t bossApparitionTiming = 0;
+        uint8_t const levelId = 1;
+        uint8_t const enemySpawnRate = level1SpawnRate;
+        bool const isBossPresent = false;
+        uint32_t const bossApparitionTiming = 0;
 
         server::Level firstLevel(levelId, enemySpawnRate, isBossPresent, bossApparitionTiming);
 

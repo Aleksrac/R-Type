@@ -12,6 +12,7 @@
 #include "enums/EntityType.hpp"
 #include "enums/Key.hpp"
 #include "enums/KeyState.hpp"
+#include "bit_packer/BitPacker.hpp"
 
 namespace cmn {
 
