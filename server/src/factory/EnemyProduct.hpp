@@ -9,7 +9,10 @@
 #ifndef R_TYPE_ENEMYPRODUCT_HPP
 #define R_TYPE_ENEMYPRODUCT_HPP
 
+#include "Entity.hpp"
 #include "EntityProduct.hpp"
+
+#include <memory>
 
 class EnemyProduct : public EntityProduct
 {

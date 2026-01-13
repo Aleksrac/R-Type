@@ -7,6 +7,7 @@
 
 #ifndef R_TYPE_PLAYER_HPP
 #define R_TYPE_PLAYER_HPP
+#include "Entity.hpp"
 #include "EntityProduct.hpp"
 #include <iostream>
 #include <memory>

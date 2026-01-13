@@ -7,6 +7,7 @@
 
 #include "EnemyProduct.hpp"
 
+#include "Entity.hpp"
 #include "components/Collision.hpp"
 #include "components/Enemy.hpp"
 #include "components/Position.hpp"
