@@ -12,6 +12,7 @@
 #include "components/InputPlayer.hpp"
 #include "components/Position.hpp"
 #include "components/Shoot.hpp"
+#include "components/Enemy.hpp"
 #include "data_translator/DataTranslator.hpp"
 #include "packet_factory/PacketFactory.hpp"
 #include "systems/CollisionSystem.hpp"
@@ -239,16 +240,7 @@ namespace server {
 
     void Game::_initLevels()
     {
-        constexpr uint64_t level1SpawnRate = 1;
-
-        uint8_t const levelId = 1;
-        uint8_t const enemySpawnRate = level1SpawnRate;
-        bool const isBossPresent = false;
-        uint32_t const bossApparitionTiming = 0;
-
-        server::Level firstLevel(levelId, enemySpawnRate, isBossPresent, bossApparitionTiming);
-
-        _levelManager.addLevel(firstLevel);
+        _levelManager.loadLevelFromFolder();
         _levelManager.setCurrentLevelId(1);
     }
 
