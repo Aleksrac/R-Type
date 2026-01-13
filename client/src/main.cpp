@@ -6,6 +6,7 @@
 */
 
 #include "client/Client.hpp"
+#include "client_shared_data/ClientSharedData.hpp"
 #include "game_renderer/GameRenderer.hpp"
 #include "parser/Parser.hpp"
 #include "shared_data/SharedData.hpp"
@@ -20,7 +21,7 @@ int main(const int argc, char *argv[])
         return parser.checkHelp(argc, argv);
     }
 
-    auto data = std::make_shared<cmn::SharedData>();
+    auto data = std::make_shared<client::ClientSharedData>();
 
     client::Client client(data);
 

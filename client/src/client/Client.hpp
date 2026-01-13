@@ -7,10 +7,11 @@
 
 #ifndef R_TYPE_CLIENT_HPP
 #define R_TYPE_CLIENT_HPP
-#include "packet_data/PacketData.hpp"
 #include "SFML/Network/SocketSelector.hpp"
 #include "SFML/Network/TcpSocket.hpp"
 #include "SFML/Network/UdpSocket.hpp"
+#include "client_shared_data/ClientSharedData.hpp"
+#include "packet_data/PacketData.hpp"
 #include "shared_data/SharedData.hpp"
 
 #include <thread>
@@ -20,7 +21,7 @@ namespace client {
     class Client
     {
         public:
-            explicit Client(const std::shared_ptr<cmn::SharedData> &data);
+            explicit Client(const std::shared_ptr<ClientSharedData> &data);
             [[nodiscard]] int bindPorts();
             [[nodiscard]] int connectToHost(const std::string &address, uint16_t port);
             [[noreturn]] int run();
@@ -38,7 +39,7 @@ namespace client {
             void _handleTcp();
             std::jthread _tcpThread;
 
-            std::shared_ptr<cmn::SharedData> _sharedData;
+            std::shared_ptr<ClientSharedData> _sharedData;
     };
 }
 

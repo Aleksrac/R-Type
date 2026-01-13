@@ -16,7 +16,7 @@
 
 namespace client {
 
-     Client::Client(const std::shared_ptr<cmn::SharedData> &data):
+     Client::Client(const std::shared_ptr<ClientSharedData> &data):
         _sharedData(data) {}
 
     int Client::bindPorts()

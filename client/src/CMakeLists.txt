@@ -7,6 +7,8 @@ add_library(r-type_client_lib
         client/Client.hpp
         game_renderer/GameRenderer.cpp
         game_renderer/GameRenderer.hpp
+        client_shared_data/ClientSharedData.hpp
+        client_shared_data/ClientSharedData.cpp
 )
 
 target_include_directories(r-type_client_lib PUBLIC
@@ -30,6 +32,8 @@ add_executable(r-type_client
         client/Client.hpp
         game_renderer/GameRenderer.cpp
         game_renderer/GameRenderer.hpp
+        client_shared_data/ClientSharedData.hpp
+        client_shared_data/ClientSharedData.cpp
 )
 
 target_link_libraries(r-type_client PRIVATE r-type_client_lib r-type_ecs_lib r-type_common_lib)
