@@ -10,8 +10,7 @@
 #include "SFML/Network/SocketSelector.hpp"
 #include "SFML/Network/UdpSocket.hpp"
 #include "custom_packet/CustomPacket.hpp"
-#include "packet_data/PacketData.hpp"
-#include "shared_data/SharedData.hpp"
+#include "server_shared_data/ServerSharedData.hpp"
 #include <SFML/Network/TcpListener.hpp>
 #include <SFML/Network/TcpSocket.hpp>
 #include <thread>
@@ -21,7 +20,7 @@ namespace server {
     class Server
     {
       public:
-        explicit Server(std::shared_ptr<cmn::SharedData> &data);
+        explicit Server(const std::shared_ptr<ServerSharedData> &data);
         [[nodiscard]]int bindPorts(uint16_t port);
         void close();
         [[noreturn]] void run();
@@ -30,18 +29,27 @@ namespace server {
         static int sendTcp(cmn::CustomPacket packet, sf::TcpSocket& clientSocket);
         void broadcastUdp(const cmn::CustomPacket& packet);
         void broadcastTcp(const cmn::CustomPacket& packet)const;
+        void broadcastUdpToLobby(int lobbyId, const cmn::CustomPacket& packet);
+        void broadcastTcpToLobby(int lobbyId, const cmn::CustomPacket& packet) const;
 
       private:
         sf::TcpListener _listener;
         std::vector<std::unique_ptr<sf::TcpSocket>> _socketVector;
         sf::SocketSelector _socketSelector;
-        void _acceptConnection();
         sf::UdpSocket _udpSocket;
-        [[noreturn]] void _handleTcp();
         std::jthread _tcpThread;
+        std::shared_ptr<ServerSharedData> _sharedData;
+
+        void _acceptConnection();
+        [[noreturn]] void _handleTcp();
         void _checkSocket();
         void _handleNewTcpPacket();
-        std::shared_ptr<cmn::SharedData> _sharedData;
+
+        void _routePacket(const cmn::packetData& data, int playerId) const;
+        bool _isSystemPacket(const cmn::packetData& data) const;
+        int _getPlayerIdFromSocket(const sf::TcpSocket& socket) const;
+        void _processLobbyPackets();
+
     };
 
 }// namespace server
