@@ -45,7 +45,7 @@ namespace server {
         void _checkSocket();
         void _handleNewTcpPacket();
 
-        void _routePacket(const cmn::packetData& data, int playerId) const;
+        void _routePacket(cmn::CustomPacket& packet, int playerId) const;
         bool _isSystemPacket(const cmn::packetData& data) const;
         int _getPlayerIdFromSocket(const sf::TcpSocket& socket) const;
         void _processLobbyPackets();

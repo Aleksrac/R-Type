@@ -41,14 +41,14 @@ namespace server {
         std::vector<int> getAllLobbyIds();
         std::unordered_map<int, std::pair<int, sf::IpAddress>> getMapPlayers();
 
-        void addSystemPacket(const cmn::packetData &data);
-        std::optional<cmn::packetData> getSystemPacket();
-        void addLobbyUdpReceivedPacket(int lobbyId, const cmn::packetData &data);
-        std::optional<cmn::packetData> getLobbyUdpReceivedPacket(int lobbyId);
+        void addSystemPacket(const cmn::CustomPacket &packet);
+        std::optional<cmn::CustomPacket> getSystemPacket();
+        void addLobbyUdpReceivedPacket(int lobbyId, const cmn::CustomPacket &packet);
+        std::optional<cmn::CustomPacket> getLobbyUdpReceivedPacket(int lobbyId);
         void addLobbyUdpPacketToSend(int lobbyId, const cmn::CustomPacket &packet);
         std::optional<cmn::CustomPacket> getLobbyUdpPacketToSend(int lobbyId);
-        void addLobbyTcpReceivedPacket(int lobbyId, const cmn::packetData &data);
-        std::optional<cmn::packetData> getLobbyTcpReceivedPacket(int lobbyId);
+        void addLobbyTcpReceivedPacket(int lobbyId, const cmn::CustomPacket &packet);
+        std::optional<cmn::CustomPacket> getLobbyTcpReceivedPacket(int lobbyId);
         void addLobbyTcpPacketToSend(int lobbyId, const cmn::CustomPacket &packet);
         std::optional<cmn::CustomPacket> getLobbyTcpPacketToSend(int lobbyId);
 
@@ -57,11 +57,11 @@ namespace server {
         std::unordered_map<int, int> _playerLobbyMap;
         std::map<int, std::list<int>> _lobbyPlayers;
 
-        std::map<int, std::queue<cmn::packetData>> _lobbyUdpReceivedQueues;
+        std::map<int, std::queue<cmn::CustomPacket>> _lobbyUdpReceivedQueues;
         std::map<int, std::queue<cmn::CustomPacket>> _lobbyUdpSendQueues;
-        std::map<int, std::queue<cmn::packetData>> _lobbyTcpReceivedQueues;
+        std::map<int, std::queue<cmn::CustomPacket>> _lobbyTcpReceivedQueues;
         std::map<int, std::queue<cmn::CustomPacket>> _lobbyTcpSendQueues;
-        std::queue<cmn::packetData> _systemPacketQueue;
+        std::queue<cmn::CustomPacket> _systemPacketQueue;
 
         std::mutex _mutex;
     };

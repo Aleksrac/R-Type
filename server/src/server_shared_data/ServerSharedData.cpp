@@ -71,9 +71,9 @@ namespace server {
     {
         std::lock_guard const lock(_mutex);
         _lobbyPlayers[lobbyId] = std::list<int>();
-        _lobbyUdpReceivedQueues[lobbyId] = std::queue<cmn::packetData>();
+        _lobbyUdpReceivedQueues[lobbyId] = std::queue<cmn::CustomPacket>();
         _lobbyUdpSendQueues[lobbyId] = std::queue<cmn::CustomPacket>();
-        _lobbyTcpReceivedQueues[lobbyId] = std::queue<cmn::packetData>();
+        _lobbyTcpReceivedQueues[lobbyId] = std::queue<cmn::CustomPacket>();
         _lobbyTcpSendQueues[lobbyId] = std::queue<cmn::CustomPacket>();
     }
 
@@ -158,26 +158,26 @@ namespace server {
         return lobbyIds;
     }
 
-    void ServerSharedData::addSystemPacket(const cmn::packetData &data)
+    void ServerSharedData::addSystemPacket(const cmn::CustomPacket &packet)
     {
         std::lock_guard const lock(_mutex);
-        _systemPacketQueue.push(data);
+        _systemPacketQueue.push(packet);
     }
 
-    std::optional<cmn::packetData> ServerSharedData::getSystemPacket()
+    std::optional<cmn::CustomPacket> ServerSharedData::getSystemPacket()
     {
         std::lock_guard const lock(_mutex);
         
         if (_systemPacketQueue.empty()) {
             return std::nullopt;
         }
-        cmn::packetData data = _systemPacketQueue.front();
+        cmn::CustomPacket packet = _systemPacketQueue.front();
         _systemPacketQueue.pop();
-        return data;
+        return packet;
     }
 
 
-    void ServerSharedData::addLobbyUdpReceivedPacket(int lobbyId, const cmn::packetData &data)
+    void ServerSharedData::addLobbyUdpReceivedPacket(int lobbyId, const cmn::CustomPacket &packet)
     {
         std::lock_guard const lock(_mutex);
         
@@ -185,19 +185,19 @@ namespace server {
             std::cerr << "[ERROR] Trying to add UDP packet to a non-existent lobby" << lobbyId << "\n";
             return;
         }
-        _lobbyUdpReceivedQueues[lobbyId].push(data);
+        _lobbyUdpReceivedQueues[lobbyId].push(packet);
     }
 
-    std::optional<cmn::packetData> ServerSharedData::getLobbyUdpReceivedPacket(int lobbyId)
+    std::optional<cmn::CustomPacket> ServerSharedData::getLobbyUdpReceivedPacket(int lobbyId)
     {
         std::lock_guard const lock(_mutex);
         
         if (!_lobbyUdpReceivedQueues.contains(lobbyId) || _lobbyUdpReceivedQueues[lobbyId].empty()) {
             return std::nullopt;
         }
-        cmn::packetData data = _lobbyUdpReceivedQueues[lobbyId].front();
+        cmn::CustomPacket packet = _lobbyUdpReceivedQueues[lobbyId].front();
         _lobbyUdpReceivedQueues[lobbyId].pop();
-        return data;
+        return packet;
     }
 
     void ServerSharedData::addLobbyUdpPacketToSend(int lobbyId, const cmn::CustomPacket &packet)
@@ -224,7 +224,7 @@ namespace server {
         return packet;
     }
 
-    void ServerSharedData::addLobbyTcpReceivedPacket(int lobbyId, const cmn::packetData &data)
+    void ServerSharedData::addLobbyTcpReceivedPacket(int lobbyId, const cmn::CustomPacket &packet)
     {
         std::lock_guard const lock(_mutex);
         
@@ -232,19 +232,19 @@ namespace server {
             std::cerr << "[ERROR] Trying to add TCP packet to a non-existent lobby " << lobbyId << "\n";
             return;
         }
-        _lobbyTcpReceivedQueues[lobbyId].push(data);
+        _lobbyTcpReceivedQueues[lobbyId].push(packet);
     }
 
-    std::optional<cmn::packetData> ServerSharedData::getLobbyTcpReceivedPacket(int lobbyId)
+    std::optional<cmn::CustomPacket> ServerSharedData::getLobbyTcpReceivedPacket(int lobbyId)
     {
         std::lock_guard const lock(_mutex);
         
         if (!_lobbyTcpReceivedQueues.contains(lobbyId) || _lobbyTcpReceivedQueues[lobbyId].empty()) {
             return std::nullopt;
         }
-        cmn::packetData data = _lobbyTcpReceivedQueues[lobbyId].front();
+        cmn::CustomPacket packet = _lobbyTcpReceivedQueues[lobbyId].front();
         _lobbyTcpReceivedQueues[lobbyId].pop();
-        return data;
+        return packet;
     }
 
     void ServerSharedData::addLobbyTcpPacketToSend(int lobbyId, const cmn::CustomPacket &packet)

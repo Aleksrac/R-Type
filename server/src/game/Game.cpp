@@ -6,18 +6,20 @@
 */
 
 #include "Game.hpp"
-#include "Constants.hpp"
 #include "components/Collision.hpp"
+#include "components/Enemy.hpp"
 #include "components/Health.hpp"
 #include "components/InputPlayer.hpp"
 #include "components/Position.hpp"
 #include "components/Shoot.hpp"
+#include "constants/GameConstants.hpp"
 #include "data_translator/DataTranslator.hpp"
+#include "packet_data/PacketData.hpp"
+#include "packet_disassembler/PacketDisassembler.hpp"
 #include "packet_factory/PacketFactory.hpp"
 #include "systems/CollisionSystem.hpp"
 #include "systems/DestroySystem.hpp"
 #include "systems/HealthSystem.hpp"
-#include "systems/InputSystem.hpp"
 #include "systems/MovementSystem.hpp"
 #include "systems/ShootSystem.hpp"
 #include "systems/VelocitySystem.hpp"
@@ -61,16 +63,16 @@ namespace server {
 
         while (true) {
             float const deltaTime = clock.restart().asSeconds();
-            std::optional<cmn::packetData> data = _sharedData->getLobbyUdpReceivedPacket(_lobbyId);
+            std::optional<cmn::CustomPacket> packet = _sharedData->getLobbyUdpReceivedPacket(_lobbyId);
 
-            if (data.has_value()) {
-                cmn::DataTranslator::translate(_ecs, data.value(), _playerIdEntityMap);
+            if (packet.has_value()) {
+                std::optional<cmn::packetData> data = cmn::PacketDisassembler::disassemble(packet.value());
+                if (data.has_value()) {
+                    cmn::DataTranslator::translate(_ecs, data.value(), _playerIdEntityMap);
+                }
             }
-
             _createEnemy(currentLevel, enemyClock, generator);
-
             _checkSpaceBar();
-
             if (elapsedTime > frameTimer) {
                 fpsClock.restart();
                 _sendPositions();
@@ -208,7 +210,13 @@ namespace server {
                 _createNewPlayers(listPlayerIds, currentNbPlayerEntities);
             }
 
-            std::optional<cmn::packetData> data = _sharedData->getLobbyUdpReceivedPacket(_lobbyId);
+            std::optional<cmn::CustomPacket> packet = _sharedData->getLobbyUdpReceivedPacket(_lobbyId);;
+
+            if (!packet.has_value()) {
+                continue;
+            }
+
+            std::optional<cmn::packetData> data = cmn::PacketDisassembler::disassemble(packet.value());
 
             if (!data.has_value()) {
                 continue;
@@ -236,16 +244,7 @@ namespace server {
 
     void Game::_initLevels()
     {
-        constexpr uint64_t level1SpawnRate = 1;
-
-        uint8_t levelId = 1;
-        uint8_t enemySpawnRate = level1SpawnRate;
-        bool isBossPresent = false;
-        uint32_t bossApparitionTiming = 0;
-
-        Level firstLevel(levelId, enemySpawnRate, isBossPresent, bossApparitionTiming);
-
-        _levelManager.addLevel(firstLevel);
+        _levelManager.loadLevelFromFolder();
         _levelManager.setCurrentLevelId(1);
     }
 

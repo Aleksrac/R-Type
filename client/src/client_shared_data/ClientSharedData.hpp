@@ -17,22 +17,22 @@
 namespace client {
     class ClientSharedData {
     public:
-        void addUdpReceivedPacket(const cmn::packetData &data);
-        std::optional<cmn::packetData> getUdpReceivedPacket();
+        void addUdpReceivedPacket(const cmn::CustomPacket &packet);
+        std::optional<cmn::CustomPacket> getUdpReceivedPacket();
 
         void addUdpPacketToSend(const cmn::CustomPacket &packet);
         std::optional<cmn::CustomPacket> getUdpPacketToSend();
 
-        void addTcpReceivedPacket(const cmn::packetData &data);
-        std::optional<cmn::packetData> getTcpReceivedPacket();
+        void addTcpReceivedPacket(const cmn::CustomPacket &packet);
+        std::optional<cmn::CustomPacket> getTcpReceivedPacket();
 
         void addTcpPacketToSend(const cmn::CustomPacket &packet);
         std::optional<cmn::CustomPacket> getTcpPacketToSend();
 
     private:
-        std::queue<cmn::packetData> _udpReceivedQueue;
+        std::queue<cmn::CustomPacket> _udpReceivedQueue;
         std::queue<cmn::CustomPacket> _udpSendQueue;
-        std::queue<cmn::packetData> _tcpReceivedQueue;
+        std::queue<cmn::CustomPacket> _tcpReceivedQueue;
         std::queue<cmn::CustomPacket> _tcpSendQueue;
         std::mutex _mutex;
     };

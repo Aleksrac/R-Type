@@ -6,11 +6,12 @@
 */
 #include "Server.hpp"
 
-#include "custom_packet/CustomPacket.hpp"
 #include "SFML/Network/TcpSocket.hpp"
+#include "custom_packet/CustomPacket.hpp"
+#include "packet_disassembler/PacketDisassembler.hpp"
+#include "packet_factory/PacketFactory.hpp"
 #include <iostream>
 #include <thread>
-#include "packet_factory/PacketFactory.hpp"
 
 namespace server {
     Server::Server(const std::shared_ptr<ServerSharedData> &data):
@@ -77,30 +78,30 @@ namespace server {
                 ++it;
                 continue;
             }
-            //_sharedData->addTcpReceivedPacket(data); TODO check
-            cmn::packetData data;
-            packet >> data;
 
             // TODO: might not need player id if dont send tcp to game thread
             // except if we let ready as tcp
             int playerId = _getPlayerIdFromSocket(sock);
             if (playerId != -1) {
-                _routePacket(data, playerId);
+                _routePacket(packet, playerId);
                 ++it;
             }
             ++it;
         }
     }
 
-    void Server::_routePacket(const cmn::packetData& data, int playerId) const
+    void Server::_routePacket(cmn::CustomPacket& packet, int playerId) const
     {
-        if (_isSystemPacket(data)) {
-            _sharedData->addSystemPacket(data);
+        auto data = cmn::PacketDisassembler::disassemble(packet);
+        if (!data.has_value())
+            return;
+        if (_isSystemPacket(data.value())) {
+            _sharedData->addSystemPacket(packet);
             return;
         }
         int lobbyId = _sharedData->getPlayerLobby(playerId);
         if (lobbyId != -1) {
-            _sharedData->addLobbyTcpReceivedPacket(lobbyId, data);
+            _sharedData->addLobbyTcpReceivedPacket(lobbyId, packet);
         }
     }
 
@@ -261,15 +262,16 @@ namespace server {
                 if (!sender.has_value()) {
                     continue;
                 }
-                cmn::packetData data;
-                packet >> data;
-                if (_isSystemPacket(data)) {
-                    _sharedData->addSystemPacket(data);
-                } else {
-                    // TODO: bitpacking is coming...
-                    int lobbyId = _sharedData->getPlayerLobby(playerId);
-                    if (lobbyId != -1) {
-                        _sharedData->addLobbyUdpReceivedPacket(lobbyId, data);
+                auto data = cmn::PacketDisassembler::disassemble(packet);
+                if (data.has_value()) {
+                    if (_isSystemPacket(data.value())) {
+                        _sharedData->addSystemPacket(packet);
+                    } else {
+                        // TODO: bitpacking is coming...
+                        int lobbyId = _sharedData->getPlayerLobby(playerId);
+                        if (lobbyId != -1) {
+                            _sharedData->addLobbyUdpReceivedPacket(lobbyId, packet);
+                        }
                     }
                 }
             }

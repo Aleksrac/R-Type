@@ -31,13 +31,13 @@ namespace cmn {
              * @brief Adds a received packet to the queue.
              * @param data The received packet data (PacketData).
              */
-            void addUdpReceivedPacket(const packetData &data);
+            void addUdpReceivedPacket(const CustomPacket &packet);
 
             /**
              * @brief Retrieves and removes the first received packet from the queue.
              * @return An optional containing the PacketData if available, otherwise std::nullopt.
              */
-            std::optional<packetData> getUdpReceivedPacket();
+            std::optional<CustomPacket> getUdpReceivedPacket();
 
             /**
              * @brief Adds a packet to be sent to the queue.
@@ -55,13 +55,13 @@ namespace cmn {
              * @brief Adds a received packet to the queue.
              * @param data The received packet data (PacketData).
              */
-            void addTcpReceivedPacket(const packetData &data);
+            void addTcpReceivedPacket(const CustomPacket &packet);
 
             /**
              * @brief Retrieves and removes the first received packet from the queue.
              * @return An optional containing the PacketData if available, otherwise std::nullopt.
              */
-            std::optional<packetData> getTcpReceivedPacket();
+            std::optional<CustomPacket> getTcpReceivedPacket();
 
             /**
              * @brief Adds a packet to be sent to the queue.
@@ -105,9 +105,9 @@ namespace cmn {
             std::optional<CustomPacket> getMessageUDPToSend(int lobbyId);
 
         private:
-            std::queue<packetData> _udpReceivedQueue; ///< Queue for received packets (to be processed).
+            std::queue<CustomPacket> _udpReceivedQueue; ///< Queue for received packets (to be processed).
             std::queue<CustomPacket> _udpSendQueue;     ///< Queue for packets to be sent.
-            std::queue<packetData> _tcpReceivedQueue;  ///< Queue for packets to be sent.
+            std::queue<CustomPacket> _tcpReceivedQueue;  ///< Queue for packets to be sent.
             std::queue<CustomPacket> _tcpSendQueue;     ///< Queue for packets to be sent.
             std::mutex _mutex;                     ///< Mutex for synchronizing data access.
 

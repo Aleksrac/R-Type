@@ -6,9 +6,8 @@
 */
 
 #include "LobbyManager.hpp"
-
-#include "Constants.hpp"
 #include "game/Game.hpp"
+#include "packet_disassembler/PacketDisassembler.hpp"
 #include "packet_factory/PacketFactory.hpp"
 
 #include <iostream>
@@ -29,7 +28,8 @@ namespace server {
          while (true) {
              auto packet = _sharedData->getSystemPacket();
              if (packet.has_value()) {
-                 _getPacketType(packet.value());
+                 auto data = cmn::PacketDisassembler::disassemble(packet.value());
+                 _getPacketType(data.value());
              }
              _handleMatchMaking();
              _handlePlayerDisconnections();
@@ -74,7 +74,7 @@ namespace server {
                 packetLeaveLobby &leaveLobby = arg;
                 _leaveLobby(leaveLobby.playerId);
             }
-        }, data.content);
+        }, data);
 
         return 0;
     }
@@ -92,12 +92,12 @@ namespace server {
 
      void LobbyManager::_handleMatchMaking()
     {
-        while (_matchmakingQueue.size() >= cmn::max_players) {
+        while (_matchmakingQueue.size() >= cmn::maxPlayers) {
             Lobby newLobby = _createLobby(cmn::LobbyType::Matchmaking);
             _lobbyMap[newLobby.id] = newLobby;
             _sharedData->createLobby(newLobby.id);
 
-            for (uint8_t i = 0; i < cmn::max_players; ++i) {
+            for (uint8_t i = 0; i < cmn::maxPlayers; ++i) {
                 int playerId = _matchmakingQueue.front();
                 _matchmakingQueue.pop();
                 _playersInMatchmaking.erase(playerId);
@@ -124,7 +124,7 @@ namespace server {
          }
 
          int currentPlayers = _sharedData->getNumberPlayerLobby(lobby->id);
-         if (currentPlayers >= cmn::max_players) {
+         if (currentPlayers >= cmn::maxPlayers) {
              auto errorPacket = cmn::PacketFactory::createErrorPacket("Lobby is full");
              return;
          }
@@ -132,7 +132,7 @@ namespace server {
          _sharedData->addPlayerToLobby(playerId, lobby->id);
          auto successPacket = cmn::PacketFactory::createJoinSuccessPacket(lobby->id);
          _sharedData->addLobbyTcpPacketToSend(lobby->id, successPacket);
-         if (currentPlayers + 1 >= cmn::max_players) {
+         if (currentPlayers + 1 >= cmn::maxPlayers) {
              _launchGame(lobby->id);
          }
      }

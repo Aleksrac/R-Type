@@ -9,21 +9,21 @@
 
 namespace client {
 
-    void ClientSharedData::addUdpReceivedPacket(const cmn::packetData &data)
+    void ClientSharedData::addUdpReceivedPacket(const cmn::CustomPacket &packet)
     {
         std::lock_guard const lock(_mutex);
-        _udpReceivedQueue.push(data);
+        _udpReceivedQueue.push(packet);
     }
 
-    std::optional<cmn::packetData> ClientSharedData::getUdpReceivedPacket()
+    std::optional<cmn::CustomPacket> ClientSharedData::getUdpReceivedPacket()
     {
         std::lock_guard const lock(_mutex);
         if (_udpReceivedQueue.empty()) {
             return std::nullopt;
         }
-        cmn::packetData data = _udpReceivedQueue.front();
+        cmn::CustomPacket packet = _udpReceivedQueue.front();
         _udpReceivedQueue.pop();
-        return data;
+        return packet;
     }
 
     void ClientSharedData::addUdpPacketToSend(const cmn::CustomPacket &packet)
@@ -43,21 +43,21 @@ namespace client {
         return packet;
     }
 
-    void ClientSharedData::addTcpReceivedPacket(const cmn::packetData &data)
+    void ClientSharedData::addTcpReceivedPacket(const cmn::CustomPacket &packet)
     {
         std::lock_guard const lock(_mutex);
-        _tcpReceivedQueue.push(data);
+        _tcpReceivedQueue.push(packet);
     }
 
-    std::optional<cmn::packetData> ClientSharedData::getTcpReceivedPacket()
+    std::optional<cmn::CustomPacket> ClientSharedData::getTcpReceivedPacket()
     {
         std::lock_guard const lock(_mutex);
         if (_tcpReceivedQueue.empty()) {
             return std::nullopt;
         }
-        cmn::packetData data = _tcpReceivedQueue.front();
+        cmn::CustomPacket packet = _tcpReceivedQueue.front();
         _tcpReceivedQueue.pop();
-        return data;
+        return packet;
     }
 
     void ClientSharedData::addTcpPacketToSend(const cmn::CustomPacket &packet)
