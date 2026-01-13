@@ -12,13 +12,8 @@
 
 namespace cmn {
 
-    CustomPacket PacketFactory::createConnectionPacket(uint32_t playerId)
+    CustomPacket PacketFactory::_putInPacket(BitPacker &packer)
     {
-        BitPacker packer;
-
-        packer.writeUInt16(connectionProtocolId);
-        packer.writeUInt32(playerId);
-
         auto buffer = packer.getBuffer();
         CustomPacket packet;
 
@@ -26,6 +21,16 @@ namespace cmn {
             packet << data;
         }
         return packet;
+    }
+
+    CustomPacket PacketFactory::createConnectionPacket(uint32_t playerId)
+    {
+        BitPacker packer;
+
+        packer.writeUInt16(connectionProtocolId);
+        packer.writeUInt32(playerId);
+
+        return _putInPacket(packer);
     }
 
     CustomPacket PacketFactory::createInputPacket(uint32_t playerId, Keys key, KeyState state)
@@ -37,13 +42,7 @@ namespace cmn {
         packer.writeUInt8(static_cast<uint8_t>(key));
         packer.writeUInt8(static_cast<uint8_t>(state));
 
-        auto buffer = packer.getBuffer();
-        CustomPacket packet;
-
-        for (auto &data : buffer) {
-            packet << data;
-        }
-        return packet;
+        return _putInPacket(packer);
     }
 
     CustomPacket PacketFactory::createPositionPacket(std::pair<float, float> positionPair, uint64_t entityId)
@@ -55,13 +54,7 @@ namespace cmn {
         packer.writeFloat(positionPair.first, 0, windowWidth, xPositionFloatPrecision);
         packer.writeFloat(positionPair.second, 0, windowHeight, yPositionFloatPrecision);
 
-        auto buffer = packer.getBuffer();
-        CustomPacket packet;
-
-        for (auto &data : buffer) {
-            packet << data;
-        }
-        return packet;
+        return _putInPacket(packer);
     }
 
     CustomPacket PacketFactory::createNewEntityPacket(EntityType type, std::pair<float, float> positionPair, uint64_t entityId)
@@ -74,13 +67,7 @@ namespace cmn {
         packer.writeFloat(positionPair.first, 0, windowWidth, xPositionFloatPrecision);
         packer.writeFloat(positionPair.second, 0, windowHeight, yPositionFloatPrecision);
 
-        auto buffer = packer.getBuffer();
-        CustomPacket packet;
-
-        for (auto &data : buffer) {
-            packet << data;
-        }
-        return packet;
+        return _putInPacket(packer);
     }
 
     CustomPacket PacketFactory::createDeleteEntityPacket(uint64_t entityId)
@@ -90,13 +77,7 @@ namespace cmn {
         packer.writeUInt16(deleteEntityProtocolId);
         packer.writeUInt32(entityId);
 
-        auto buffer = packer.getBuffer();
-        CustomPacket packet;
-
-        for (auto &data : buffer) {
-            packet << data;
-        }
-        return packet;
+        return _putInPacket(packer);
     }
 
     CustomPacket PacketFactory::createStartGamePacket()
@@ -105,13 +86,7 @@ namespace cmn {
 
         packer.writeUInt16(startGameProtocolId);
 
-        auto buffer = packer.getBuffer();
-        CustomPacket packet;
-
-        for (auto &data : buffer) {
-            packet << data;
-        }
-        return packet;
+        return _putInPacket(packer);
     }
 
 }// namespace cmn

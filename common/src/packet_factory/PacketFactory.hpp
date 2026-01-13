@@ -27,7 +27,7 @@ namespace cmn {
         static CustomPacket createStartGamePacket();
 
       private:
-
+        static CustomPacket _putInPacket(BitPacker &packer);
     };
 
 }// namespace cmn
