@@ -34,17 +34,17 @@ void MovementSystem::update(EcsManager &ecs)
             }
         }
     }
-    for (auto const &enemy : ecs.getEntitiesWithComponent<Enemy>()) {
-        auto pos = enemy->getComponent<Position>();
-        if (pos) {
-            pos->setX(pos->getX() + (-speed * dt));
-        }
-        if (pos->getX() < 0 - enemy->getComponent<Collision>()->getWidth()) {
-            enemy->addComponent<Destroy>();
-        }
-        if (pos->getX() > windowWidth + enemy->getComponent<Collision>()->getWidth() + 500) {
-            enemy->addComponent<Destroy>();
-        }
-    }
+    // for (auto const &enemy : ecs.getEntitiesWithComponent<Enemy>()) {
+    //     auto pos = enemy->getComponent<Position>();
+    //     if (pos) {
+    //         pos->setX(pos->getX() + (-speed * dt));
+    //     }
+    //     if (pos->getX() < 0 - enemy->getComponent<Collision>()->getWidth()) {
+    //         enemy->addComponent<Destroy>();
+    //     }
+    //     if (pos->getX() > windowWidth + enemy->getComponent<Collision>()->getWidth() + 500) {
+    //         enemy->addComponent<Destroy>();
+    //     }
+    // }
 }
 }
