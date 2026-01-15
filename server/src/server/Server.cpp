@@ -14,6 +14,7 @@
 #include "packet_disassembler/PacketDisassembler.hpp"
 #include "packet_header/PacketHeader.hpp"
 #include "constants/ProtocolConstants.hpp"
+#include "constants/ServerConstants.hpp"
 
 namespace server {
 
@@ -155,7 +156,7 @@ namespace server {
             _sequencePacketMap.erase(sequenceNbr);
             return;
         }
-        if (loopIdx > 5000) {
+        if (loopIdx > cmn::ticksBeforeResending) {
             for (auto &it : _sequencePacketMap) {
                 broadcastUdp(it.second);
             }
