@@ -7,6 +7,8 @@
 
 #include "CollisionSystem.hpp"
 
+#include "components/Sound.hpp"
+
 namespace ecs
 {
     void CollisionSystem::buildQuadTree(const std::vector<std::shared_ptr<Entity>> &entities)
@@ -61,10 +63,12 @@ namespace ecs
                         auto shoot = entity->getComponent<Shoot>();
 
                         health->setHealth(health->getHealth() - shoot->getDamage());
+                        entity->addComponent<Sound>(1, false);
                         entity->addComponent<Destroy>();
                     }
                     else if (typeA == PLAYER &&
                         typeB == ENEMY) {
+                        entity->addComponent<Sound>(1, false);
                         entity->addComponent<Destroy>();
                     }
                 }
