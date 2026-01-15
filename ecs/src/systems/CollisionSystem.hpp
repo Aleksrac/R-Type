@@ -34,14 +34,11 @@ namespace ecs {
         QuadTree(const AABB& bound, const int depth = 0): _bound(bound), _depth(depth) {};
         ~QuadTree() = default;
 
-        void insert(EntityRef entity, AABB &bound);
+        void insert(EntityRef entity, const AABB &bound);
         std::vector<EntityRef> getEntities(const AABB&) const;
 
     private:
         void subdivide();
-
-        static constexpr int MAX_ENTITIES = 6;
-        static constexpr int MAX_DEPTH = 6;
 
         AABB _bound;
         int _depth;

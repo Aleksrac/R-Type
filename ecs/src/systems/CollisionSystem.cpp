@@ -47,6 +47,10 @@ namespace ecs
 
                 if (entity == other)
                     continue;
+                if (shouldIgnoreCollision(
+                    collision->getTypeCollision(),
+                    otherCollision->getTypeCollision()))
+                    continue;
                 if (checkCollision(ecs, *entity, *other)) {
                     const auto typeA = collision->getTypeCollision();
                     const auto typeB = otherCollision->getTypeCollision();
@@ -114,12 +118,12 @@ namespace ecs
         );
     }
 
-    void QuadTree::insert(EntityRef entity, AABB& bound)
+    void QuadTree::insert(EntityRef entity, const AABB& bound)
     {
         if (!_bound.intersects(bound)) {
             return;
         }
-        if (_entities.size() < MAX_ENTITIES || _depth >= MAX_DEPTH) {
+        if (_entities.size() < cmn::MAX_ENTITIES || _depth >= cmn::MAX_DEPTH) {
             _entities.push_back({entity, bound});
             return;
         }
@@ -131,6 +135,7 @@ namespace ecs
         else if (_northEast->_bound.contains(bound)) _northEast->insert(entity, bound);
         else if (_southWest->_bound.contains(bound)) _southWest->insert(entity, bound);
         else if (_southEast->_bound.contains(bound)) _southEast->insert(entity, bound);
+        else _entities.push_back({entity, bound});
     }
 
     std::vector<EntityRef> QuadTree::getEntities(const AABB& bound) const
