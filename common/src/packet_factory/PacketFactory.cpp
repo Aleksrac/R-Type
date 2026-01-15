@@ -30,8 +30,6 @@ namespace cmn {
         BitPacker packer;
 
         packer.writeUInt16(connectionProtocolId);
-        packer.writeUInt32(_sequenceNbr);
-        packer.writeBool(false);
         packer.writeUInt32(data.playerId);
 
         _sequenceNbr++;
@@ -117,6 +115,16 @@ namespace cmn {
         return _putInPacket(packer);
     }
 
+
+    CustomPacket PacketFactory::_createSoundPacket(soundData data)
+    {
+        BitPacker packer;
+
+        packer.writeUInt16(soundProtocolId);
+        packer.writeUInt8(data.soundId);
+        return _putInPacket(packer);
+    }
+
     CustomPacket PacketFactory::_createAcknowledgePacket(acknowledgeData data)
     {
         BitPacker packer;
@@ -156,6 +164,9 @@ namespace cmn {
                 } else if constexpr (std::is_same_v<T, acknowledgeData>) {
                     acknowledgeData const &acknowledgeData = arg;
                     return _createAcknowledgePacket(acknowledgeData);
+                } else if constexpr (std::is_same_v<T, soundData>) {
+                    soundData const &soundData = arg;
+                    return _createSoundPacket(soundData);
                 }
             }, data);
     }

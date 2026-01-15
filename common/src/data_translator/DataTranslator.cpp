@@ -8,6 +8,7 @@
 #include "DataTranslator.hpp"
 #include "constants/GameConstants.hpp"
 #include "components/Animation.hpp"
+#include "components/Collision.hpp"
 #include "components/Destroy.hpp"
 #include "components/InputPlayer.hpp"
 #include "components/PlayerAnimation.hpp"
@@ -16,7 +17,6 @@
 #include "components/Sprite.hpp"
 #include "enums/EntityType.hpp"
 #include "enums/Key.hpp"
-#include <list>
 
 namespace cmn {
 
@@ -80,7 +80,6 @@ namespace cmn {
         if (newEntity.type == EntityType::Player) {
             entity->addComponent<ecs::Sprite>(ecs.getResourceManager().getTexture(std::string(playerSpriteSheet)), playerSpriteScale);
             entity->addComponent<ecs::PlayerAnimation>();
-            entity->addComponent<ecs::Sound>(std::string(playerShootSound));
             entity->addComponent<ecs::InputPlayer>();
         }
         if (newEntity.type == EntityType::Monster) {
@@ -103,6 +102,16 @@ namespace cmn {
         }
     }
 
+    void DataTranslator::_soundEntity(ecs::EcsManager &ecs, soundData &sound)
+    {
+        for (auto &entity : ecs.getEntities()) {
+            if (entity->getId() == idEntityForMusic) {
+                entity->addComponent<ecs::Sound>(static_cast<int>(sound.soundId), false);
+                break;
+            }
+        }
+    }
+
     void DataTranslator::translate(ecs::EcsManager &ecs, packetData &data, const std::unordered_map<int, uint64_t>& playerIdEntityMap)
     {
         std::visit([&ecs, playerIdEntityMap](auto &&arg)
@@ -120,6 +129,9 @@ namespace cmn {
                 } else if constexpr (std::is_same_v<T, deleteEntityData>) {
                     deleteEntityData &deleteEntity = arg;
                     _deleteEntity(ecs, deleteEntity);
+                }  else if constexpr (std::is_same_v<T, soundData>) {
+                    soundData &sound = arg;
+                    _soundEntity(ecs, sound);
                 }
             }, data);
     }

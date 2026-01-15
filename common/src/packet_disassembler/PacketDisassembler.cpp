@@ -10,7 +10,6 @@
 #include "constants/BitPackingConstants.hpp"
 #include "constants/GameConstants.hpp"
 #include "constants/ProtocolConstants.hpp"
-#include <iostream>
 #include <optional>
 
 namespace cmn {
@@ -62,7 +61,15 @@ namespace cmn {
         return data;
     }
 
-    packetData PacketDisassembler::_disassembleIntoStartGameData(BitUnpacker &unpacker)
+    packetData PacketDisassembler::_disassembleIntoSoundData(BitUnpacker &unpacker)
+    {
+        uint8_t const soundId = unpacker.readUInt8();
+        soundData data = {soundId};
+
+        return data;
+    }
+
+    packetData PacketDisassembler::_disassembleIntoStartGameData()
     {
         startGameData data = {};
 
@@ -98,7 +105,9 @@ namespace cmn {
             case (deleteEntityProtocolId):
                 return {header, _disassembleIntoDeleteEntityData(unpacker)};
             case (startGameProtocolId):
-                return {header, _disassembleIntoStartGameData(unpacker)};
+                return {header, _disassembleIntoStartGameData()};
+            case (soundProtocolId):
+                return {header, _disassembleIntoSoundData(unpacker)};
             default:
                 throw std::exception();
         }

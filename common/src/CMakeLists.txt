@@ -34,6 +34,7 @@ add_library(r-type_common_lib
         packet_header/PacketHeader.hpp
         packet_data/AcknowledgeData.hpp
         constants/ServerConstants.hpp
+        packet_data/SoundData.hpp
 )
 
 target_include_directories(r-type_common_lib PUBLIC

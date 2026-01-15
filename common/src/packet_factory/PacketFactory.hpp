@@ -36,6 +36,7 @@ namespace cmn {
         static CustomPacket _createAcknowledgePacket(acknowledgeData data);
         static CustomPacket _putInPacket(BitPacker &packer);
         static uint32_t _sequenceNbr;
+        static CustomPacket _createSoundPacket(soundData data);
     };
 
 }// namespace cmn

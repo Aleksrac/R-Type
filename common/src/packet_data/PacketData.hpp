@@ -14,6 +14,7 @@
 #include "NewEntityData.hpp"
 #include "PositionData.hpp"
 #include "StartGameData.hpp"
+#include "SoundData.hpp"
 #include <variant>
 
 namespace cmn {
@@ -25,7 +26,8 @@ namespace cmn {
         newEntityData,
         deleteEntityData,
         startGameData,
-        acknowledgeData
+        acknowledgeData,
+        soundData
     >;
 
 }
