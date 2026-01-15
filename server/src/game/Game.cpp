@@ -180,6 +180,8 @@ namespace server {
                      cmn::monsterCollisionWidth,
                      cmn::monsterCollisionHeight
                  );
+                 newEnemy->addComponent<ecs::Shoot>(cmn::playerDamage, 0, 5.0f);
+                 newEnemy->addComponent<ecs::Velocity>(250, 0);
 
                  std::pair<float, float> const position = {
                      cmn::monsterSpawnPositionWidth,
