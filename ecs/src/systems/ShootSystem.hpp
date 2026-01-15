@@ -22,6 +22,7 @@ class ShootSystem : public System {
   public:
     ShootSystem() = default;
     void update(EcsManager &ecs) override;
+	static void createEntity(EcsManager &, std::shared_ptr<Entity> const &, std::shared_ptr<Shoot>, TypeCollision);
 };
 }
 
