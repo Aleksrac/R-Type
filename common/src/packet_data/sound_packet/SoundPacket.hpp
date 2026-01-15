@@ -13,13 +13,9 @@
 
 namespace cmn {
 
-    using soundPacket = struct soundPacket {
+    using soundData = struct soundPacket {
         uint8_t soundId;
     };
-
-    sf::Packet &operator << (sf::Packet &packet, const soundPacket &packetStruct);
-    sf::Packet &operator >> (sf::Packet &packet, soundPacket &packetStruct);
-
 }// namespace cmn
 
 #endif// R_TYPE_COLLISIONPACKET_HPP

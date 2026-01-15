@@ -24,7 +24,7 @@ namespace cmn {
         static void _injectPosition(ecs::EcsManager &ecs, positionData &position);
         static void _injectNewEntity(ecs::EcsManager &ecs, newEntityData &newEntity);
         static void _deleteEntity(ecs::EcsManager &ecs, deleteEntityData &deleteEntity);
-       // static void _soundEntity(ecs::EcsManager &ecs, soundPacket &sound);
+        static void _soundEntity(ecs::EcsManager &ecs, soundData &sound);
 
     };
 

@@ -81,14 +81,14 @@ namespace cmn {
     }
 
 
-    // CustomPacket PacketFactory::createSoundPacket(uint64_t entityId, uint8_t soundId)
-    // {
-    //     soundPacket soundEntity =  {soundId};
-    //     packetData const data = {soundProtocolId, soundEntity};
-    //     CustomPacket packet;
-    //     packet << data;
-    //     return packet;
-    // }
+    CustomPacket PacketFactory::createSoundPacket(uint8_t soundId)
+    {
+        BitPacker packer;
+
+        packer.writeUInt16(soundProtocolId);
+        packer.writeUInt8(soundId);
+        return _putInPacket(packer);
+    }
 
     CustomPacket PacketFactory::createStartGamePacket()
     {

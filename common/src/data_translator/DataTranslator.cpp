@@ -103,11 +103,11 @@ namespace cmn {
         }
     }
 
-    void DataTranslator::_soundEntity(ecs::EcsManager &ecs, soundPacket &collision)
+    void DataTranslator::_soundEntity(ecs::EcsManager &ecs, soundData &sound)
     {
         for (auto &entity : ecs.getEntities()) {
             if (entity->getId() == idEntityForMusic) {
-                entity->addComponent<ecs::Sound>(static_cast<int>(collision.soundId), false);
+                entity->addComponent<ecs::Sound>(static_cast<int>(sound.soundId), false);
                 break;
             }
         }
@@ -130,9 +130,9 @@ namespace cmn {
                 } else if constexpr (std::is_same_v<T, deleteEntityData>) {
                     deleteEntityData &deleteEntity = arg;
                     _deleteEntity(ecs, deleteEntity);
-                }  else if constexpr (std::is_same_v<T, soundPacket>) {
-                    soundPacket &collision = arg;
-                    _soundEntity(ecs, collision);
+                }  else if constexpr (std::is_same_v<T, soundData>) {
+                    soundData &sound = arg;
+                    _soundEntity(ecs, sound);
                 }
             }, data);
     }
