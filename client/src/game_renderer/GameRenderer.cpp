@@ -10,7 +10,9 @@
 #include "client/Client.hpp"
 #include "components/Background.hpp"
 #include "components/Sound.hpp"
+#include "constants/GameConstants.hpp"
 #include "enums/Key.hpp"
+#include "packet_disassembler/PacketDisassembler.hpp"
 #include "packet_factory/PacketFactory.hpp"
 #include "systems/BackgroundSystem.hpp"
 #include "systems/DestroySystem.hpp"
@@ -20,8 +22,6 @@
 #include "systems/SoundSystem.hpp"
 #include "systems/SpriteAnimationSystem.hpp"
 #include "systems/VelocitySystem.hpp"
-#include "packet_factory/PacketFactory.hpp"
-#include "packet_disassembler/PacketDisassembler.hpp"
 
 #include <functional>
 
@@ -54,9 +54,9 @@ namespace client {
 
     void GameRenderer::_initSound()
     {
-        const auto sound = _ecs.createEntity(5);
+        const auto sound = _ecs.createEntity(cmn::idEntityForMusic);
         _sound = sound;
-        sound->addComponent<ecs::Sound>(2, true);
+        sound->addComponent<ecs::Sound>(cmn::idThemeMusic, true);
     }
 
     void GameRenderer::_initBackground()
