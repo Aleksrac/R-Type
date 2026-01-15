@@ -101,23 +101,21 @@ namespace client {
 
     void GameRenderer::_checkPlayerInput()
     {
-        static const std::array<
-            std::pair<cmn::Keys, std::function<bool(const ecs::InputPlayer&)>>, 6
-        > bindings = {{
-            { cmn::Keys::Up,       [](const auto& keyboard){ return keyboard.getUp(); } },
-            { cmn::Keys::Down,     [](const auto& keyboard){ return keyboard.getDown(); } },
-            { cmn::Keys::Left,     [](const auto& keyboard){ return keyboard.getLeft(); } },
-            { cmn::Keys::Right,    [](const auto& keyboard){ return keyboard.getRight(); } },
-            { cmn::Keys::Space,    [](const auto& keyboard){ return keyboard.getSpacebar(); } },
-            { cmn::Keys::R,         [](const auto& keyboard){ return keyboard.getReady(); } },
-        }};
-
-        const auto inputComp = _keyboard->getComponent<ecs::InputPlayer>();
+        static const std::vector<cmn::Keys> allActions = {
+            cmn::Keys::Up,
+            cmn::Keys::Down,
+            cmn::Keys::Left,
+            cmn::Keys::Right,
+            cmn::Keys::Space,
+            cmn::Keys::R
+        };
 
         bool isPressed = false;
-        for (const auto& [key, check] : bindings) {
-            if (check(*inputComp)) {
-                _sharedData->addUdpPacketToSend(cmn::PacketFactory::createInputPacket(_playerId, key, cmn::KeyState::Pressed));
+        for (const auto& action : allActions) {
+            if (_inputManager.isActionTriggered(action)) {
+                _sharedData->addUdpPacketToSend(
+                    cmn::PacketFactory::createInputPacket(_playerId, action, cmn::KeyState::Pressed)
+                );
                 isPressed = true;
             }
         }

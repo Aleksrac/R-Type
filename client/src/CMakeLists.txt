@@ -7,6 +7,8 @@ add_library(r-type_client_lib
         client/Client.hpp
         game_renderer/GameRenderer.cpp
         game_renderer/GameRenderer.hpp
+        input_manager/InputManager.cpp
+        input_manager/InputManager.hpp
 )
 
 target_include_directories(r-type_client_lib PUBLIC
@@ -18,6 +20,7 @@ target_link_libraries(r-type_client_lib
         SFML::Network
         r-type_ecs_lib
         r-type_common_lib
+        config++
 )
 
 add_executable(r-type_client
@@ -30,6 +33,12 @@ add_executable(r-type_client
         client/Client.hpp
         game_renderer/GameRenderer.cpp
         game_renderer/GameRenderer.hpp
+#        gamepad_handler/GamepadHandler.cpp
+#        gamepad_handler/GamepadHandler.hpp
+#        input_config/InputConfig.cpp
+#        input_config/InputConfig.hpp
+        input_manager/InputManager.cpp
+        input_manager/InputManager.hpp
 )
 
-target_link_libraries(r-type_client PRIVATE r-type_client_lib r-type_ecs_lib r-type_common_lib)
+target_link_libraries(r-type_client PRIVATE r-type_client_lib r-type_ecs_lib r-type_common_lib config++)
