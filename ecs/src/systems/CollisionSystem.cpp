@@ -49,7 +49,7 @@ namespace ecs
 
                 if (entity == other)
                     continue;
-                if (shouldIgnoreCollision(
+                if (_shouldIgnoreCollision(
                     collision->getTypeCollision(),
                     otherCollision->getTypeCollision()))
                     continue;
@@ -76,7 +76,7 @@ namespace ecs
         }
     }
 
-    bool CollisionSystem::shouldIgnoreCollision(const TypeCollision a, const TypeCollision b)
+    bool CollisionSystem::_shouldIgnoreCollision(const TypeCollision a, const TypeCollision b)
     {
         if (a == TypeCollision::PLAYER && b == TypeCollision::PLAYER)
             return true;
