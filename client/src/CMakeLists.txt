@@ -33,10 +33,6 @@ add_executable(r-type_client
         client/Client.hpp
         game_renderer/GameRenderer.cpp
         game_renderer/GameRenderer.hpp
-#        gamepad_handler/GamepadHandler.cpp
-#        gamepad_handler/GamepadHandler.hpp
-#        input_config/InputConfig.cpp
-#        input_config/InputConfig.hpp
         input_manager/InputManager.cpp
         input_manager/InputManager.hpp
 )
