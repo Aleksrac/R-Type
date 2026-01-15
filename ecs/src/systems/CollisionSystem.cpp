@@ -9,6 +9,17 @@
 
 namespace ecs
 {
+    void CollisionSystem::buildQuadTree(const std::vector<std::shared_ptr<Entity>> &entities)
+    {
+        _quadTree = std::make_unique<QuadTree>(AABB{0, 0, cmn::windowWidth, cmn::windowHeight});
+        for (const auto &entity : entities) {
+            auto collision = entity->getComponent<Collision>();
+            auto position = entity->getComponent<Position>();
+            AABB bound = {position->getX(), position->getY(), collision->getWidth(), collision->getHeight()};
+            _quadTree->insert(entity, bound);
+        }
+    }
+
     /**
     * Check if the entity can have a collision, and is there is one
     * check if there is a collision with another entity
@@ -17,64 +28,41 @@ namespace ecs
     void CollisionSystem::update(EcsManager &ecs)
     {
         const auto &entities = ecs.getEntities();
+        buildQuadTree(entities);
 
-        for (const auto &entity : entities) {
+        for (const auto &entity : entities)
+        {
             auto collision = entity->getComponent<Collision>();
-            auto position  = entity->getComponent<Position>();
+            auto position = entity->getComponent<Position>();
+            AABB bound{
+                position->getX(),
+                position->getY(),
+                collision->getWidth(),
+                collision->getHeight()
+            };
+            auto closeEntities = _quadTree->getEntities(bound);
 
-            if (!collision || !position)
-                continue;
+            for (const auto& other : closeEntities) {
+                auto otherCollision = other->getComponent<Collision>();
 
-            const float x = position->getX();
-            const float y = position->getY();
-            const float width  = collision->getWidth();
-            const float height = collision->getHeight();
-
-            for (const auto &other : entities) {
                 if (entity == other)
                     continue;
+                if (checkCollision(ecs, *entity, *other)) {
+                    const auto typeA = collision->getTypeCollision();
+                    const auto typeB = otherCollision->getTypeCollision();
 
-                auto otherCollision = other->getComponent<Collision>();
-                auto otherPosition  = other->getComponent<Position>();
+                    if (typeA == PLAYER_PROJECTILE &&
+                        typeB == ENEMY) {
+                        auto health = other->getComponent<Health>();
+                        auto shoot = entity->getComponent<Shoot>();
 
-                if (!otherCollision || !otherPosition)
-                    continue;
-
-                if (shouldIgnoreCollision(
-                        collision->getTypeCollision(),
-                        otherCollision->getTypeCollision()))
-                    continue;
-
-                const float ox = otherPosition->getX();
-                const float oy = otherPosition->getY();
-                const float oWidth  = otherCollision->getWidth();
-                const float oHeight = otherCollision->getHeight();
-
-                if (!isColliding(x, y, width, height, ox, oy, oWidth, oHeight))
-                    continue;
-
-                collision->setIsTrigger(true);
-                otherCollision->setIsTrigger(true);
-
-                const auto typeA = collision->getTypeCollision();
-                const auto typeB = otherCollision->getTypeCollision();
-
-                if (typeA == TypeCollision::PLAYER_PROJECTILE &&
-                    typeB == TypeCollision::ENEMY) {
-
-                    auto health = other->getComponent<Health>();
-                    auto shoot  = entity->getComponent<Shoot>();
-
-                    if (health && shoot)
                         health->setHealth(health->getHealth() - shoot->getDamage());
-
-                    entity->addComponent<Destroy>();
-                }
-
-                if (typeA == TypeCollision::PLAYER &&
-                    typeB == TypeCollision::ENEMY) {
-
-                    entity->addComponent<Destroy>();
+                        entity->addComponent<Destroy>();
+                    }
+                    else if (typeA == PLAYER &&
+                        typeB == ENEMY) {
+                        entity->addComponent<Destroy>();
+                    }
                 }
             }
         }
@@ -110,5 +98,81 @@ namespace ecs
                x1 + w1 > x2 &&
                y1 < y2 + h2 &&
                y1 + h1 > y2;
+    }
+
+    bool CollisionSystem::checkCollision(EcsManager& ecs, Entity a, Entity b)
+    {
+        const auto& posA = a.getComponent<Position>();
+        const auto& colA = a.getComponent<Collision>();
+
+        const auto& posB = b.getComponent<Position>();
+        const auto& colB = b.getComponent<Collision>();;
+
+        return isColliding(
+            posA->getX(), posA->getY(), colA->getWidth(), colA->getHeight(),
+            posB->getX(), posB->getY(), colB->getWidth(), colB->getHeight()
+        );
+    }
+
+    void QuadTree::insert(EntityRef entity, AABB& bound)
+    {
+        if (!_bound.intersects(bound)) {
+            return;
+        }
+        if (_entities.size() < MAX_ENTITIES || _depth >= MAX_DEPTH) {
+            _entities.push_back({entity, bound});
+            return;
+        }
+        if (!_northWest) {
+            subdivide();
+        }
+
+        if (_northWest->_bound.contains(bound)) _northWest->insert(entity, bound);
+        else if (_northEast->_bound.contains(bound)) _northEast->insert(entity, bound);
+        else if (_southWest->_bound.contains(bound)) _southWest->insert(entity, bound);
+        else if (_southEast->_bound.contains(bound)) _southEast->insert(entity, bound);
+    }
+
+    std::vector<EntityRef> QuadTree::getEntities(const AABB& bound) const
+    {
+        std::vector<EntityRef> targetEntity;
+
+        if (!_bound.intersects(bound)) {
+            return targetEntity;
+        }
+        for (auto& p : _entities)
+            if (p.second.intersects(bound))
+                targetEntity.push_back(p.first);
+
+        if (_northWest) {
+            auto nw = _northWest->getEntities(bound);
+            targetEntity.insert(targetEntity.end(), nw.begin(), nw.end());
+        }
+        if (_northEast) {
+            auto ne = _northEast->getEntities(bound);
+            targetEntity.insert(targetEntity.end(), ne.begin(), ne.end());
+        }
+        if (_southWest) {
+            auto sw = _southWest->getEntities(bound);
+            targetEntity.insert(targetEntity.end(), sw.begin(), sw.end());
+        }
+        if (_southEast) {
+            auto se = _southEast->getEntities(bound);
+            targetEntity.insert(targetEntity.end(), se.begin(), se.end());
+        }
+        return targetEntity;
+    }
+
+    void QuadTree::subdivide()
+    {
+        float hx = _bound.width / 2;
+        float hy = _bound.height / 2;
+        float x = _bound.x;
+        float y = _bound.y;
+
+        _northWest = std::make_unique<QuadTree>(AABB{x, y, hx, hy}, _depth + 1);
+        _northEast = std::make_unique<QuadTree>(AABB{x + hx, y, hx, hy}, _depth + 1);
+        _southWest = std::make_unique<QuadTree>(AABB{x, y + hy, hx, hy}, _depth + 1);
+        _southEast = std::make_unique<QuadTree>(AABB{x + hx, y + hy, hx, hy}, _depth + 1);
     }
 }
