@@ -38,7 +38,7 @@ namespace ecs {
         std::vector<EntityRef> getEntities(const AABB&) const;
 
     private:
-        void subdivide();
+        void _subdivide();
 
         AABB _bound;
         int _depth;
@@ -58,10 +58,10 @@ namespace ecs {
 
     private:
         static bool shouldIgnoreCollision(ecs::TypeCollision a, ecs::TypeCollision b);
-        static bool isColliding( float x1, float y1, float w1, float h1,
+        static bool _isColliding( float x1, float y1, float w1, float h1,
                                  float x2, float y2, float w2, float h2);
-        static bool checkCollision(ecs::EcsManager& ecs, ecs::Entity a,ecs:: Entity b);
-        void buildQuadTree(const std::vector<std::shared_ptr<Entity>> &entites);
+        static bool _checkCollision(ecs::EcsManager& ecs, ecs::Entity a,ecs:: Entity b);
+        void _buildQuadTree(const std::vector<std::shared_ptr<Entity>> &entites);
 
         std::unique_ptr<ecs::QuadTree> _quadTree;
     };

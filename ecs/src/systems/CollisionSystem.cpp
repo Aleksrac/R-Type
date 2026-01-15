@@ -11,7 +11,7 @@
 
 namespace ecs
 {
-    void CollisionSystem::buildQuadTree(const std::vector<std::shared_ptr<Entity>> &entities)
+    void CollisionSystem::_buildQuadTree(const std::vector<std::shared_ptr<Entity>> &entities)
     {
         _quadTree = std::make_unique<QuadTree>(AABB{0, 0, cmn::windowWidth, cmn::windowHeight});
         for (const auto &entity : entities) {
@@ -30,7 +30,7 @@ namespace ecs
     void CollisionSystem::update(EcsManager &ecs)
     {
         const auto &entities = ecs.getEntities();
-        buildQuadTree(entities);
+        _buildQuadTree(entities);
 
         for (const auto &entity : entities)
         {
@@ -53,7 +53,7 @@ namespace ecs
                     collision->getTypeCollision(),
                     otherCollision->getTypeCollision()))
                     continue;
-                if (checkCollision(ecs, *entity, *other)) {
+                if (_checkCollision(ecs, *entity, *other)) {
                     const auto typeA = collision->getTypeCollision();
                     const auto typeB = otherCollision->getTypeCollision();
 
@@ -98,7 +98,7 @@ namespace ecs
         return false;
     }
 
-    bool CollisionSystem::isColliding(
+    bool CollisionSystem::_isColliding(
         float x1, float y1, float w1, float h1,
         float x2, float y2, float w2, float h2)
     {
@@ -108,7 +108,7 @@ namespace ecs
                y1 + h1 > y2;
     }
 
-    bool CollisionSystem::checkCollision(EcsManager& ecs, Entity a, Entity b)
+    bool CollisionSystem::_checkCollision(EcsManager& ecs, Entity a, Entity b)
     {
         const auto& posA = a.getComponent<Position>();
         const auto& colA = a.getComponent<Collision>();
@@ -116,7 +116,7 @@ namespace ecs
         const auto& posB = b.getComponent<Position>();
         const auto& colB = b.getComponent<Collision>();;
 
-        return isColliding(
+        return _isColliding(
             posA->getX(), posA->getY(), colA->getWidth(), colA->getHeight(),
             posB->getX(), posB->getY(), colB->getWidth(), colB->getHeight()
         );
@@ -132,7 +132,7 @@ namespace ecs
             return;
         }
         if (!_northWest) {
-            subdivide();
+            _subdivide();
         }
 
         if (_northWest->_bound.contains(bound)) _northWest->insert(entity, bound);
@@ -172,7 +172,7 @@ namespace ecs
         return targetEntity;
     }
 
-    void QuadTree::subdivide()
+    void QuadTree::_subdivide()
     {
         float hx = _bound.width / 2;
         float hy = _bound.height / 2;
