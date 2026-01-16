@@ -43,8 +43,11 @@ namespace cmn {
             case EntityType::Plane:
                 _initEnemy(ecs, entity, context, type);
                 break;
-            case cmn::EntityType::PlayerProjectile:
+        case cmn::EntityType::PlayerProjectile:
                 _initProjectile(ecs, entity, context);
+                break;
+            case cmn::EntityType::MonsterProjectile:
+                _initMonsterProjectile(ecs, entity, context);
                 break;
             case cmn::EntityType::Boss1:
                 _initBoss(ecs, entity, context, hp);
@@ -90,6 +93,8 @@ namespace cmn {
                 monsterCollisionWidth,
                 monsterCollisionHeight
             );
+            entity->addComponent<ecs::Velocity>(250, 0);
+            entity->addComponent<ecs::Shoot>(cmn::playerDamage, 3, 0.0f);
         }
     }
 
@@ -103,9 +108,26 @@ namespace cmn {
         } else {
             entity->addComponent<ecs::Shoot>(cmn::playerDamage, 0);
             entity->addComponent<ecs::Collision>(
-                ecs::TypeCollision::PLAYER_PROJECTILE,
+                ecs::PLAYER_PROJECTILE,
                 cmn::playerProjectileCollisionWidth,
                 cmn::playerProjectileCollisionHeight
+            );
+        }
+    }
+
+    void EntityFactory::_initMonsterProjectile(ecs::EcsManager &ecs,std::shared_ptr<ecs::Entity> entity, Context context) {
+        entity->addComponent<ecs::Velocity>(cmn::monsterProjectileSpeed, cmn::monsterProjectileDirection);
+
+        if (context == Context::CLIENT) {
+            entity->addComponent<ecs::Sprite>(ecs.getResourceManager().getTexture(std::string(cmn::monsterProjectileSpriteSheet)), cmn::monsterProjectileScale);
+            entity->addComponent<ecs::Animation>(cmn::monsterProjectileAnimationSize, cmn::monsterProjectileAnimationOffset, cmn::monsterProjectileAnimationNumberFrame);
+            entity->addComponent<ecs::Sound>(1, false);
+        } else {
+            entity->addComponent<ecs::Shoot>(cmn::monsterDamage, 0);
+            entity->addComponent<ecs::Collision>(
+                ecs::ENEMY_PROJECTILE,
+                cmn::monsterProjectileCollisionWidth,
+                cmn::monsterProjectileCollisionHeight
             );
         }
     }
