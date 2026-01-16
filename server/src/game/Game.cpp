@@ -70,6 +70,7 @@ namespace server {
             _createEnemy(currentLevel, enemyClock, generator);
 
             _checkSpaceBar();
+            _enemyShoot();
 
             if (elapsedTime > frameTimer) {
                 fpsClock.restart();
@@ -151,6 +152,54 @@ namespace server {
         }
     }
 
+    void Game::_enemyShoot()
+     {
+         for (auto const &entity : _ecs.getEntitiesWithComponent<ecs::Shoot>())
+         {
+             auto input = entity->getComponent<ecs::InputPlayer>();
+             const auto shoot = entity->getComponent<ecs::Shoot>();
+             const auto collision= entity->getComponent<ecs::Collision>();
+
+             if (!shoot && !collision) { continue; }
+
+             if (collision && collision->getTypeCollision() == ecs::ENEMY)
+             {
+                 auto posCpn = entity->getComponent<ecs::Position>();
+                 shoot->setShootTimer(shoot->getShootTimer() + _ecs.getDeltaTime());
+
+                 if (shoot->getShootTimer() >= shoot->getCooldown()) {
+                     shoot->setShootTimer(0);
+
+                     auto projectile = _ecs.createEntity();
+
+                     float posX = posCpn->getX() - collision->getWidth() - 10;
+                     float posY = posCpn->getY();
+
+                     projectile->addComponent<ecs::Position>(posX, posY);
+                     projectile->addComponent<ecs::Velocity>(
+                         cmn::monsterProjectileSpeed,
+                         cmn::monsterProjectileDirection
+                     );
+                     projectile->addComponent<ecs::Collision>(
+                         ecs::TypeCollision::ENEMY_PROJECTILE,
+                         cmn::monster2CollisionWidth,
+                         cmn::monster2MaxSpawnPositionHeight
+                     );
+
+                     _sharedData->addUdpPacketToSend(
+                         cmn::PacketFactory::createNewEntityPacket(
+                             cmn::EntityType::MonsterProjectile,
+                             {posX, posY},
+                             projectile->getId()
+                         )
+                     );
+                     shoot->setTimeSinceLastShot(0);
+                     shoot->setShootTimer(0.f);
+                 }
+             }
+         }
+     }
+
     void Game::_createEnemy(Level &currentLevel, sf::Clock &enemyClock, std::minstd_rand0 &generator)
      {
          auto &waves = currentLevel.getWaves();
@@ -180,7 +229,7 @@ namespace server {
                      cmn::monsterCollisionWidth,
                      cmn::monsterCollisionHeight
                  );
-                 newEnemy->addComponent<ecs::Shoot>(cmn::playerDamage, 0, 5.0f);
+                 newEnemy->addComponent<ecs::Shoot>(cmn::playerDamage, 3, 0.0f);
                  newEnemy->addComponent<ecs::Velocity>(250, 0);
 
                  std::pair<float, float> const position = {
