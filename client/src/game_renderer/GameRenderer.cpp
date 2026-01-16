@@ -103,24 +103,32 @@ namespace client {
             if (event->is<sf::Event::Closed>()) {
                 _window.close();
             }
+            else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            {
+                if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
+                    _window.close();
+            }
         }
     }
 
     void GameRenderer::_checkPlayerInput()
     {
-        bool isPressed = false;
-            for (uint8_t i = 0; i < static_cast<uint8_t>(cmn::Keys::None); ++i) {
-            auto action = static_cast<cmn::Keys>(i);
-            if (_inputManager.isActionTriggered(action)) {
+        for (uint8_t i = 0; i < static_cast<uint8_t>(cmn::Keys::None); ++i) {
+            auto key = static_cast<cmn::Keys>(i);
+            bool currentPressed = _inputManager.isActionTriggered(key);
+            bool alreadyPressed = _previousInputs[key];
+
+            if (currentPressed && !alreadyPressed) {
                 _sharedData->addUdpPacketToSend(
-                    cmn::PacketFactory::createInputPacket(_playerId, action, cmn::KeyState::Pressed)
+                    cmn::PacketFactory::createInputPacket(_playerId, key, cmn::KeyState::Pressed)
                 );
-                isPressed = true;
             }
-        }
-        if (!isPressed) {
-            _sharedData->addUdpPacketToSend(
-                cmn::PacketFactory::createInputPacket(_playerId, cmn::Keys::None, cmn::KeyState::Pressed));
+            else if (!currentPressed && alreadyPressed) {
+                _sharedData->addUdpPacketToSend(
+                    cmn::PacketFactory::createInputPacket(_playerId, key, cmn::KeyState::Released)
+                );
+            }
+            _previousInputs[key] = currentPressed;
         }
     }
 
