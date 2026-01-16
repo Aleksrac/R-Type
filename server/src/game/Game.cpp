@@ -175,21 +175,14 @@ namespace server {
                  if (shoot->getShootTimer() >= shoot->getCooldown()) {
                      shoot->setShootTimer(0);
 
-                     auto projectile = _ecs.createEntity();
-
                      float posX = posCpn->getX() - collision->getWidth() - 10;
                      float posY = posCpn->getY() + 15;
 
-                     projectile->addComponent<ecs::Position>(posX, posY);
-                     projectile->addComponent<ecs::Velocity>(
-                         cmn::monsterProjectileSpeed,
-                         cmn::monsterProjectileDirection
-                     );
-                     projectile->addComponent<ecs::Collision>(
-                         ecs::TypeCollision::ENEMY_PROJECTILE,
-                         cmn::monster2CollisionWidth,
-                         cmn::monster2MaxSpawnPositionHeight
-                     );
+                     auto projectile = cmn::EntityFactory::createEntity(_ecs,
+                          cmn::EntityType::MonsterProjectile,
+                          posX,
+                          posY,
+                          cmn::EntityFactory::Context::SERVER);
 
                      _sharedData->addUdpPacketToSend(
                          cmn::PacketFactory::createNewEntityPacket(
