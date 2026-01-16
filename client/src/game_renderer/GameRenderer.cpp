@@ -41,7 +41,7 @@ namespace client {
         _ecs.addSystem<ecs::SoundSystem>();
         _ecs.addSystem<ecs::PlayerAnimationSystem>();
         _ecs.addSystem<ecs::SpriteAnimationSystem>();
-        _ecs.addSystem<ecs::RenderSystem>(_window);
+        _ecs.addSystem<ecs::RenderSystem>(_window, _inputManager.getShaderName());
         _ecs.addSystem<ecs::DestroySystem>();
         _ecs.addSystem<ecs::VelocitySystem>();
         _ecs.addSystem<ecs::BackgroundSystem>();
@@ -108,23 +108,13 @@ namespace client {
 
     void GameRenderer::_checkPlayerInput()
     {
-        static const std::array<
-            std::pair<cmn::Keys, std::function<bool(const ecs::InputPlayer&)>>, 6
-        > bindings = {{
-            { cmn::Keys::Up,       [](const auto& keyboard){ return keyboard.getUp(); } },
-            { cmn::Keys::Down,     [](const auto& keyboard){ return keyboard.getDown(); } },
-            { cmn::Keys::Left,     [](const auto& keyboard){ return keyboard.getLeft(); } },
-            { cmn::Keys::Right,    [](const auto& keyboard){ return keyboard.getRight(); } },
-            { cmn::Keys::Space,    [](const auto& keyboard){ return keyboard.getSpacebar(); } },
-            { cmn::Keys::R,         [](const auto& keyboard){ return keyboard.getReady(); } },
-        }};
-
-        const auto inputComp = _keyboard->getComponent<ecs::InputPlayer>();
-
         bool isPressed = false;
-        for (const auto& [key, check] : bindings) {
-            if (check(*inputComp)) {
-                _sharedData->addUdpPacketToSend(cmn::PacketFactory::createInputPacket(_playerId, key, cmn::KeyState::Pressed));
+            for (uint8_t i = 0; i < static_cast<uint8_t>(cmn::Keys::None); ++i) {
+            auto action = static_cast<cmn::Keys>(i);
+            if (_inputManager.isActionTriggered(action)) {
+                _sharedData->addUdpPacketToSend(
+                    cmn::PacketFactory::createInputPacket(_playerId, action, cmn::KeyState::Pressed)
+                );
                 isPressed = true;
             }
         }

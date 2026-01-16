@@ -96,6 +96,7 @@ namespace cmn {
     constexpr std::string_view folderLevels = "Levels";
     constexpr std::array<std::string_view, 2> nameTypeEnemies = {"plane_enemy", "crochet_enemy"};
     constexpr std::array<std::string_view, 2> nameTypeBoss = {"boss_type_1", "boss_type_2"};
+    constexpr std::string_view configClientFile = "config/client.cfg";
 
     constexpr int idEntityForMusic = 5;
     constexpr int idThemeMusic = 2;
