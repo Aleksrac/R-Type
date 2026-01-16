@@ -38,7 +38,7 @@ namespace client {
         std::map<cmn::Keys, InputBinding> _bindings;
         void _initDefaultBindings();
         [[nodiscard]] bool _checkGamepad(const InputBinding& bind) const;
-        [[nodiscard]] sf::Keyboard::Key _stringToKey(const std::string& keyName) const;
+        [[nodiscard]] sf::Keyboard::Key _stringToKey(const std::string& keyName) ;
         std::string _shader;
     };
 }
