@@ -8,9 +8,9 @@
 #include "GameRenderer.hpp"
 
 #include "client/Client.hpp"
-#include "components/Background.hpp"
-#include "components/Sound.hpp"
 #include "constants/GameConstants.hpp"
+#include "entity_factory/EntityFactory.hpp"
+#include "components/Sound.hpp"
 #include "enums/Key.hpp"
 #include "systems/BackgroundSystem.hpp"
 #include "systems/DestroySystem.hpp"
@@ -38,7 +38,7 @@ namespace client {
         _ecs.addSystem<ecs::SoundSystem>();
         _ecs.addSystem<ecs::PlayerAnimationSystem>();
         _ecs.addSystem<ecs::SpriteAnimationSystem>();
-        _ecs.addSystem<ecs::RenderSystem>(_window);
+        _ecs.addSystem<ecs::RenderSystem>(_window, _inputManager.getShaderName());
         _ecs.addSystem<ecs::DestroySystem>();
         _ecs.addSystem<ecs::VelocitySystem>();
         _ecs.addSystem<ecs::BackgroundSystem>();
@@ -60,43 +60,37 @@ namespace client {
 
     void GameRenderer::_initBackground()
     {
-        constexpr sf::Vector2f scale(1.0F, 1.0F);
-        constexpr sf::Vector2f posZero(0.0F, 0.0F);
-        constexpr sf::Vector2f posOne(1920, 0);
-        constexpr sf::Vector2f posTwo(3840, 0);
-        constexpr sf::Vector2f veloFirstBackground(10.0F, 0.5F);
-        constexpr sf::Vector2f veloSecondBackground(20.0F, 0.5F);
-        constexpr int sizeFistBackground = 1920;
-        constexpr int sizeSecondBackground = 3840;
-        const auto pathFistBackground = std::string("./assets/bg-stars.png");
-        const auto pathSecondBackground = std::string("./assets/planets_background.png");
-        constexpr uint8_t firstId = 0;
-        constexpr uint8_t secondId = 1;
-        constexpr uint8_t thirdId = 2;
-        constexpr uint8_t fourId = 3;
+        cmn::EntityFactory::createEntity(
+            _ecs,
+            cmn::EntityType::BackgroundStars,
+            cmn::posZero.x, cmn::posZero.y,
+            cmn::EntityFactory::Context::CLIENT,
+            0, cmn::idBg1
+        );
 
-        const auto background = _ecs.createEntity(firstId);
-        background->addComponent<ecs::Position>(posZero.x, posZero.y);
-        background->addComponent<ecs::Velocity>(veloFirstBackground.x, veloFirstBackground.y);
-        background->addComponent<ecs::Sprite>(_ecs.getResourceManager().getTexture(pathFistBackground), scale);
-        background->addComponent<ecs::Background>(sizeFistBackground);
+        cmn::EntityFactory::createEntity(
+            _ecs,
+            cmn::EntityType::BackgroundStars,
+            cmn::posOne.x, cmn::posOne.y,
+            cmn::EntityFactory::Context::CLIENT,
+            0, cmn::idBg2
+        );
 
-        const auto backgroundNext = _ecs.createEntity(secondId);
-        backgroundNext->addComponent<ecs::Position>(posOne.x, posOne.y);
-        backgroundNext->addComponent<ecs::Velocity>(veloFirstBackground.x, veloFirstBackground.y);
-        backgroundNext->addComponent<ecs::Sprite>(_ecs.getResourceManager().getTexture(pathFistBackground), scale);
-        backgroundNext->addComponent<ecs::Background>(sizeFistBackground);
+        cmn::EntityFactory::createEntity(
+            _ecs,
+            cmn::EntityType::BackgroundPlanets,
+            cmn::posZero.x, cmn::posZero.y,
+            cmn::EntityFactory::Context::CLIENT,
+            0, cmn::idStart1
+        );
 
-        const auto start = _ecs.createEntity(thirdId);
-        start->addComponent<ecs::Position>(posZero.x, posZero.y);
-        start->addComponent<ecs::Velocity>(veloSecondBackground.x, veloSecondBackground.y);
-        start->addComponent<ecs::Sprite>(_ecs.getResourceManager().getTexture(pathSecondBackground), scale);
-        start->addComponent<ecs::Background>(sizeSecondBackground);
-        const auto startNext = _ecs.createEntity(fourId);
-        startNext->addComponent<ecs::Position>(posTwo.x, posTwo.y);
-        startNext->addComponent<ecs::Velocity>(veloSecondBackground.x, veloSecondBackground.y);
-        startNext->addComponent<ecs::Sprite>(_ecs.getResourceManager().getTexture(pathSecondBackground), scale);
-        startNext->addComponent<ecs::Background>(sizeSecondBackground);
+        cmn::EntityFactory::createEntity(
+            _ecs,
+            cmn::EntityType::BackgroundPlanets,
+            cmn::posTwo.x, cmn::posTwo.y,
+            cmn::EntityFactory::Context::CLIENT,
+            0, cmn::idStart2
+        );
     }
 
 
@@ -111,23 +105,11 @@ namespace client {
 
     void GameRenderer::_checkPlayerInput()
     {
-        static const std::array<
-            std::pair<cmn::Keys, std::function<bool(const ecs::InputPlayer&)>>, 6
-        > bindings = {{
-            { cmn::Keys::Up,       [](const auto& keyboard){ return keyboard.getUp(); } },
-            { cmn::Keys::Down,     [](const auto& keyboard){ return keyboard.getDown(); } },
-            { cmn::Keys::Left,     [](const auto& keyboard){ return keyboard.getLeft(); } },
-            { cmn::Keys::Right,    [](const auto& keyboard){ return keyboard.getRight(); } },
-            { cmn::Keys::Space,    [](const auto& keyboard){ return keyboard.getSpacebar(); } },
-            { cmn::Keys::R,         [](const auto& keyboard){ return keyboard.getReady(); } },
-        }};
-
-        const auto inputComp = _keyboard->getComponent<ecs::InputPlayer>();
-
         bool isPressed = false;
-        for (const auto& [key, check] : bindings) {
-            if (check(*inputComp)) {
-                cmn::inputData data = {_playerId, key, cmn::KeyState::Pressed};
+        for (uint8_t i = 0; i < static_cast<uint8_t>(cmn::Keys::None); ++i) {
+            auto action = static_cast<cmn::Keys>(i);
+            if (_inputManager.isActionTriggered(action)) {
+                cmn::inputData data = {_playerId, action, cmn::KeyState::Pressed};
                 _sharedData->addUdpPacketToSend(data);
                 isPressed = true;
             }
@@ -193,7 +175,6 @@ namespace client {
                 if (elapsedTime > inputCooldown) {
                     _updateGame();
                     inputClock.restart();
-                    elapsedTime = 0;
                 }
             } else {
                 _updateLobby();

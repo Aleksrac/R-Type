@@ -163,7 +163,7 @@ namespace cmn {
 
     TEST_F(PacketDisassemblerTest, DisassembleNewEntityPacketMonster)
     {
-        newEntityData newEntData{75, EntityType::Monster, 500.0f, 600.0f};
+        newEntityData newEntData{75, EntityType::Plane, 500.0f, 600.0f};
         CustomPacket packet = PacketFactory::createPacket(newEntData, sequencePacketMap);
         auto [header, result] = PacketDisassembler::disassemble(packet);
 
@@ -176,7 +176,7 @@ namespace cmn {
             }
         }, result);
         EXPECT_EQ(data.entityId, 75);
-        EXPECT_EQ(data.type, EntityType::Monster);
+        EXPECT_EQ(data.type, EntityType::Plane);
         EXPECT_NEAR(data.posX, 500.0f, 0.01f);
         EXPECT_NEAR(data.posY, 600.0f, 0.01f);
         EXPECT_EQ(header.protocolId, newEntityProtocolId);
@@ -281,7 +281,7 @@ namespace cmn {
         }
 
         {
-            newEntityData newEntData{40, EntityType::Monster, 50.0f, 75.0f};
+            newEntityData newEntData{40, EntityType::Plane, 50.0f, 75.0f};
             auto packet = PacketFactory::createPacket(newEntData, sequencePacketMap);
             auto [header, result] = PacketDisassembler::disassemble(packet);
         }
