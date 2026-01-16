@@ -39,6 +39,26 @@ namespace ecs {
         return _r;
     }
 
+    bool InputPlayer::getOne() const
+    {
+        return _one;
+    }
+
+    bool InputPlayer::getTwo() const
+    {
+        return _two;
+    }
+
+    bool InputPlayer::getThree() const
+    {
+        return _three;
+    }
+
+    bool InputPlayer::getFour() const
+    {
+        return _four;
+    }
+
     void InputPlayer::setDown(bool down)
     {
         _down = down;
@@ -67,4 +87,25 @@ namespace ecs {
     {
         _r = r;
     }
+
+    void InputPlayer::setOne(bool one)
+    {
+        _one = one;
+    }
+
+    void InputPlayer::setTwo(bool two)
+    {
+        _two = two;
+    }
+
+    void InputPlayer::setThree(bool three)
+    {
+        _three = three;
+    }
+
+    void InputPlayer::setFour(bool four)
+    {
+        _four = four;
+    }
+
 }

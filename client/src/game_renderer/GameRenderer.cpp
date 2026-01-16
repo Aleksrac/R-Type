@@ -9,7 +9,11 @@
 
 #include "client/Client.hpp"
 #include "components/Background.hpp"
+#include "constants/GameConstants.hpp"
 #include "enums/Key.hpp"
+#include "enums/LobbyType.hpp"
+#include "packet_disassembler/PacketDisassembler.hpp"
+#include "packet_factory/PacketFactory.hpp"
 #include "systems/BackgroundSystem.hpp"
 #include "systems/DestroySystem.hpp"
 #include "systems/InputSystem.hpp"
@@ -17,14 +21,12 @@
 #include "systems/RenderSystem.hpp"
 #include "systems/SpriteAnimationSystem.hpp"
 #include "systems/VelocitySystem.hpp"
-#include "packet_factory/PacketFactory.hpp"
-#include "packet_disassembler/PacketDisassembler.hpp"
 
 #include <functional>
 
 namespace client {
 
-    GameRenderer::GameRenderer(const std::shared_ptr<cmn::SharedData> &data) : _sharedData(data)
+    GameRenderer::GameRenderer(const std::shared_ptr<ClientSharedData> &data) : _sharedData(data)
     {
         sf::Vector2u const vector = sf::VideoMode::getDesktopMode().size;
         _window = sf::RenderWindow(sf::VideoMode({vector.x, vector.y}), "R-Type");
@@ -32,20 +34,29 @@ namespace client {
 
     void GameRenderer::_initEcsSystem()
     {
-        _ecs.addSystem<ecs::InputSystem>();
-        _ecs.addSystem<ecs::PlayerAnimationSystem>();
-        _ecs.addSystem<ecs::SpriteAnimationSystem>();
-        _ecs.addSystem<ecs::RenderSystem>(_window);
-        _ecs.addSystem<ecs::DestroySystem>();
-        _ecs.addSystem<ecs::VelocitySystem>();
-        _ecs.addSystem<ecs::BackgroundSystem>();
+        _gameEcs.addSystem<ecs::InputSystem>();
+        _gameEcs.addSystem<ecs::PlayerAnimationSystem>();
+        _gameEcs.addSystem<ecs::SpriteAnimationSystem>();
+        _gameEcs.addSystem<ecs::RenderSystem>(_window);
+        _gameEcs.addSystem<ecs::DestroySystem>();
+        _gameEcs.addSystem<ecs::VelocitySystem>();
+        _gameEcs.addSystem<ecs::BackgroundSystem>();
+
+        _menuEcs.addSystem<ecs::InputSystem>();
+        _menuEcs.addSystem<ecs::RenderSystem>(_window);
+        _menuEcs.addSystem<ecs::DestroySystem>();
+        _menuEcs.addSystem<ecs::BackgroundSystem>();
     }
 
     void GameRenderer::_initKeyboard()
     {
-        const auto keyboard = _ecs.createEntity(4);
-        keyboard->addComponent<ecs::InputPlayer>();
-        _keyboard = keyboard;
+        const auto gameKeyboard = _gameEcs.createEntity(4);
+        gameKeyboard->addComponent<ecs::InputPlayer>();
+        _gameKeyboard = gameKeyboard;
+
+        const auto menuKeyboard = _menuEcs.createEntity(0);
+        menuKeyboard->addComponent<ecs::InputPlayer>();
+        _menuKeyboard = menuKeyboard;
     }
 
     void GameRenderer::_initBackground()
@@ -65,27 +76,27 @@ namespace client {
         constexpr uint8_t thirdId = 2;
         constexpr uint8_t fourId = 3;
 
-        const auto background = _ecs.createEntity(firstId);
+        const auto background = _gameEcs.createEntity(firstId);
         background->addComponent<ecs::Position>(posZero.x, posZero.y);
         background->addComponent<ecs::Velocity>(veloFirstBackground.x, veloFirstBackground.y);
-        background->addComponent<ecs::Sprite>(_ecs.getResourceManager().getTexture(pathFistBackground), scale);
+        background->addComponent<ecs::Sprite>(_gameEcs.getResourceManager().getTexture(pathFistBackground), scale);
         background->addComponent<ecs::Background>(sizeFistBackground);
 
-        const auto backgroundNext = _ecs.createEntity(secondId);
+        const auto backgroundNext = _gameEcs.createEntity(secondId);
         backgroundNext->addComponent<ecs::Position>(posOne.x, posOne.y);
         backgroundNext->addComponent<ecs::Velocity>(veloFirstBackground.x, veloFirstBackground.y);
-        backgroundNext->addComponent<ecs::Sprite>(_ecs.getResourceManager().getTexture(pathFistBackground), scale);
+        backgroundNext->addComponent<ecs::Sprite>(_gameEcs.getResourceManager().getTexture(pathFistBackground), scale);
         backgroundNext->addComponent<ecs::Background>(sizeFistBackground);
 
-        const auto start = _ecs.createEntity(thirdId);
+        const auto start = _gameEcs.createEntity(thirdId);
         start->addComponent<ecs::Position>(posZero.x, posZero.y);
         start->addComponent<ecs::Velocity>(veloSecondBackground.x, veloSecondBackground.y);
-        start->addComponent<ecs::Sprite>(_ecs.getResourceManager().getTexture(pathSecondBackground), scale);
+        start->addComponent<ecs::Sprite>(_gameEcs.getResourceManager().getTexture(pathSecondBackground), scale);
         start->addComponent<ecs::Background>(sizeSecondBackground);
-        const auto startNext = _ecs.createEntity(fourId);
+        const auto startNext = _gameEcs.createEntity(fourId);
         startNext->addComponent<ecs::Position>(posTwo.x, posTwo.y);
         startNext->addComponent<ecs::Velocity>(veloSecondBackground.x, veloSecondBackground.y);
-        startNext->addComponent<ecs::Sprite>(_ecs.getResourceManager().getTexture(pathSecondBackground), scale);
+        startNext->addComponent<ecs::Sprite>(_gameEcs.getResourceManager().getTexture(pathSecondBackground), scale);
         startNext->addComponent<ecs::Background>(sizeSecondBackground);
     }
 
@@ -99,7 +110,7 @@ namespace client {
         }
     }
 
-    void GameRenderer::_checkPlayerInput()
+    void GameRenderer::_checkGamePlayerInput()
     {
         static const std::array<
             std::pair<cmn::Keys, std::function<bool(const ecs::InputPlayer&)>>, 6
@@ -112,7 +123,7 @@ namespace client {
             { cmn::Keys::R,         [](const auto& keyboard){ return keyboard.getReady(); } },
         }};
 
-        const auto inputComp = _keyboard->getComponent<ecs::InputPlayer>();
+        const auto inputComp = _gameKeyboard->getComponent<ecs::InputPlayer>();
 
         bool isPressed = false;
         for (const auto& [key, check] : bindings) {
@@ -127,14 +138,35 @@ namespace client {
         }
     }
 
+    void GameRenderer::_checkMenuPlayerInput() const
+    {
+        const auto inputComp = _menuKeyboard->getComponent<ecs::InputPlayer>();
+
+        if (_currentState == ClientState::Menu) {
+            if (inputComp->getOne()) {
+                std::cout << "Ask to start solo mode with id: "<< _playerId << std::endl;
+                _sharedData->addTcpPacketToSend(cmn::PacketFactory::createSelectModePacket(cmn::LobbyType::Solo, _playerId));
+            } else if (inputComp->getTwo()) {
+                _sharedData->addTcpPacketToSend(cmn::PacketFactory::createSelectModePacket(cmn::LobbyType::Matchmaking, _playerId));
+            } else if (inputComp->getThree()) {
+                _sharedData->addTcpPacketToSend(cmn::PacketFactory::createSelectModePacket(cmn::LobbyType::Lobby, _playerId));
+            }
+        }
+        if (_currentState == ClientState::Waiting) {
+            if (inputComp->getFour()) {
+                _sharedData->addTcpPacketToSend(cmn::PacketFactory::createLeaveLobbyPacket(_playerId));
+            }
+        }
+    }
+
     void GameRenderer::_updateNetwork()
     {
         static const std::unordered_map<int, uint64_t> emptyMap{};
 
-        if (_isRunning) {
+        if (_currentState == ClientState::InGame) {
             while (auto packet = _sharedData->getUdpReceivedPacket()) {
                 if (auto data = cmn::PacketDisassembler::disassemble(packet.value())) {
-                    _translator.translate(_ecs, data.value(), emptyMap);
+                    _translator.translate(_gameEcs, data.value(), emptyMap);
                 }
             }
         } else {
@@ -145,8 +177,15 @@ namespace client {
                             using T = std::decay_t<decltype(arg)>;
                             if constexpr (std::is_same_v<T, cmn::connectionData>) {
                                 _playerId = arg.playerId;
+                                std::cout << "player id: " << _playerId << "\n";
                             } else if constexpr (std::is_same_v<T, cmn::startGameData>) {
-                                _isRunning = true;
+                                _currentState = ClientState::InGame;
+                                std::cout << "starting game\n";
+                            } else if constexpr (std::is_same_v<T, cmn::joinLobbyData>) {
+                                _currentState = ClientState::Waiting;
+                                std::cout << "joining lobby" << "\n";
+                            } else if constexpr (std::is_same_v<T, cmn::errorTcpData>) {
+                                //TODO: implement error id which are in constant
                             }
                         },
                         data.value());
@@ -155,44 +194,60 @@ namespace client {
         }
     }
 
-    void GameRenderer::_updateLobby()
+    void GameRenderer::_updateMenu(sf::Clock &inputClock, float elapsedTime, float deltaTime)
     {
-        _checkPlayerInput();
+        constexpr float inputCooldown = 0.1F;
+
+        if (elapsedTime > inputCooldown) {
+            _checkGamePlayerInput();
+            inputClock.restart();
+            elapsedTime = 0;
+        }
+        _checkMenuPlayerInput();
+        _menuEcs.setDeltaTime(deltaTime);
+        _menuEcs.updateSystems();
     }
 
-    void GameRenderer::_updateGame()
+    void GameRenderer::_updateGame(sf::Clock &inputClock, float elapsedTime, float deltaTime)
     {
-        // if (_inputClock.getElapsedTime().asSeconds() < _inputCooldown) {
-        //     return;
-        // }
-        _checkPlayerInput();
-        //_inputClock.restart();
+        constexpr float inputCooldown = 0.016F;
+
+        if (elapsedTime > inputCooldown) {
+            _checkGamePlayerInput();
+            inputClock.restart();
+            elapsedTime = 0;
+        }
+        _gameEcs.setDeltaTime(deltaTime);
+        _gameEcs.updateSystems();
     }
 
     void GameRenderer::run()
     {
         sf::Clock inputClock;
-        constexpr float inputCooldown = 0.016F;
         float elapsedTime = 0;
 
         _initEcsSystem();
         _initBackground();
         _initKeyboard();
-        while (_window.isOpen()) {
+        while (_window.isOpen() && _sharedData->isGameRunning()) {
             const float deltaTime = _clock.restart().asSeconds();
             _updateNetwork();
             _handleEvents();
-            if (_isRunning) {
-                if (elapsedTime > inputCooldown) {
-                    _updateGame();
-                    inputClock.restart();
-                    elapsedTime = 0;
-                }
-            } else {
-                _updateLobby();
+            switch (_currentState) {
+                case ClientState::Menu:
+                    _updateMenu(inputClock, elapsedTime, deltaTime);
+                    break;
+                case ClientState::Waiting:
+                    _updateMenu(inputClock, elapsedTime, deltaTime);
+                    break;
+                case ClientState::InGame:
+                    _updateGame(inputClock, elapsedTime, deltaTime);
+                    break;
+                case ClientState::GameOver:
+                    //TODO: same and maybe win ?
+                    _window.close();
+                    return;
             }
-            _ecs.setDeltaTime(deltaTime);
-            _ecs.updateSystems();
             elapsedTime = inputClock.getElapsedTime().asSeconds();
         }
         _window.close();

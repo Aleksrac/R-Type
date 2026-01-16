@@ -24,7 +24,7 @@ namespace client {
             explicit Client(const std::shared_ptr<ClientSharedData> &data);
             [[nodiscard]] int bindPorts();
             [[nodiscard]] int connectToHost(const std::string &address, uint16_t port);
-            [[noreturn]] int run();
+            int run();
 
             int sendUdp(cmn::CustomPacket &packet);
             int sendTcp(cmn::CustomPacket &packet);

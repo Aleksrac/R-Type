@@ -77,4 +77,16 @@ namespace client {
         return packet;
     }
 
+    void ClientSharedData::stopGame()
+    {
+        std::lock_guard const lock(_mutex);
+        _isRunning = false;
+    }
+
+    bool ClientSharedData::isGameRunning()
+    {
+        std::lock_guard const lock(_mutex);
+        return _isRunning;
+    }
+
 }

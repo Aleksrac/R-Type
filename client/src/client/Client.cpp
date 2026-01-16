@@ -74,7 +74,7 @@ namespace client {
         cmn::CustomPacket packet;
         constexpr int waitTime = 50;
 
-        while (true) {
+        while (_sharedData->isGameRunning()) {
             if (!selector.wait(sf::milliseconds(waitTime))) {
                 continue;
             }
@@ -103,10 +103,14 @@ namespace client {
         unsigned short port = 0;
         cmn::CustomPacket packet {};
 
-        while (true) {
+        while (_sharedData->isGameRunning()) {
             auto receivedData = _sharedData->getUdpPacketToSend();
             if (receivedData.has_value()) {
                 sendUdp(receivedData.value());
+            }
+            auto tcpData = _sharedData->getTcpPacketToSend();
+            if (tcpData.has_value()) {
+                sendTcp(tcpData.value());
             }
             if (_udpSocket.receive(packet, sender, port) != sf::Socket::Status::Done) {
 //                std::cerr << "[ERROR]: failed to receive UDP packet" << "\n";
@@ -115,5 +119,6 @@ namespace client {
             _sharedData->addUdpReceivedPacket(packet);
             //std::cout << "[RECEIVED]: UDP Packet received" << "\n";
         }
+        return 0;
     }
 }

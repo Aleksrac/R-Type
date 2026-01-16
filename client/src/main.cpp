@@ -41,7 +41,9 @@ int main(const int argc, char *argv[])
         client::GameRenderer game(data);
         auto networkThread = std::jthread([&client] { client.run(); });
         game.run();
+        data->stopGame();
     } catch (std::exception &e) {
+        data->stopGame();
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;

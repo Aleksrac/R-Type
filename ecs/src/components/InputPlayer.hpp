@@ -21,11 +21,19 @@ class InputPlayer : public Component {
     [[nodiscard]] bool getRight() const;
     [[nodiscard]] bool getSpacebar() const;
     [[nodiscard]] bool getReady() const;
+    [[nodiscard]] bool getOne() const;
+    [[nodiscard]] bool getTwo() const;
+    [[nodiscard]] bool getThree() const;
+    [[nodiscard]] bool getFour() const;
     void setUp(bool up);
     void setDown(bool down);
     void setLeft(bool left);
     void setRight(bool right);
     void setSpacebar(bool spacebar);
+    void setOne(bool one);
+    void setTwo(bool two);
+    void setThree(bool three);
+    void setFour(bool four);
     void setR(bool r);
   private:
     bool _up = false;
@@ -34,6 +42,10 @@ class InputPlayer : public Component {
     bool _right = false;
     bool _spacebar = false;
     bool _r = false;
+    bool _one = false;
+    bool _two = false;
+    bool _three = false;
+    bool _four = false;
 };
 }
 

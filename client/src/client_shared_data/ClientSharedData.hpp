@@ -29,12 +29,17 @@ namespace client {
         void addTcpPacketToSend(const cmn::CustomPacket &packet);
         std::optional<cmn::CustomPacket> getTcpPacketToSend();
 
+        void stopGame();
+        bool isGameRunning();
+
     private:
         std::queue<cmn::CustomPacket> _udpReceivedQueue;
         std::queue<cmn::CustomPacket> _udpSendQueue;
         std::queue<cmn::CustomPacket> _tcpReceivedQueue;
         std::queue<cmn::CustomPacket> _tcpSendQueue;
         std::mutex _mutex;
+
+        bool _isRunning = true;
     };
 }
 
