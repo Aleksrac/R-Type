@@ -11,6 +11,7 @@
 #include "packet_factory/PacketFactory.hpp"
 
 #include <iostream>
+#include <ranges>
 
 namespace server {
 
@@ -26,9 +27,8 @@ namespace server {
     void LobbyManager::run()
      {
          while (true) {
-             auto packet = _sharedData->getSystemPacket();
-             if (packet.has_value()) {
-                 auto data = cmn::PacketDisassembler::disassemble(packet.value());
+             auto data = _sharedData->getSystemPacket();
+             if (data.has_value()) {
                  _getPacketType(data.value());
              }
              _handleMatchMaking();
@@ -38,46 +38,59 @@ namespace server {
          }
      }
 
-    int LobbyManager::_getPacketType(cmn::packetData &data)
+    void LobbyManager::_getPacketType(cmn::packetData &data)
     {
         std::visit([this](auto &&arg) {
             using T = std::decay_t<decltype(arg)>;
-
-            if constexpr (std::is_same_v<T, packetSoloGame>) {
-                packetSoloGame &solo = arg;
-                Lobby newLobby = _createLobby(cmn::LobbyType::Solo);
-                _lobbyMap[newLobby.id] = newLobby;
-                _sharedData->createLobby(newLobby.id);
-                _sharedData->addPlayerToLobby(solo.playerId, newLobby.id);
-                // TODO: send player the lobby id
-                _launchGame(newLobby.id);
-            } else if constexpr (std::is_same_v<T, packetCreateLobby>) {
-                packetCreateLobby &createLobby = arg;
-                Lobby newLobby = _createLobby(cmn::LobbyType::Lobby);
-                newLobby.code = _createLobbyCode();
-                _lobbyMap[newLobby.id] = newLobby;
-                _sharedData->createLobby(newLobby.id);
-                _sharedData->addPlayerToLobby(createLobby.playerId, newLobby.id);
-                // TODO: send player the lobby id
-                auto codePacket = cmn::PacketFactory::createLobbyCodePacket(newLobby.code);
-                _sharedData->addLobbyTcpPacketToSend(newLobby.id, codePacket);
-            } else if constexpr (std::is_same_v<T, packetJoinLobby>) {
-                packetJoinLobby &joinLobby = arg;
-                _joinLobby(joinLobby.code, joinLobby.playerId);
-            } else if constexpr (std::is_same_v<T, packetMatchMaking>) {
-                packetMatchMaking &matchmaking = arg;
-                if (_playersInMatchmaking.find(matchmaking.playerId) == _playersInMatchmaking.end()) {
-                    _matchmakingQueue.push(matchmaking.playerId);
-                    _playersInMatchmaking.insert(matchmaking.playerId);
-                }
-            } else if constexpr (std::is_same_v<T, packetLeaveLobby>) {
-                packetLeaveLobby &leaveLobby = arg;
+            if constexpr (std::is_same_v<T, cmn::selectModeData>) {
+                if (_sharedData->getPlayerLobby(arg.playerId) != -1)
+                    return;
+                const cmn::selectModeData &selectModeData = arg;
+                _checkModeSelected(selectModeData);
+            } else if constexpr (std::is_same_v<T, cmn::requestJoinLobbyData>) {
+                if (_sharedData->getPlayerLobby(arg.playerId) != -1)
+                    return;
+                const cmn::requestJoinLobbyData &joinLobby = arg;
+                _joinLobby(joinLobby.lobbyCode, joinLobby.playerId);
+            } else if constexpr (std::is_same_v<T, cmn::leaveLobbyData>) {
+                const cmn::leaveLobbyData &leaveLobby = arg;
                 _leaveLobby(leaveLobby.playerId);
             }
         }, data);
-
-        return 0;
     }
+
+    void LobbyManager::_checkModeSelected(cmn::selectModeData data)
+     {
+         if (data.lobbyType == cmn::LobbyType::Solo) {
+             Lobby newLobby = _createLobby(cmn::LobbyType::Solo);
+             _lobbyMap[newLobby.id] = newLobby;
+             _sharedData->createLobby(newLobby.id);
+             _sharedData->addPlayerToLobby(data.playerId, newLobby.id);
+             auto codePacket = cmn::PacketFactory::createJoinLobbyPacket(
+                 newLobby.id,
+                 newLobby.type,
+                 newLobby.code);
+             _sharedData->addLobbyTcpPacketToSend(newLobby.id, codePacket);
+             _launchGame(newLobby.id);
+         } else if (data.lobbyType == cmn::LobbyType::Lobby) {
+             Lobby newLobby = _createLobby(cmn::LobbyType::Lobby);
+             newLobby.code = _createLobbyCode();
+             _lobbyMap[newLobby.id] = newLobby;
+             _sharedData->createLobby(newLobby.id);
+             _sharedData->addPlayerToLobby(data.playerId, newLobby.id);
+             auto codePacket = cmn::PacketFactory::createJoinLobbyPacket(
+                 newLobby.id,
+                 newLobby.type,
+                 newLobby.code);
+             _sharedData->addLobbyTcpPacketToSend(newLobby.id, codePacket);
+             _launchGame(newLobby.id);
+         } else if (data.lobbyType == cmn::LobbyType::Matchmaking) {
+             if (!_playersInMatchmaking.contains(data.playerId)) {
+                 _matchmakingQueue.push(data.playerId);
+                 _playersInMatchmaking.insert(data.playerId);
+             }
+         }
+     }
 
     Lobby LobbyManager::_createLobby(const cmn::LobbyType lobbyType)
      {
@@ -93,12 +106,12 @@ namespace server {
      void LobbyManager::_handleMatchMaking()
     {
         while (_matchmakingQueue.size() >= cmn::maxPlayers) {
-            Lobby newLobby = _createLobby(cmn::LobbyType::Matchmaking);
+            Lobby const newLobby = _createLobby(cmn::LobbyType::Matchmaking);
             _lobbyMap[newLobby.id] = newLobby;
             _sharedData->createLobby(newLobby.id);
 
             for (uint8_t i = 0; i < cmn::maxPlayers; ++i) {
-                int playerId = _matchmakingQueue.front();
+                int const playerId = _matchmakingQueue.front();
                 _matchmakingQueue.pop();
                 _playersInMatchmaking.erase(playerId);
                 _sharedData->addPlayerToLobby(playerId, newLobby.id);
@@ -108,29 +121,28 @@ namespace server {
         }
     }
 
-    void LobbyManager::_joinLobby(const std::string &code, const int playerId)
+    void LobbyManager::_joinLobby(int code, const int playerId)
      {
-         Lobby* lobby = _findLobbyByCode(code);
+         Lobby const* lobby = _findLobbyByCode(code);
 
-         // TODO: Send to specific player
-         if (!lobby) {
-             auto errorPacket = cmn::PacketFactory::createErrorPacket("Lobby not found");
+         if (lobby == nullptr) {
+             auto errorPacket = cmn::PacketFactory::createErrorTcpPacket(0);
              return;
          }
 
          if (lobby->state != cmn::LobbyState::Waiting) {
-             auto errorPacket = cmn::PacketFactory::createErrorPacket("Game already started");
+             auto errorPacket = cmn::PacketFactory::createErrorTcpPacket(1);
              return;
          }
 
-         int currentPlayers = _sharedData->getNumberPlayerLobby(lobby->id);
+         int const currentPlayers = _sharedData->getNumberPlayerLobby(lobby->id);
          if (currentPlayers >= cmn::maxPlayers) {
-             auto errorPacket = cmn::PacketFactory::createErrorPacket("Lobby is full");
+             auto errorPacket = cmn::PacketFactory::createErrorTcpPacket(2);
              return;
          }
 
          _sharedData->addPlayerToLobby(playerId, lobby->id);
-         auto successPacket = cmn::PacketFactory::createJoinSuccessPacket(lobby->id);
+         auto successPacket = cmn::PacketFactory::createErrorTcpPacket(0);
          _sharedData->addLobbyTcpPacketToSend(lobby->id, successPacket);
          if (currentPlayers + 1 >= cmn::maxPlayers) {
              _launchGame(lobby->id);
@@ -156,14 +168,14 @@ namespace server {
 
     void LobbyManager::_handlePlayerDisconnections()
     {
-        size_t currentPlayerCount = _sharedData->getPlayerListSize();
+        size_t const currentPlayerCount = _sharedData->getPlayerListSize();
 
         if (currentPlayerCount < _lastPlayerCount) {
             std::vector<int> allPlayerIds = _sharedData->getAllPlayerIds();
 
             std::queue<int> newMatchmakingQueue;
             while (!_matchmakingQueue.empty()) {
-                int playerId = _matchmakingQueue.front();
+                int const playerId = _matchmakingQueue.front();
                 _matchmakingQueue.pop();
                 if (std::ranges::find(allPlayerIds, playerId) != allPlayerIds.end()) {
                     newMatchmakingQueue.push(playerId);
@@ -174,20 +186,22 @@ namespace server {
             _matchmakingQueue = std::move(newMatchmakingQueue);
 
             for (auto it = _lobbyMap.begin(); it != _lobbyMap.end(); ) {
-                int lobbyId = it->first;
-                std::vector<int> lobbyPlayers = _sharedData->getLobbyPlayers(lobbyId);
+                int const lobbyId = it->first;
+                auto const lobbyPlayers = _sharedData->getLobbyPlayers(lobbyId);
 
-                for (int playerId : lobbyPlayers) {
+                for (int const playerId : lobbyPlayers) {
                     if (std::ranges::find(allPlayerIds, playerId) == allPlayerIds.end()) {
                         _sharedData->removePlayerFromLobby(playerId, lobbyId);
                     }
                 }
                 if (_sharedData->getNumberPlayerLobby(lobbyId) == 0) {
-                    _sharedData->deleteLobby(lobbyId);
+                    _sharedData->setLobbyState(lobbyId, cmn::LobbyState::EndGame);
+                    //_sharedData->deleteLobby(lobbyId);
                     if (_activeGames.contains(lobbyId)) {
                         _activeGames.erase(lobbyId);
                     }
                     it = _lobbyMap.erase(it);
+                    std::cout << "Lobby " << lobbyId << " removed" << std::endl;
                 } else {
                     ++it;
                 }
@@ -203,11 +217,17 @@ namespace server {
             return;
         }
 
-        _lobbyMap[lobbyId].state = cmn::LobbyState::Running;
+         auto lobbyState = _lobbyMap[lobbyId].type == cmn::Lobby ? cmn::LobbyState::Waiting : cmn::LobbyState::Running;
+         _lobbyMap[lobbyId].state = lobbyState;
+         _sharedData->setLobbyState(lobbyId, _lobbyMap[lobbyId].state);
 
         _activeGames[lobbyId] = std::jthread([this, lobbyId]() {
             try {
                 Game game(_sharedData, lobbyId, _lobbyMap[lobbyId].type);
+
+                //TODO maybe delete that, thought could be usefull to put waiting screen
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                std::cout << "Game launched in lobby: " << lobbyId << std::endl;
                 game.run();
             } catch (const std::exception &e) {
                 std::cerr << "Game error in lobby " << lobbyId << ": " << e.what() << "\n";
@@ -218,28 +238,30 @@ namespace server {
 
     void LobbyManager::_cleanupFinishedGames()
     {
+         // TODO: implement that in game,
         for (auto it = _lobbyMap.begin(); it != _lobbyMap.end(); ) {
-            if (it->second.state == cmn::LobbyState::EndGame) {
-                int lobbyId = it->first;
+            int const lobbyId = it->first;
+            if (_sharedData->getLobbyState(lobbyId) == cmn::LobbyState::EndGame) {
                 if (_activeGames.contains(lobbyId)) {
                     _activeGames.erase(lobbyId);
                 }
                 _sharedData->deleteLobby(lobbyId);
                 it = _lobbyMap.erase(it);
+                std::cout << "deleting lobby: " << lobbyId << std::endl;
             } else {
                 ++it;
             }
         }
     }
 
-    std::string LobbyManager::_createLobbyCode()
+    int LobbyManager::_createLobbyCode()
     {
-        return std::to_string(rand() % 900000 + 100000);
+        return rand() % 900000 + 100000;
     }
 
-    Lobby* LobbyManager::_findLobbyByCode(const std::string &code)
+    Lobby* LobbyManager::_findLobbyByCode(int code)
     {
-        for (auto &[lobbyId, lobby] : _lobbyMap) {
+        for (auto &lobby : _lobbyMap | std::views::values) {
             if (lobby.type == cmn::LobbyType::Lobby && lobby.code == code) {
                 return &lobby;
             }

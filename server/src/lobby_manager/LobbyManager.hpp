@@ -23,11 +23,11 @@ namespace server {
         int id;
         cmn::LobbyType type;
         cmn::LobbyState state;
-        std::string code;
+        int code;
         std::chrono::steady_clock::time_point createdAt;
 
         Lobby() : id(-1), type(cmn::LobbyType::Solo),
-                  state(cmn::LobbyState::Waiting), code(""),
+                  state(cmn::LobbyState::Waiting), code(0),
                   createdAt(std::chrono::steady_clock::now()) {}
     };
 
@@ -41,21 +41,22 @@ namespace server {
         private:
         std::queue<int> _matchmakingQueue;
         std::shared_ptr<ServerSharedData> _sharedData;
-        std::unordered_map<int, Lobby> _lobbyMap;
+        std::unordered_map<int, Lobby> _lobbyMap; // TODO: change this to shared pointer or send a packet if end
         std::unordered_map<int, std::jthread> _activeGames;
         std::unordered_set<int> _playersInMatchmaking;
         size_t _lastPlayerCount;
 
         void _launchGame(int lobbyId);
         static Lobby _createLobby(cmn::LobbyType lobbyType);
-        void _joinLobby(const std::string &code, int playerId);
+        void _joinLobby(int code, int playerId);
         void _leaveLobby(int playerId);
         void _handleMatchMaking();
         void _handlePlayerDisconnections();
         void _cleanupFinishedGames();
-        static std::string _createLobbyCode();
-        int _getPacketType(cmn::packetData &data);
-        Lobby* _findLobbyByCode(const std::string &code);
+        static int _createLobbyCode();
+        void _getPacketType(cmn::packetData &data);
+        Lobby* _findLobbyByCode(int code);
+        void _checkModeSelected(cmn::selectModeData data);
     };
 }
 

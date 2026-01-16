@@ -9,7 +9,9 @@
 #define R_TYPE_SERVERSHAREDDATA_HPP
 
 #include "SFML/Network/IpAddress.hpp"
+#include "SFML/Network/TcpSocket.hpp"
 #include "custom_packet/CustomPacket.hpp"
+#include "enums/LobbyState.hpp"
 #include "packet_data/PacketData.hpp"
 
 #include <list>
@@ -24,9 +26,10 @@ namespace server {
     class ServerSharedData {
     public:
 
-        void addPlayer(int playerId, int port, const sf::IpAddress &ipAddress);
-        void deletePlayer(int port, const sf::IpAddress &ipAddress);
+        void addPlayer(int playerId, int port, const sf::IpAddress &ipAddress, std::shared_ptr<sf::TcpSocket> socket);
+        void deletePlayer(int playerId);
         std::optional<std::pair<int, sf::IpAddress>> getPlayer(int playerId);
+        std::shared_ptr<sf::TcpSocket> getPlayerSocket(int playerId);
         std::vector<int> getAllPlayerIds();
         size_t getPlayerListSize();
 
@@ -41,27 +44,40 @@ namespace server {
         std::vector<int> getAllLobbyIds();
         std::unordered_map<int, std::pair<int, sf::IpAddress>> getMapPlayers();
 
-        void addSystemPacket(const cmn::CustomPacket &packet);
-        std::optional<cmn::CustomPacket> getSystemPacket();
-        void addLobbyUdpReceivedPacket(int lobbyId, const cmn::CustomPacket &packet);
-        std::optional<cmn::CustomPacket> getLobbyUdpReceivedPacket(int lobbyId);
+        void addSystemPacket(const cmn::packetData &packet);
+        std::optional<cmn::packetData> getSystemPacket();
+        void addLobbyUdpReceivedPacket(int lobbyId, const cmn::packetData &packet);
+        std::optional<cmn::packetData> getLobbyUdpReceivedPacket(int lobbyId);
         void addLobbyUdpPacketToSend(int lobbyId, const cmn::CustomPacket &packet);
         std::optional<cmn::CustomPacket> getLobbyUdpPacketToSend(int lobbyId);
-        void addLobbyTcpReceivedPacket(int lobbyId, const cmn::CustomPacket &packet);
-        std::optional<cmn::CustomPacket> getLobbyTcpReceivedPacket(int lobbyId);
+        void addLobbyTcpReceivedPacket(int lobbyId, const cmn::packetData &packet);
+        std::optional<cmn::packetData> getLobbyTcpReceivedPacket(int lobbyId);
         void addLobbyTcpPacketToSend(int lobbyId, const cmn::CustomPacket &packet);
         std::optional<cmn::CustomPacket> getLobbyTcpPacketToSend(int lobbyId);
 
+        void addTcpPacketToSendToSpecificPlayer(int playerId, const cmn::CustomPacket &packet);
+        std::optional<std::pair<int, cmn::CustomPacket>> getTcpPacketToSendToSpecificPlayer();
+
+        size_t getLobbyUdpQueueSize(int lobbyId);
+        size_t getLobbyTcpQueueSize(int lobbyId);
+        size_t getTcpPacketToSpecificPlayerQueueSize();
+
+        void setLobbyState(int lobbyId, cmn::LobbyState state);
+        std::optional<cmn::LobbyState> getLobbyState(int lobbyId);
+
     private:
         std::unordered_map<int, std::pair<int, sf::IpAddress>> _playerList;
+        std::unordered_map<int, std::shared_ptr<sf::TcpSocket>> _playerSocketMap;
         std::unordered_map<int, int> _playerLobbyMap;
         std::map<int, std::list<int>> _lobbyPlayers;
+        std::unordered_map<int, cmn::LobbyState> _lobbiesState;
 
-        std::map<int, std::queue<cmn::CustomPacket>> _lobbyUdpReceivedQueues;
+        std::map<int, std::queue<cmn::packetData>> _lobbyUdpReceivedQueues;
         std::map<int, std::queue<cmn::CustomPacket>> _lobbyUdpSendQueues;
-        std::map<int, std::queue<cmn::CustomPacket>> _lobbyTcpReceivedQueues;
+        std::map<int, std::queue<cmn::packetData>> _lobbyTcpReceivedQueues;
         std::map<int, std::queue<cmn::CustomPacket>> _lobbyTcpSendQueues;
-        std::queue<cmn::CustomPacket> _systemPacketQueue;
+        std::queue<cmn::packetData> _systemPacketQueue;
+        std::queue<std::pair<int, cmn::CustomPacket>> _tcpPacketQueueToSpecificPlayer;
 
         std::mutex _mutex;
     };

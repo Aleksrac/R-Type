@@ -12,6 +12,7 @@
 #include "packet_factory/PacketFactory.hpp"
 #include <iostream>
 #include <thread>
+#include <utility>
 
 namespace server {
     Server::Server(const std::shared_ptr<ServerSharedData> &data):
@@ -71,20 +72,21 @@ namespace server {
             if (status != sf::Socket::Status::Done) {
                 if (status == sf::Socket::Status::Disconnected || status == sf::Socket::Status::Error) {
                     _socketSelector.remove(sock);
-                    _sharedData->deletePlayer(sock.getRemotePort(), sock.getRemoteAddress().value());
+                    int const playerId = _getPlayerIdFromSocket(sock);
+                    if (playerId != -1) {
+                        _sharedData->deletePlayer(playerId);
+                        _playerSocketMap.erase(playerId);
+                    }
                     it = _socketVector.erase(it);
+                    std::cout << "Player " << playerId << " removed" << std::endl;
                     continue;
                 }
                 ++it;
                 continue;
             }
-
-            // TODO: might not need player id if dont send tcp to game thread
-            // except if we let ready as tcp
-            int playerId = _getPlayerIdFromSocket(sock);
+            int const playerId = _getPlayerIdFromSocket(sock);
             if (playerId != -1) {
                 _routePacket(packet, playerId);
-                ++it;
             }
             ++it;
         }
@@ -93,33 +95,27 @@ namespace server {
     void Server::_routePacket(cmn::CustomPacket& packet, int playerId) const
     {
         auto data = cmn::PacketDisassembler::disassemble(packet);
-        if (!data.has_value())
-            return;
-        if (_isSystemPacket(data.value())) {
-            _sharedData->addSystemPacket(packet);
+        if (!data.has_value()) {
             return;
         }
-        int lobbyId = _sharedData->getPlayerLobby(playerId);
+        if (_isSystemPacket(data.value())) {
+            _sharedData->addSystemPacket(data.value());
+            return;
+        }
+        int const lobbyId = _sharedData->getPlayerLobby(playerId);
         if (lobbyId != -1) {
-            _sharedData->addLobbyTcpReceivedPacket(lobbyId, packet);
+            _sharedData->addLobbyTcpReceivedPacket(lobbyId, data.value());
         }
     }
 
-    // TODO: create the packet no ? raphael is a retard btw
-    // also isnt optimized, might add something in header ?
-    bool Server::_isSystemPacket(const cmn::packetData& data) const
+    bool Server::_isSystemPacket(const cmn::packetData& data)
     {
         return std::visit([](auto &&arg) -> bool {
             using T = std::decay_t<decltype(arg)>;
-            if constexpr (std::is_same_v<T, packetSoloGame> ||
-                          std::is_same_v<T, packetCreateLobby> ||
-                          std::is_same_v<T, packetJoinLobby> ||
-                          std::is_same_v<T, packetMatchMaking> ||
-                          std::is_same_v<T, packetLeaveLobby>) {
-                return true;
-            }
-            return false;
-        }, data.content);
+            return std::is_same_v<T, cmn::selectModeData> ||
+                          std::is_same_v<T, cmn::requestJoinLobbyData> ||
+                          std::is_same_v<T, cmn::leaveLobbyData>;
+        }, data);
     }
 
     int Server::_getPlayerIdFromSocket(const sf::TcpSocket& socket) const
@@ -131,10 +127,20 @@ namespace server {
             return -1;
         }
         for (auto player : _sharedData->getMapPlayers()) {
-            if (player.second.first == port &&
+            if (std::cmp_equal(player.second.first , port) &&
                 player.second.second == ip.value()) {
                 return player.first;
                 }
+        }
+        return -1;
+    }
+
+    int Server::_getPlayerIdFromUdp(const sf::IpAddress &ip, unsigned short port) const
+    {
+        for (const auto& [playerId, playerInfo] : _sharedData->getMapPlayers()) {
+            if (std::cmp_equal(playerInfo.first, port) && playerInfo.second == ip) {
+                return playerId;
+            }
         }
         return -1;
     }
@@ -157,11 +163,18 @@ namespace server {
         return 0;
     }
 
+    void Server::sendTcpToPlayer(int playerId, const cmn::CustomPacket& packet)
+    {
+        auto it = _playerSocketMap.find(playerId);
+        if (it != _playerSocketMap.end() && it->second) {
+            sendTcp(packet, *it->second);
+        }
+    }
+
     void Server::broadcastTcp(const cmn::CustomPacket& packet) const
     {
         for (const auto &client : _socketVector) {
-            if (sendTcp(packet, *client) == 1) {
-            }
+            sendTcp(packet, *client);
         }
     }
 
@@ -173,40 +186,27 @@ namespace server {
             if (!ip.has_value() || clientPort == 0) {
                 continue;
             }
-            if (sendUdp(packet, ip.value(), clientPort) == 1) {
-            }
+            sendUdp(packet, ip.value(), clientPort);
         }
     }
 
-    void Server::broadcastTcpToLobby(const int lobbyId, const cmn::CustomPacket& packet) const
+    void Server::broadcastTcpToLobby(const int lobbyId, const cmn::CustomPacket& packet)
     {
-        std::vector<int> playerIds = _sharedData->getLobbyPlayers(lobbyId);
+        auto const playerIds = _sharedData->getLobbyPlayers(lobbyId);
 
-        for (int playerId : playerIds) {
-            auto playerInfo = _sharedData->getPlayer(playerId);
-            if (!playerInfo.has_value()) {
-                continue;
-            }
-            for (const auto &client : _socketVector) {
-                auto ip = client->getRemoteAddress();
-                auto port = client->getRemotePort();
-
-                if (ip.has_value() &&
-                    port == playerInfo->first &&
-                    ip.value() == playerInfo->second) {
-                    sendTcp(packet, *client);
-                    break;
-                    }
+        for (int const playerId : playerIds) {
+            auto it = _playerSocketMap.find(playerId);
+            if (it != _playerSocketMap.end() && it->second) {
+                sendTcp(packet, *it->second);
             }
         }
     }
 
     void Server::broadcastUdpToLobby(const int lobbyId, const cmn::CustomPacket& packet)
     {
-        std::vector<int> playerIds = _sharedData->getLobbyPlayers(lobbyId);
-        auto mapPlayerInfo = _sharedData->getMapPlayers();
+        auto const playerIds = _sharedData->getLobbyPlayers(lobbyId);
 
-        for (int playerId : playerIds) {
+        for (int const playerId : playerIds) {
             auto playerInfo = _sharedData->getPlayer(playerId);
             if (playerInfo.has_value()) {
                 sendUdp(packet, playerInfo->second, playerInfo->first);
@@ -217,7 +217,7 @@ namespace server {
     void Server::_acceptConnection()
     {
         static int idPlayer = 1;
-        auto client = std::make_unique<sf::TcpSocket>();
+        auto client = std::make_shared<sf::TcpSocket>();
 
         client->setBlocking(false);
 
@@ -225,24 +225,33 @@ namespace server {
             return;
         }
         _socketSelector.add(*client);
-        _sharedData->addPlayer(idPlayer, client->getRemotePort(), client->getRemoteAddress().value());
+
+        _playerSocketMap[idPlayer] = client;
+        _sharedData->addPlayer(idPlayer, client->getRemotePort(), client->getRemoteAddress().value(), client);
         sendTcp(cmn::PacketFactory::createConnectionPacket(idPlayer), *client);
-        _socketVector.push_back(std::move(client));
+        _socketVector.push_back(client);
         idPlayer++;
+        std::cout << "New player " << idPlayer << " accepted" << std::endl;
     }
 
-    // TODO might need to add a send to specific players
     void Server::_processLobbyPackets()
     {
-        std::vector<int> lobbyIds = _sharedData->getAllLobbyIds();
+        std::vector<int> const lobbyIds = _sharedData->getAllLobbyIds();
 
-        for (int lobbyId : lobbyIds) {
-            while (auto udpPacket = _sharedData->getLobbyUdpPacketToSend(lobbyId)) {
-                broadcastUdpToLobby(lobbyId, udpPacket.value());
-            }
-            while (auto tcpPacket = _sharedData->getLobbyTcpPacketToSend(lobbyId)) {
+        for (int const lobbyId : lobbyIds) {
+            auto tcpPacket = _sharedData->getLobbyTcpPacketToSend(lobbyId);
+            if (tcpPacket.has_value()) {
                 broadcastTcpToLobby(lobbyId, tcpPacket.value());
             }
+
+            auto udpPacket = _sharedData->getLobbyUdpPacketToSend(lobbyId);
+            if (udpPacket.has_value()) {
+                broadcastUdpToLobby(lobbyId, udpPacket.value());
+            }
+        }
+
+        if (auto tcpSinglePlayer = _sharedData->getTcpPacketToSendToSpecificPlayer()) {
+            sendTcpToPlayer(tcpSinglePlayer->first, tcpSinglePlayer->second);
         }
     }
 
@@ -265,18 +274,20 @@ namespace server {
                 auto data = cmn::PacketDisassembler::disassemble(packet);
                 if (data.has_value()) {
                     if (_isSystemPacket(data.value())) {
-                        _sharedData->addSystemPacket(packet);
+                        _sharedData->addSystemPacket(data.value());
                     } else {
-                        // TODO: bitpacking is coming...
-                        int lobbyId = _sharedData->getPlayerLobby(playerId);
-                        if (lobbyId != -1) {
-                            _sharedData->addLobbyUdpReceivedPacket(lobbyId, packet);
+                        int playerId = _getPlayerIdFromUdp(sender.value(), port);
+                        if (playerId != -1) {
+                            int lobbyId = _sharedData->getPlayerLobby(playerId);
+                            if (lobbyId != -1) {
+                                _sharedData->addLobbyUdpReceivedPacket(lobbyId, data.value());
+                            }
                         }
                     }
                 }
             }
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
 }// namespace server

@@ -13,7 +13,6 @@
 #include "enums/LobbyType.hpp"
 #include "level_manager/LevelManager.hpp"
 #include "server_shared_data/ServerSharedData.hpp"
-#include "shared_data/SharedData.hpp"
 #include <random>
 
 namespace server {
@@ -24,7 +23,7 @@ namespace server {
             int lobbyId,
             cmn::LobbyType lobbyType);
         ~Game() = default;
-        [[noreturn]] void run();
+        void run();
     private:
         ecs::EcsManager _ecs;
         std::shared_ptr<ServerSharedData> _sharedData;
@@ -41,7 +40,7 @@ namespace server {
         bool _isIdAlreadyPresent(int playerId);
         void _waitForPlayers();
         void _sendPlayerEntities();
-        [[noreturn]] void _startGame();
+        void _startGame();
         void _createEnemy(const Level &currentLevel, sf::Clock &enemyClock, std::minstd_rand0 &generator);
         void _checkSpaceBar();
         void _sendPositions();

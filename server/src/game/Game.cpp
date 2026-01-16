@@ -42,6 +42,7 @@ namespace server {
 
     void Game::run()
     {
+         //TODO: handle that private lobby can laucnh a new game inside the previous one
         _initLevels();
         _waitForPlayers();
         _sharedData->addLobbyTcpPacketToSend(_lobbyId, cmn::PacketFactory::createStartGamePacket());
@@ -50,8 +51,9 @@ namespace server {
         _startGame();
     }
 
-    [[noreturn]] void Game::_startGame()
+    void Game::_startGame()
     {
+         // TODO: implement win loose -> implement death player mdr cest pas fait
         Level  const&currentLevel = _levelManager.getCurrentLevel();
         sf::Clock fpsClock;
         sf::Clock clock;
@@ -61,15 +63,12 @@ namespace server {
         float elapsedTime = 0.0F;
         constexpr float frameTimer = 0.016F;
 
-        while (true) {
+        while (_sharedData->getLobbyState(_lobbyId) == cmn::LobbyState::Running) {
             float const deltaTime = clock.restart().asSeconds();
-            std::optional<cmn::CustomPacket> packet = _sharedData->getLobbyUdpReceivedPacket(_lobbyId);
+            std::optional<cmn::packetData> packet = _sharedData->getLobbyUdpReceivedPacket(_lobbyId);
 
             if (packet.has_value()) {
-                std::optional<cmn::packetData> data = cmn::PacketDisassembler::disassemble(packet.value());
-                if (data.has_value()) {
-                    cmn::DataTranslator::translate(_ecs, data.value(), _playerIdEntityMap);
-                }
+                    cmn::DataTranslator::translate(_ecs, packet.value(), _playerIdEntityMap);
             }
             _createEnemy(currentLevel, enemyClock, generator);
             _checkSpaceBar();
@@ -198,30 +197,25 @@ namespace server {
     void Game::_waitForPlayers()
     {
         size_t currentNbPlayerEntities = 0;
-        std::vector<int> listPlayerIds = _sharedData->getLobbyPlayers(_lobbyId);
+        auto listPlayerIds = _sharedData->getLobbyPlayers(_lobbyId);
 
          if (_lobbyType != cmn::LobbyType::Lobby) {
              _createNewPlayers(_sharedData->getLobbyPlayers(_lobbyId), currentNbPlayerEntities);
              return;
          }
-        while ((_readyPlayersId.size() != listPlayerIds.size())) {
+        while (_readyPlayersId.size() != listPlayerIds.size() && _sharedData->getLobbyState(_lobbyId)) {
             listPlayerIds = _sharedData->getLobbyPlayers(_lobbyId);
             if (currentNbPlayerEntities != listPlayerIds.size()) {
                 _createNewPlayers(listPlayerIds, currentNbPlayerEntities);
             }
 
-            std::optional<cmn::CustomPacket> packet = _sharedData->getLobbyUdpReceivedPacket(_lobbyId);;
+            std::optional<cmn::packetData> packet = _sharedData->getLobbyUdpReceivedPacket(_lobbyId);;
 
             if (!packet.has_value()) {
                 continue;
             }
 
-            std::optional<cmn::packetData> data = cmn::PacketDisassembler::disassemble(packet.value());
-
-            if (!data.has_value()) {
-                continue;
-            }
-            cmn::DataTranslator::translate(_ecs, data.value(), _playerIdEntityMap);
+            cmn::DataTranslator::translate(_ecs, packet.value(), _playerIdEntityMap);
 
             auto entities = _ecs.getEntitiesWithComponent<ecs::InputPlayer>();
 
