@@ -5,8 +5,8 @@
 ** Constants
 */
 
-#ifndef R_TYPE_CONSTANTS_HPP
-#define R_TYPE_CONSTANTS_HPP
+#ifndef R_TYPE_GAMECONSTANTS_HPP
+#define R_TYPE_GAMECONSTANTS_HPP
 
 #include "SFML/System/Vector2.hpp"
 #include "enums/EntityType.hpp"
@@ -19,13 +19,6 @@
 
 namespace cmn {
 
-    constexpr uint16_t connectionProtocolId = 0;
-    constexpr uint16_t inputProtocolId = 1;
-    constexpr uint16_t positionProtocolId = 2;
-    constexpr uint16_t newEntityProtocolId = 3;
-    constexpr uint16_t deleteEntityProtocolId = 4;
-    constexpr uint16_t startGameProtocolId = 5;
-
     constexpr float playerHealth = 100;
     constexpr sf::Vector2f playerSpriteScale = {2.0F, 2.0F};
     constexpr std::string_view playerSpriteSheet = "./assets/r-typesheet42.gif";
@@ -34,6 +27,8 @@ namespace cmn {
     constexpr uint8_t playerDamage = 50;
     constexpr float playerCoolDown = 0.5;
     constexpr std::string_view playerShootSound = "./assets/sound/shoot.wav";
+    constexpr uint16_t playerPosX = 200;
+    constexpr uint16_t playerPosY = 540;
 
     constexpr uint8_t monsterHealth = 100;
     constexpr sf::Vector2f monsterSpriteScale = {2.0F, 2.0F};
@@ -57,6 +52,17 @@ namespace cmn {
     constexpr uint16_t monster2SpawnPositionWidth = 2020;
     constexpr uint16_t monster2MaxSpawnPositionHeight = 1081;
 
+    constexpr uint8_t boss1Health = 100;
+    constexpr sf::Vector2f boss1SpriteScale = {2.0F, 2.0F};
+    constexpr std::string_view boss1SpriteSheet = "./assets/r-typesheet30c.gif";
+    constexpr std::pair<uint8_t, uint8_t> boss1AnimationSize = {160, 209};
+    constexpr uint8_t boss1AnimationOffset = 0;
+    constexpr uint8_t boss1AnimationNumberFrame = 4;
+    constexpr uint8_t boss1CollisionHeight = 209;
+    constexpr uint8_t boss1CollisionWidth = 160;
+    constexpr uint16_t boss1SpawnPositionWidth = 1500;
+    constexpr uint16_t boss1SpawnPositionHeight = 250;
+
     constexpr uint16_t playerProjectileSpeed = 400;
     constexpr uint16_t playerSpeed = 100;
     constexpr int8_t playerProjectileDirection = 1;
@@ -77,4 +83,4 @@ namespace cmn {
 
 }
 
-#endif// R_TYPE_CONSTANTS_HPP
+#endif// R_TYPE_GAMECONSTANTS_HPP
