@@ -19,6 +19,8 @@
 #include "request_join_lobby_data/RequestJoinLobbyData.hpp"
 #include "select_mode_data/SelectModeData.hpp"
 
+#include "sound_packet/SoundPacket.hpp"
+
 #include <variant>
 
 namespace cmn {
@@ -30,6 +32,7 @@ namespace cmn {
         newEntityData,
         deleteEntityData,
         startGameData,
+        soundData,
         leaveLobbyData,
         errorTcpData,
         joinLobbyData,

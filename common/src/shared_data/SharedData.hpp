@@ -104,12 +104,16 @@ namespace cmn {
             void addMessageUDPToSend(int lobbyId, const CustomPacket &message);
             std::optional<CustomPacket> getMessageUDPToSend(int lobbyId);
 
+            void setRunThread(bool run);
+            bool getRunThread();
+
         private:
             std::queue<CustomPacket> _udpReceivedQueue; ///< Queue for received packets (to be processed).
             std::queue<CustomPacket> _udpSendQueue;     ///< Queue for packets to be sent.
             std::queue<CustomPacket> _tcpReceivedQueue;  ///< Queue for packets to be sent.
             std::queue<CustomPacket> _tcpSendQueue;     ///< Queue for packets to be sent.
             std::mutex _mutex;                     ///< Mutex for synchronizing data access.
+            bool _isRunning = true;
 
             std::map<int, std::queue<CustomPacket>> _mapLobbiesPacketListSend;
             std::map<int, std::queue<CustomPacket>> _mapLobbiesPacketListReceived;

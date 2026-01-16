@@ -31,6 +31,9 @@ add_library(r-type_common_lib
         bit_unpacker/BitUnpacker.hpp
         packet_disassembler/PacketDisassembler.cpp
         packet_disassembler/PacketDisassembler.hpp
+        entity_factory/EntityFactory.cpp
+        entity_factory/EntityFactory.hpp
+        packet_data/sound_packet/SoundPacket.hpp
         enums/LobbyType.hpp
         enums/LobbyState.hpp
         packet_data/join_lobby_data/JoinLobbyData.hpp
@@ -42,10 +45,12 @@ add_library(r-type_common_lib
 
 target_include_directories(r-type_common_lib PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
+        ${LZ4_SOURCE_DIR}/lib
 )
 
 target_link_libraries(r-type_common_lib
         PUBLIC
         sfml-network
         r-type_ecs_lib
+        lz4_static
 )

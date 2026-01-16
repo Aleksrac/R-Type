@@ -18,11 +18,12 @@ namespace cmn {
     constexpr uint16_t newEntityProtocolId = 3;
     constexpr uint16_t deleteEntityProtocolId = 4;
     constexpr uint16_t startGameProtocolId = 5;
-    constexpr uint16_t leaveLobbyProtocolId = 6;
-    constexpr uint16_t errorTcpProtocolId = 7;
-    constexpr uint16_t joinLobbyProtocolId = 8;
-    constexpr uint16_t selectModeProtocolId = 9;
-    constexpr uint16_t requestJoinLobbyProtocolId = 10;
+    constexpr uint16_t soundProtocolId = 6;
+    constexpr uint16_t leaveLobbyProtocolId = 7;
+    constexpr uint16_t errorTcpProtocolId = 8;
+    constexpr uint16_t joinLobbyProtocolId = 9;
+    constexpr uint16_t selectModeProtocolId = 10;
+    constexpr uint16_t requestJoinLobbyProtocolId = 11;
 
     // id ERROR
     constexpr uint16_t noExistentLobbyError = 0;

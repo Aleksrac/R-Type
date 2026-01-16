@@ -176,6 +176,18 @@ namespace cmn {
         return ids;
     }
 
+    bool SharedData::getRunThread()
+    {
+        const std::lock_guard lock(_mutex);
+        return _isRunning;
+    }
+
+    void SharedData::setRunThread(bool run)
+    {
+        std::lock_guard const lock(_mutex);
+        _isRunning = run;
+    }
+
     void SharedData::deleteLobby(const int lobbyId)
     {
         const std::lock_guard lock(_mutex);
@@ -236,5 +248,4 @@ namespace cmn {
         const std::lock_guard lock(_mutex);
         return static_cast<int>(_mapLobbiesPlayers[id].size());
     }
-
-}
+}// namespace

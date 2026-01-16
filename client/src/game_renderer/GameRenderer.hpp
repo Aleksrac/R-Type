@@ -14,6 +14,7 @@
 #include "SFML/Graphics/Text.hpp"
 #include "client_shared_data/ClientSharedData.hpp"
 #include "data_translator/DataTranslator.hpp"
+#include "input_manager/InputManager.hpp"
 #include "shared_data/SharedData.hpp"
 
 namespace client {
@@ -37,6 +38,8 @@ namespace client {
         sf::Clock _clock;
         sf::Clock enemyClock;
         cmn::DataTranslator _translator{};
+        std::shared_ptr<ecs::Entity> _sound;
+        InputManager _inputManager;
         std::shared_ptr<ecs::Entity> _gameKeyboard;
         std::shared_ptr<ecs::Entity> _menuKeyboard;
 
@@ -47,12 +50,12 @@ namespace client {
         void _checkGamePlayerInput();
         void _checkMenuPlayerInput() const;
         void _updateNetwork();
+        void _initSound();
         void _updateMenu(sf::Clock &inputClock, float elapsedTime, float deltaTime);
         void _updateGame(sf::Clock &inputClock, float elapsedTime, float deltaTime);
 
         ClientState _currentState = ClientState::Menu;
         uint32_t _playerId = 0;
-
     };
 }
 
