@@ -32,8 +32,6 @@ add_library(r-type_ecs_lib
         components/Sprite.hpp
         components/Enemy.cpp
         components/Enemy.hpp
-        systems/ShootSystem.cpp
-        systems/ShootSystem.hpp
         components/Destroy.cpp
         components/Destroy.hpp
         components/Shoot.cpp

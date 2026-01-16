@@ -20,7 +20,6 @@
 #include "systems/DestroySystem.hpp"
 #include "systems/HealthSystem.hpp"
 #include "systems/MovementSystem.hpp"
-#include "systems/ShootSystem.hpp"
 #include "systems/VelocitySystem.hpp"
 #include <algorithm>
 #include <random>
@@ -340,7 +339,6 @@ namespace server {
         _ecs.addSystem<ecs::DestroySystem>();
         _ecs.addSystem<ecs::MovementSystem>();
         _ecs.addSystem<ecs::CollisionSystem>();
-        _ecs.addSystem<ecs::ShootSystem>();
         _ecs.addSystem<ecs::VelocitySystem>();
         _ecs.addSystem<ecs::HealthSystem>();
     }
