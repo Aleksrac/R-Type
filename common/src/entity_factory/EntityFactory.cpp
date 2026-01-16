@@ -15,6 +15,7 @@
 #include "components/InputPlayer.hpp"
 #include "components/PlayerAnimation.hpp"
 #include "components/Position.hpp"
+#include "components/Sound.hpp"
 #include "components/Sprite.hpp"
 #include "components/Velocity.hpp"
 #include "constants/GameConstants.hpp"
@@ -62,7 +63,6 @@ namespace cmn {
         if (context == Context::CLIENT) {
             entity->addComponent<ecs::Sprite>(ecs.getResourceManager().getTexture(std::string(playerSpriteSheet)), playerSpriteScale);
             entity->addComponent<ecs::PlayerAnimation>();
-           // entity->addComponent<ecs::Sound>(std::string(playerShootSound));
             entity->addComponent<ecs::InputPlayer>();
         } else {
             entity->addComponent<ecs::Health>(playerHealth);
@@ -99,6 +99,7 @@ namespace cmn {
         if (context == Context::CLIENT) {
             entity->addComponent<ecs::Sprite>(ecs.getResourceManager().getTexture(std::string(cmn::playerProjectileSpriteSheet)), cmn::playerProjectileScale);
             entity->addComponent<ecs::Animation>(cmn::playerProjectileAnimationSize, cmn::playerProjectileAnimationOffset, cmn::playerProjectileAnimationNumberFrame);
+            entity->addComponent<ecs::Sound>(1, false);
         } else {
             entity->addComponent<ecs::Shoot>(cmn::playerDamage, 0);
             entity->addComponent<ecs::Collision>(
