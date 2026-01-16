@@ -10,12 +10,8 @@
 #include "client/Client.hpp"
 #include "constants/GameConstants.hpp"
 #include "entity_factory/EntityFactory.hpp"
-#include "components/Background.hpp"
 #include "components/Sound.hpp"
-#include "constants/GameConstants.hpp"
 #include "enums/Key.hpp"
-#include "packet_disassembler/PacketDisassembler.hpp"
-#include "packet_factory/PacketFactory.hpp"
 #include "systems/BackgroundSystem.hpp"
 #include "systems/DestroySystem.hpp"
 #include "systems/InputSystem.hpp"
@@ -24,6 +20,7 @@
 #include "systems/SoundSystem.hpp"
 #include "systems/SpriteAnimationSystem.hpp"
 #include "systems/VelocitySystem.hpp"
+#include "packet_factory/PacketFactory.hpp"
 
 #include <functional>
 
@@ -117,16 +114,13 @@ namespace client {
             auto key = static_cast<cmn::Keys>(i);
             bool currentPressed = _inputManager.isActionTriggered(key);
             bool alreadyPressed = _previousInputs[key];
-
             if (currentPressed && !alreadyPressed) {
-                _sharedData->addUdpPacketToSend(
-                    cmn::PacketFactory::createInputPacket(_playerId, key, cmn::KeyState::Pressed)
-                );
+                cmn::inputData data = {_playerId, key, cmn::KeyState::Pressed};
+                _sharedData->addUdpPacketToSend(data);
             }
             else if (!currentPressed && alreadyPressed) {
-                _sharedData->addUdpPacketToSend(
-                    cmn::PacketFactory::createInputPacket(_playerId, key, cmn::KeyState::Released)
-                );
+                cmn::inputData data = {_playerId, key, cmn::KeyState::Released};
+                _sharedData->addUdpPacketToSend(data);
             }
             _previousInputs[key] = currentPressed;
         }
@@ -137,25 +131,20 @@ namespace client {
         static const std::unordered_map<int, uint64_t> emptyMap{};
 
         if (_isRunning) {
-            while (auto packet = _sharedData->getUdpReceivedPacket()) {
-                if (auto data = cmn::PacketDisassembler::disassemble(packet.value())) {
-                    _translator.translate(_ecs, data.value(), emptyMap);
-                }
+            while (auto data = _sharedData->getUdpReceivedPacket()) {
+                _translator.translate(_ecs, data.value(), emptyMap);
             }
         } else {
-            if (auto packet = _sharedData->getTcpReceivedPacket()) {
-                if (auto data = cmn::PacketDisassembler::disassemble(packet.value())) {
-                    std::visit(
-                        [this](auto &&arg) {
-                            using T = std::decay_t<decltype(arg)>;
-                            if constexpr (std::is_same_v<T, cmn::connectionData>) {
-                                _playerId = arg.playerId;
-                            } else if constexpr (std::is_same_v<T, cmn::startGameData>) {
-                                _isRunning = true;
-                            }
-                        },
-                        data.value());
-                }
+            if (auto data = _sharedData->getTcpReceivedPacket()) {
+                std::visit([this](auto &&arg)
+                    {
+                        using T = std::decay_t<decltype(arg)>;
+                        if constexpr (std::is_same_v<T, cmn::connectionData>) {
+                            _playerId = arg.playerId;
+                        } else if constexpr (std::is_same_v<T, cmn::startGameData>) {
+                            _isRunning = true;
+                        }
+                    }, data.value());
             }
         }
     }
@@ -192,7 +181,6 @@ namespace client {
                 if (elapsedTime > inputCooldown) {
                     _updateGame();
                     inputClock.restart();
-                    elapsedTime = 0;
                 }
             } else {
                 _updateLobby();
