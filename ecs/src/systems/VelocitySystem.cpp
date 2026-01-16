@@ -6,7 +6,7 @@
 */
 
 #include "VelocitySystem.hpp"
-#include "src/Constants.hpp"
+#include "EcsConstant.hpp"
 
 namespace ecs {
 
@@ -35,7 +35,7 @@ namespace ecs {
                 if (pos->getX() < 0 - entity->getComponent<Collision>()->getWidth()) {
                     entity->addComponent<Destroy>();
                 }
-                if (pos->getX() > cmn::windowWidth + entity->getComponent<Collision>()->getWidth() + 500) {
+                if (pos->getX() > ecs::windowWidth + entity->getComponent<Collision>()->getWidth() + 500) {
                     entity->addComponent<Destroy>();
                 }
             }
