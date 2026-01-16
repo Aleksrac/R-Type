@@ -28,6 +28,7 @@ namespace client {
         sf::Clock enemyClock;
         cmn::DataTranslator _translator{};
         std::shared_ptr<ecs::Entity> _keyboard;
+        std::shared_ptr<ecs::Entity> _sound;
         InputManager _inputManager;
 
         void _handleEvents();
@@ -38,6 +39,8 @@ namespace client {
         void _updateNetwork();
         void _updateLobby();
         void _updateGame();
+        void _initSound();
+
 
         bool _isRunning = false;
         uint32_t _playerId = 0;
