@@ -5,12 +5,15 @@
 ** ProtocolConstants
 */
 
-#ifndef R_TYPE_PROTOCOLCONSTANTS_HPP
-#define R_TYPE_PROTOCOLCONSTANTS_HPP
+#ifndef R_TYPE_NETWORKCONSTANTS_HPP
+#define R_TYPE_NETWORKCONSTANTS_HPP
 
 #include <cstdint>
 
 namespace cmn {
+
+    constexpr int ticksBeforeResending = 200;
+    constexpr uint32_t reliabilityRetries = 5;
 
     constexpr uint16_t connectionProtocolId = 0;
     constexpr uint16_t inputProtocolId = 1;
@@ -19,11 +22,12 @@ namespace cmn {
     constexpr uint16_t deleteEntityProtocolId = 4;
     constexpr uint16_t startGameProtocolId = 5;
     constexpr uint16_t soundProtocolId = 6;
-    constexpr uint16_t leaveLobbyProtocolId = 7;
-    constexpr uint16_t errorTcpProtocolId = 8;
-    constexpr uint16_t joinLobbyProtocolId = 9;
-    constexpr uint16_t selectModeProtocolId = 10;
-    constexpr uint16_t requestJoinLobbyProtocolId = 11;
+    constexpr uint16_t acknowledgeProtocolId = 7;
+    constexpr uint16_t leaveLobbyProtocolId = 8;
+    constexpr uint16_t errorTcpProtocolId = 9;
+    constexpr uint16_t joinLobbyProtocolId = 10;
+    constexpr uint16_t selectModeProtocolId = 11;
+    constexpr uint16_t requestJoinLobbyProtocolId = 12;
 
     // id ERROR
     constexpr uint16_t noExistentLobbyError = 0;
@@ -31,4 +35,4 @@ namespace cmn {
     constexpr uint16_t fullLobbyError = 2;
 }
 
-#endif// R_TYPE_PROTOCOLCONSTANTS_HPP
+#endif// R_TYPE_NETWORKCONSTANTS_HPP

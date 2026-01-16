@@ -12,9 +12,11 @@
 #include "SFML/Network/UdpSocket.hpp"
 #include "client_shared_data/ClientSharedData.hpp"
 #include "packet_data/PacketData.hpp"
-#include "shared_data/SharedData.hpp"
+#include "packet_header/PacketHeader.hpp"
+#include "reliable_packet/ReliablePacket.hpp"
 
 #include <thread>
+#include <unordered_map>
 
 namespace client {
 
@@ -26,8 +28,8 @@ namespace client {
             [[nodiscard]] int connectToHost(const std::string &address, uint16_t port);
             int run();
 
-            int sendUdp(cmn::CustomPacket &packet);
-            int sendTcp(cmn::CustomPacket &packet);
+            int sendUdp(cmn::CustomPacket packet);
+            int sendTcp(cmn::CustomPacket packet);
 
         private:
             sf::TcpSocket _tcpSocket;
@@ -35,11 +37,15 @@ namespace client {
 
             sf::IpAddress _serverIp = sf::IpAddress::LocalHost;
             uint16_t _serverUdpPort = 0;
-
-            void _handleTcp();
             std::jthread _tcpThread;
 
             std::shared_ptr<ClientSharedData> _sharedData;
+            std::unordered_map<uint32_t, cmn::reliablePacket> _reliablePackets;
+
+            void _handleTcp();
+            void _handleUdpReception(cmn::packetHeader header, cmn::packetData data);
+            void _resendTimedOutPackets();
+            void _sendAckPacket(cmn::packetHeader header);
     };
 }
 

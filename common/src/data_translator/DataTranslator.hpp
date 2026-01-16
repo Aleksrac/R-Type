@@ -10,7 +10,7 @@
 
 #include "EcsManager.hpp"
 #include "packet_data/PacketData.hpp"
-#include "packet_data/sound_packet/SoundPacket.hpp"
+#include "packet_data/SoundData.hpp"
 
 namespace cmn {
 

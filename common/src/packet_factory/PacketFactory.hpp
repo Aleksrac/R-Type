@@ -13,27 +13,39 @@
 #include "enums/Key.hpp"
 #include "enums/KeyState.hpp"
 #include "bit_packer/BitPacker.hpp"
+#include "packet_data/PacketData.hpp"
+#include <optional>
+#include <unordered_map>
+#include "reliable_packet/ReliablePacket.hpp"
 
 namespace cmn {
 
     class PacketFactory
     {
       public:
-        static CustomPacket createConnectionPacket(uint32_t playerId);
-        static CustomPacket createInputPacket(uint32_t playerId, Keys key, KeyState state);
-        static CustomPacket createPositionPacket(std::pair<float, float> positions, uint64_t entityId);
-        static CustomPacket createNewEntityPacket(EntityType type, std::pair<float, float> positions, uint64_t entityId);
-        static CustomPacket createDeleteEntityPacket(uint64_t entityId);
-        static CustomPacket createSoundPacket(uint8_t playerId);
-        static CustomPacket createStartGamePacket();
-        static CustomPacket createLeaveLobbyPacket(uint32_t playerId);
-        static CustomPacket createErrorTcpPacket(uint8_t errorId);
-        static CustomPacket createJoinLobbyPacket(uint32_t lobbyId, uint8_t lobbyType, uint32_t lobbyCode);
-        static CustomPacket createSelectModePacket(uint8_t lobbyType, uint32_t playerId);
-        static CustomPacket createRequestJoinLobbyPacket(uint32_t playerId, uint32_t lobbyCode);
+        static CustomPacket createPacket(packetData data, std::unordered_map<uint32_t, reliablePacket> &reliablePackets);
 
       private:
+        static CustomPacket _createConnectionPacket(connectionData data);
+        static CustomPacket _createInputPacket(inputData data);
+        static CustomPacket _createPositionPacket(positionData data);
+        static CustomPacket _createNewEntityPacket(newEntityData data,
+            std::unordered_map<uint32_t, reliablePacket> &reliablePackets);
+        static CustomPacket _createDeleteEntityPacket(deleteEntityData data,
+            std::unordered_map<uint32_t, reliablePacket> &reliablePackets);
+        static CustomPacket _createStartGamePacket();
+        static CustomPacket _createAcknowledgePacket(acknowledgeData data);
         static CustomPacket _putInPacket(BitPacker &packer);
+        static CustomPacket _createSoundPacket(soundData data);
+        static CustomPacket _createLeaveLobbyPacket(leaveLobbyData data);
+        static CustomPacket _createErrorTcpPacket(errorTcpData data);
+        static CustomPacket _createJoinLobbyPacket(joinLobbyData data);
+        static CustomPacket _createSelectModePacket(selectModeData data);
+        static CustomPacket _createRequestJoinLobbyPacket(requestJoinLobbyData data);
+        static void _handleReliability(CustomPacket &packet, std::unordered_map<uint32_t, reliablePacket> &reliablePackets);
+
+        static uint32_t _udpSequenceNbr;
+        static uint32_t _tcpSequenceNbr;
     };
 
 }// namespace cmn

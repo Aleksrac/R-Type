@@ -43,6 +43,7 @@ namespace server {
         std::visit([this](auto &&arg) {
             using T = std::decay_t<decltype(arg)>;
             if constexpr (std::is_same_v<T, cmn::selectModeData>) {
+                std::cout << _sharedData->getPlayerLobby(arg.playerId) << std::endl;
                 if (_sharedData->getPlayerLobby(arg.playerId) != -1)
                     return;
                 const cmn::selectModeData &selectModeData = arg;
@@ -66,11 +67,13 @@ namespace server {
              _lobbyMap[newLobby.id] = newLobby;
              _sharedData->createLobby(newLobby.id);
              _sharedData->addPlayerToLobby(data.playerId, newLobby.id);
-             auto codePacket = cmn::PacketFactory::createJoinLobbyPacket(
-                 newLobby.id,
-                 newLobby.type,
-                 newLobby.code);
-             _sharedData->addLobbyTcpPacketToSend(newLobby.id, codePacket);
+
+             cmn::joinLobbyData joinData = {
+                 static_cast<uint32_t>(newLobby.id),
+                 static_cast<uint8_t>(newLobby.type),
+                 static_cast<uint32_t>(newLobby.code)
+             };
+             _sharedData->addLobbyTcpPacketToSend(newLobby.id, joinData);
              _launchGame(newLobby.id);
          } else if (data.lobbyType == cmn::LobbyType::Lobby) {
              Lobby newLobby = _createLobby(cmn::LobbyType::Lobby);
@@ -78,11 +81,12 @@ namespace server {
              _lobbyMap[newLobby.id] = newLobby;
              _sharedData->createLobby(newLobby.id);
              _sharedData->addPlayerToLobby(data.playerId, newLobby.id);
-             auto codePacket = cmn::PacketFactory::createJoinLobbyPacket(
-                 newLobby.id,
-                 newLobby.type,
-                 newLobby.code);
-             _sharedData->addLobbyTcpPacketToSend(newLobby.id, codePacket);
+             cmn::joinLobbyData joinData = {
+                 static_cast<uint32_t>(newLobby.id),
+                 static_cast<uint8_t>(newLobby.type),
+                 static_cast<uint32_t>(newLobby.code)
+             };
+             _sharedData->addLobbyTcpPacketToSend(newLobby.id, joinData);
              _launchGame(newLobby.id);
          } else if (data.lobbyType == cmn::LobbyType::Matchmaking) {
              if (!_playersInMatchmaking.contains(data.playerId)) {
@@ -125,25 +129,30 @@ namespace server {
      {
          Lobby const* lobby = _findLobbyByCode(code);
 
+         // TODO: send error
          if (lobby == nullptr) {
-             auto errorPacket = cmn::PacketFactory::createErrorTcpPacket(0);
+             cmn::errorTcpData data {0};
              return;
          }
 
          if (lobby->state != cmn::LobbyState::Waiting) {
-             auto errorPacket = cmn::PacketFactory::createErrorTcpPacket(1);
+             cmn::errorTcpData data {1};
              return;
          }
 
          int const currentPlayers = _sharedData->getNumberPlayerLobby(lobby->id);
          if (currentPlayers >= cmn::maxPlayers) {
-             auto errorPacket = cmn::PacketFactory::createErrorTcpPacket(2);
+             cmn::errorTcpData data {2};
              return;
          }
 
          _sharedData->addPlayerToLobby(playerId, lobby->id);
-         auto successPacket = cmn::PacketFactory::createErrorTcpPacket(0);
-         _sharedData->addLobbyTcpPacketToSend(lobby->id, successPacket);
+         cmn::joinLobbyData joinData = {
+             static_cast<uint32_t>(lobby->id),
+             static_cast<uint8_t>(lobby->type),
+             static_cast<uint32_t>(lobby->code)
+         };
+         _sharedData->addLobbyTcpPacketToSend(lobby->id, joinData);
          if (currentPlayers + 1 >= cmn::maxPlayers) {
              _launchGame(lobby->id);
          }

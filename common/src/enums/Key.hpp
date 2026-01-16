@@ -13,10 +13,10 @@ namespace cmn {
         Left,
         Right,
         Escape,
-        One,
-        Two,
-        Three,
-        Four,
+        MenuSolo,
+        MenuMatchmaking,
+        MenuLobby,
+        MenuLeave,
         None,
     };
 

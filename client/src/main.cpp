@@ -9,8 +9,6 @@
 #include "client_shared_data/ClientSharedData.hpp"
 #include "game_renderer/GameRenderer.hpp"
 #include "parser/Parser.hpp"
-#include "shared_data/SharedData.hpp"
-
 #include <iostream>
 
 int main(const int argc, char *argv[])

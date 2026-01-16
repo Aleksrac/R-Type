@@ -39,13 +39,13 @@ namespace server {
         void _createNewPlayers(const std::vector<int>& ids, size_t &currentNbPlayerEntities);
         bool _isIdAlreadyPresent(int playerId);
         void _waitForPlayers();
-        void _sendSound();
+        void _sendSound() const;
         void _sendPlayerEntities();
         void _startGame();
         void _createEnemy(Level &currentLevel, sf::Clock &enemyClock, std::minstd_rand0 &generator);
         void _checkSpaceBar();
-        void _sendPositions();
-        void _sendDestroy();
+        void _sendPositions() const;
+        void _sendDestroy() const;
     };
 }
 

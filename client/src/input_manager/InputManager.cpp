@@ -15,13 +15,13 @@ namespace client {
         _initDefaultBindings();
         try {
             loadConfig(static_cast<std::string>(cmn::configClientFile));
-            std::cout << "[InputManager] Config loaded successfully." << std::endl;
+            std::cout << "[InputManager] Config loaded successfully." << '\n';
         } catch (const std::exception& e) {
-            std::cerr << "[InputManager] Failed to load config: " << e.what() << ". Using defaults." << std::endl;
+            std::cerr << "[InputManager] Failed to load config: " << e.what() << ". Using defaults." << '\n';
         }
     }
 
-    sf::Keyboard::Key InputManager::_stringToKey(const std::string& keyName) const
+    sf::Keyboard::Key InputManager::_stringToKey(const std::string& keyName)
     {
         static const std::map<std::string, sf::Keyboard::Key> keyMap = {
             {"A", sf::Keyboard::Key::A}, {"B", sf::Keyboard::Key::B}, {"C", sf::Keyboard::Key::C},
@@ -36,14 +36,20 @@ namespace client {
             {"Up", sf::Keyboard::Key::Up},       {"Down", sf::Keyboard::Key::Down},
             {"Left", sf::Keyboard::Key::Left},   {"Right", sf::Keyboard::Key::Right},
             {"Space", sf::Keyboard::Key::Space}, {"Enter", sf::Keyboard::Key::Enter},
-            {"Shift", sf::Keyboard::Key::LShift},{"Ctrl", sf::Keyboard::Key::LControl}
+            {"Shift", sf::Keyboard::Key::LShift},{"Ctrl", sf::Keyboard::Key::LControl},
+            {"Escape", sf::Keyboard::Key::Escape},
+            {"Num1", sf::Keyboard::Key::Num1}, {"Num2", sf::Keyboard::Key::Num2},
+            {"Num3", sf::Keyboard::Key::Num3},{"Num4", sf::Keyboard::Key::Num4},
+            {"Num5", sf::Keyboard::Key::Num5}, {"Num6", sf::Keyboard::Key::Num6},
+            {"Num7", sf::Keyboard::Key::Num5}, {"Num8", sf::Keyboard::Key::Num8},
+            {"Num9", sf::Keyboard::Key::Num9}, {"Num0", sf::Keyboard::Key::Num0}
         };
 
         auto it = keyMap.find(keyName);
         if (it != keyMap.end()) {
             return it->second;
         }
-        std::cerr << "[InputManager] Warning: Key '" << keyName << "' not found. Defaulting to Unknown." << std::endl;
+        std::cerr << "[InputManager] Warning: Key '" << keyName << "' not found. Defaulting to Unknown." << '\n';
         return sf::Keyboard::Key::Unknown;
     }
 
@@ -56,7 +62,8 @@ namespace client {
         } catch (const libconfig::FileIOException& fioex) {
             throw std::runtime_error("File I/O Error");
         } catch (const libconfig::ParseException& pex) {
-            std::string err = "Parse error at " + std::string(pex.getFile()) + ":" + std::to_string(pex.getLine()) + " - " + pex.getError();
+            std::string const err = "Parse error at " + std::string(pex.getFile()) +
+                ":" + std::to_string(pex.getLine()) + " - " + pex.getError();
             throw std::runtime_error(err);
         }
 
@@ -77,17 +84,21 @@ namespace client {
             bindKey("right", cmn::Keys::Right);
             bindKey("shoot", cmn::Keys::Space);
             bindKey("ready", cmn::Keys::R);
+            bindKey("menu_solo",         cmn::Keys::MenuSolo);
+            bindKey("menu_matchmaking",  cmn::Keys::MenuMatchmaking);
+            bindKey("menu_lobby",        cmn::Keys::MenuLobby);
+            bindKey("menu_leave",        cmn::Keys::MenuLeave);
 
             if (root.exists("shader")) {
                 const libconfig::Setting& shader = root["shader"];
                 if (shader.lookupValue("name", _shader)) {
-                    std::cout << "[SHADER] : " << _shader << " load" <<  std::endl;
+                    std::cout << "[SHADER] : " << _shader << " load" <<  '\n';
                 } else {
-                    std::cout << "[SHADER] No shader load" << std::endl;
+                    std::cout << "[SHADER] No shader load" << '\n';
                 }
             }
         } catch (const libconfig::SettingNotFoundException& nfex) {
-            std::cerr << "[InputManager] Setting not found in config file." << std::endl;
+            std::cerr << "[InputManager] Setting not found in config file." << '\n';
         }
     }
 
@@ -97,8 +108,14 @@ namespace client {
         _bindings[cmn::Keys::Down]  = {sf::Keyboard::Key::S,     0, true,  sf::Joystick::Axis::Y,  50.0f};
         _bindings[cmn::Keys::Left]  = {sf::Keyboard::Key::Q,     0, true,  sf::Joystick::Axis::X, -50.0f};
         _bindings[cmn::Keys::Right] = {sf::Keyboard::Key::D,     0, true,  sf::Joystick::Axis::X,  50.0f};
-        _bindings[cmn::Keys::Space] = {sf::Keyboard::Key::Space, 0, false, sf::Joystick::Axis::Z,  0.0f}; // Space pour tirer
+        _bindings[cmn::Keys::Space] = {sf::Keyboard::Key::Space, 0, false, sf::Joystick::Axis::Z,  0.0f};
         _bindings[cmn::Keys::R]     = {sf::Keyboard::Key::R,     7, false, sf::Joystick::Axis::R,  0.0f};
+
+        // Menu
+        _bindings[cmn::Keys::MenuSolo]         = {sf::Keyboard::Key::Num1, 0, false, sf::Joystick::Axis::Z, 0.f};
+        _bindings[cmn::Keys::MenuMatchmaking] = {sf::Keyboard::Key::Num2, 1, false, sf::Joystick::Axis::Z, 0.f};
+        _bindings[cmn::Keys::MenuLobby]        = {sf::Keyboard::Key::Num3, 2, false, sf::Joystick::Axis::Z, 0.f};
+        _bindings[cmn::Keys::MenuLeave]        = {sf::Keyboard::Key::Escape, 3, false, sf::Joystick::Axis::Z, 0.f};
     }
 
     bool InputManager::isActionTriggered(cmn::Keys action) const

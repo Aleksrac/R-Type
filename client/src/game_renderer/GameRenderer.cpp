@@ -8,17 +8,11 @@
 #include "GameRenderer.hpp"
 
 #include "client/Client.hpp"
-#include "constants/GameConstants.hpp"
-#include "entity_factory/EntityFactory.hpp"
-#include "components/Background.hpp"
 #include "components/Sound.hpp"
 #include "constants/GameConstants.hpp"
-#include "constants/GameConstants.hpp"
+#include "entity_factory/EntityFactory.hpp"
 #include "enums/Key.hpp"
-#include "packet_disassembler/PacketDisassembler.hpp"
-#include "packet_factory/PacketFactory.hpp"
 #include "enums/LobbyType.hpp"
-#include "packet_disassembler/PacketDisassembler.hpp"
 #include "packet_factory/PacketFactory.hpp"
 #include "systems/BackgroundSystem.hpp"
 #include "systems/DestroySystem.hpp"
@@ -28,8 +22,6 @@
 #include "systems/SoundSystem.hpp"
 #include "systems/SpriteAnimationSystem.hpp"
 #include "systems/VelocitySystem.hpp"
-
-#include <functional>
 
 namespace client {
 
@@ -119,41 +111,42 @@ namespace client {
         }
     }
 
-    void GameRenderer::_checkGamePlayerInput()
+    void GameRenderer::_checkGamePlayerInput() const
     {
         bool isPressed = false;
-            for (uint8_t i = 0; i < static_cast<uint8_t>(cmn::Keys::None); ++i) {
+        for (uint8_t i = 0; i < static_cast<uint8_t>(cmn::Keys::None); ++i) {
             auto action = static_cast<cmn::Keys>(i);
             if (_inputManager.isActionTriggered(action)) {
-                _sharedData->addUdpPacketToSend(
-                    cmn::PacketFactory::createInputPacket(_playerId, action, cmn::KeyState::Pressed)
-                );
+                cmn::inputData data = {_playerId, action, cmn::KeyState::Pressed};
+                _sharedData->addUdpPacketToSend(data);
                 isPressed = true;
             }
         }
         if (!isPressed) {
-            _sharedData->addUdpPacketToSend(
-                cmn::PacketFactory::createInputPacket(_playerId, cmn::Keys::None, cmn::KeyState::Pressed));
+            cmn::inputData data = {_playerId, cmn::Keys::None, cmn::KeyState::Pressed};
+            _sharedData->addUdpPacketToSend(data);
         }
     }
 
     void GameRenderer::_checkMenuPlayerInput() const
     {
-        const auto inputComp = _menuKeyboard->getComponent<ecs::InputPlayer>();
-
+        // TODO: implement a way to choose to join lobby with code and write the code
         if (_currentState == ClientState::Menu) {
-            if (inputComp->getOne()) {
-                std::cout << "Ask to start solo mode with id: "<< _playerId << std::endl;
-                _sharedData->addTcpPacketToSend(cmn::PacketFactory::createSelectModePacket(cmn::LobbyType::Solo, _playerId));
-            } else if (inputComp->getTwo()) {
-                _sharedData->addTcpPacketToSend(cmn::PacketFactory::createSelectModePacket(cmn::LobbyType::Matchmaking, _playerId));
-            } else if (inputComp->getThree()) {
-                _sharedData->addTcpPacketToSend(cmn::PacketFactory::createSelectModePacket(cmn::LobbyType::Lobby, _playerId));
+            if (_inputManager.isActionTriggered(cmn::Keys::MenuSolo)) {
+                std::cout << "Ask to start solo mode with id: " << _playerId << '\n';
+                cmn::selectModeData data = {cmn::LobbyType::Solo, _playerId};
+                _sharedData->addTcpPacketToSend(data);
+            } else if (_inputManager.isActionTriggered(cmn::Keys::MenuMatchmaking)) {
+                cmn::selectModeData data = {cmn::LobbyType::Matchmaking, _playerId};
+                _sharedData->addTcpPacketToSend(data);
+            } else if (_inputManager.isActionTriggered(cmn::Keys::MenuLobby)) {
+                cmn::selectModeData data{cmn::LobbyType::Lobby, _playerId};
+                _sharedData->addTcpPacketToSend(data);
             }
-        }
-        if (_currentState == ClientState::Waiting) {
-            if (inputComp->getFour()) {
-                _sharedData->addTcpPacketToSend(cmn::PacketFactory::createLeaveLobbyPacket(_playerId));
+        } else if (_currentState == ClientState::Waiting) {
+            if (_inputManager.isActionTriggered(cmn::Keys::MenuLeave)) {
+                cmn::leaveLobbyData data = {_playerId};
+                _sharedData->addTcpPacketToSend(data);
             }
         }
     }
@@ -163,16 +156,12 @@ namespace client {
         static const std::unordered_map<int, uint64_t> emptyMap{};
 
         if (_currentState == ClientState::InGame) {
-            while (auto packet = _sharedData->getUdpReceivedPacket()) {
-                if (auto data = cmn::PacketDisassembler::disassemble(packet.value())) {
-                    _translator.translate(_gameEcs, data.value(), emptyMap);
-                }
+            while (auto data = _sharedData->getUdpReceivedPacket()) {
+                _translator.translate(_gameEcs, data.value(), emptyMap);
             }
         } else {
-            if (auto packet = _sharedData->getTcpReceivedPacket()) {
-                if (auto data = cmn::PacketDisassembler::disassemble(packet.value())) {
-                    std::visit(
-                        [this](auto &&arg) {
+            if (auto data = _sharedData->getTcpReceivedPacket()) {
+                std::visit([this](auto &&arg) {
                             using T = std::decay_t<decltype(arg)>;
                             if constexpr (std::is_same_v<T, cmn::connectionData>) {
                                 _playerId = arg.playerId;
@@ -183,12 +172,16 @@ namespace client {
                             } else if constexpr (std::is_same_v<T, cmn::joinLobbyData>) {
                                 _currentState = ClientState::Waiting;
                                 std::cout << "joining lobby" << "\n";
+                                cmn::joinLobbyData data = arg;
+                                if (data.lobbyType == cmn::LobbyType::Lobby) {
+                                    std::cout << "Lobby code is: " << data.lobbyCode << "\n";
+                                }
                             } else if constexpr (std::is_same_v<T, cmn::errorTcpData>) {
                                 //TODO: implement error id which are in constant
+                                std::cout << "error" << "\n";
                             }
                         },
                         data.value());
-                }
             }
         }
     }
@@ -244,7 +237,7 @@ namespace client {
                     _updateGame(inputClock, elapsedTime, deltaTime);
                     break;
                 case ClientState::GameOver:
-                    //TODO: same and maybe win ?
+                    //TODO: same and win ?
                     _window.close();
                     return;
             }

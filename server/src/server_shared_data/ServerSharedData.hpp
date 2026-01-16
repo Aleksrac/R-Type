@@ -48,15 +48,15 @@ namespace server {
         std::optional<cmn::packetData> getSystemPacket();
         void addLobbyUdpReceivedPacket(int lobbyId, const cmn::packetData &packet);
         std::optional<cmn::packetData> getLobbyUdpReceivedPacket(int lobbyId);
-        void addLobbyUdpPacketToSend(int lobbyId, const cmn::CustomPacket &packet);
-        std::optional<cmn::CustomPacket> getLobbyUdpPacketToSend(int lobbyId);
+        void addLobbyUdpPacketToSend(int lobbyId, const cmn::packetData &packet);
+        std::optional<cmn::packetData> getLobbyUdpPacketToSend(int lobbyId);
         void addLobbyTcpReceivedPacket(int lobbyId, const cmn::packetData &packet);
         std::optional<cmn::packetData> getLobbyTcpReceivedPacket(int lobbyId);
-        void addLobbyTcpPacketToSend(int lobbyId, const cmn::CustomPacket &packet);
-        std::optional<cmn::CustomPacket> getLobbyTcpPacketToSend(int lobbyId);
+        void addLobbyTcpPacketToSend(int lobbyId, const cmn::packetData &packet);
+        std::optional<cmn::packetData> getLobbyTcpPacketToSend(int lobbyId);
 
-        void addTcpPacketToSendToSpecificPlayer(int playerId, const cmn::CustomPacket &packet);
-        std::optional<std::pair<int, cmn::CustomPacket>> getTcpPacketToSendToSpecificPlayer();
+        void addTcpPacketToSendToSpecificPlayer(int playerId, const cmn::packetData &packet);
+        std::optional<std::pair<int, cmn::packetData>> getTcpPacketToSendToSpecificPlayer();
 
         size_t getLobbyUdpQueueSize(int lobbyId);
         size_t getLobbyTcpQueueSize(int lobbyId);
@@ -73,11 +73,11 @@ namespace server {
         std::unordered_map<int, cmn::LobbyState> _lobbiesState;
 
         std::map<int, std::queue<cmn::packetData>> _lobbyUdpReceivedQueues;
-        std::map<int, std::queue<cmn::CustomPacket>> _lobbyUdpSendQueues;
+        std::map<int, std::queue<cmn::packetData>> _lobbyUdpSendQueues;
         std::map<int, std::queue<cmn::packetData>> _lobbyTcpReceivedQueues;
-        std::map<int, std::queue<cmn::CustomPacket>> _lobbyTcpSendQueues;
+        std::map<int, std::queue<cmn::packetData>> _lobbyTcpSendQueues;
         std::queue<cmn::packetData> _systemPacketQueue;
-        std::queue<std::pair<int, cmn::CustomPacket>> _tcpPacketQueueToSpecificPlayer;
+        std::queue<std::pair<int, cmn::packetData>> _tcpPacketQueueToSpecificPlayer;
 
         std::mutex _mutex;
     };

@@ -1,7 +1,5 @@
 add_library(r-type_common_lib
-        shared_data/SharedData.cpp
-        shared_data/SharedData.hpp
-        packet_data/input_data/InputData.hpp
+        packet_data/InputData.hpp
         enums/Key.hpp
         enums/KeyState.hpp
         custom_packet/CustomPacket.cpp
@@ -9,38 +7,40 @@ add_library(r-type_common_lib
         parser/AParser.cpp
         parser/AParser.hpp
         packet_data/PacketData.hpp
-        shared_data/SharedData.cpp
-        shared_data/SharedData.hpp
-        packet_data/input_data/InputData.hpp
-        packet_data/position_data/PositionData.hpp
-        packet_data/new_entity_data/NewEntityData.hpp
-        packet_data/delete_entity_data/DeleteEntityData.hpp
+        packet_data/InputData.hpp
+        packet_data/PositionData.hpp
+        packet_data/NewEntityData.hpp
+        packet_data/DeleteEntityData.hpp
         enums/EntityType.hpp
         data_translator/DataTranslator.cpp
         data_translator/DataTranslator.hpp
         constants/GameConstants.hpp
         packet_factory/PacketFactory.cpp
         packet_factory/PacketFactory.hpp
-        packet_data/connection_data/ConnectionData.hpp
-        packet_data/start_game_data/StartGameData.hpp
+        packet_data/ConnectionData.hpp
+        packet_data/StartGameData.hpp
         bit_packer/BitPacker.cpp
         bit_packer/BitPacker.hpp
-        constants/ProtocolConstants.hpp
+        constants/NetworkConstants.hpp
         constants/BitPackingConstants.hpp
         bit_unpacker/BitUnpacker.cpp
         bit_unpacker/BitUnpacker.hpp
         packet_disassembler/PacketDisassembler.cpp
         packet_disassembler/PacketDisassembler.hpp
+        packet_header/PacketHeader.hpp
+        packet_data/AcknowledgeData.hpp
+        packet_data/SoundData.hpp
+        reliable_packet/ReliablePacket.hpp
         entity_factory/EntityFactory.cpp
         entity_factory/EntityFactory.hpp
-        packet_data/sound_packet/SoundPacket.hpp
         enums/LobbyType.hpp
         enums/LobbyState.hpp
-        packet_data/join_lobby_data/JoinLobbyData.hpp
-        packet_data/select_mode_data/SelectModeData.hpp
-        packet_data/leave_lobby_data/LeaveLobbyData.hpp
-        packet_data/error_tcp_data/ErrorTcpData.hpp
-        packet_data/request_join_lobby_data/RequestJoinLobbyData.hpp
+        packet_data/JoinLobbyData.hpp
+        packet_data/SelectModeData.hpp
+        packet_data/LeaveLobbyData.hpp
+        packet_data/ErrorTcpData.hpp
+        packet_data/RequestJoinLobbyData.hpp
+        entity_factory/EntityFactory.cpp
 )
 
 target_include_directories(r-type_common_lib PUBLIC

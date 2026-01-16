@@ -77,9 +77,9 @@ namespace server {
         std::lock_guard const lock(_mutex);
         _lobbyPlayers[lobbyId] = std::list<int>();
         _lobbyUdpReceivedQueues[lobbyId] = std::queue<cmn::packetData>();
-        _lobbyUdpSendQueues[lobbyId] = std::queue<cmn::CustomPacket>();
+        _lobbyUdpSendQueues[lobbyId] = std::queue<cmn::packetData>();
         _lobbyTcpReceivedQueues[lobbyId] = std::queue<cmn::packetData>();
-        _lobbyTcpSendQueues[lobbyId] = std::queue<cmn::CustomPacket>();
+        _lobbyTcpSendQueues[lobbyId] = std::queue<cmn::packetData>();
     }
 
     void ServerSharedData::deleteLobby(int lobbyId)
@@ -207,7 +207,7 @@ namespace server {
         return packet;
     }
 
-    void ServerSharedData::addLobbyUdpPacketToSend(int lobbyId, const cmn::CustomPacket &packet)
+    void ServerSharedData::addLobbyUdpPacketToSend(int lobbyId, const cmn::packetData &packet)
     {
         std::lock_guard const lock(_mutex);
 
@@ -218,7 +218,7 @@ namespace server {
         _lobbyUdpSendQueues[lobbyId].push(packet);
     }
 
-    std::optional<cmn::CustomPacket> ServerSharedData::getLobbyUdpPacketToSend(int lobbyId)
+    std::optional<cmn::packetData> ServerSharedData::getLobbyUdpPacketToSend(int lobbyId)
     {
         std::lock_guard const lock(_mutex);
 
@@ -226,7 +226,7 @@ namespace server {
             return std::nullopt;
         }
 
-        cmn::CustomPacket packet = _lobbyUdpSendQueues[lobbyId].front();
+        cmn::packetData packet = _lobbyUdpSendQueues[lobbyId].front();
         _lobbyUdpSendQueues[lobbyId].pop();
         return packet;
     }
@@ -254,7 +254,7 @@ namespace server {
         return packet;
     }
 
-    void ServerSharedData::addLobbyTcpPacketToSend(int lobbyId, const cmn::CustomPacket &packet)
+    void ServerSharedData::addLobbyTcpPacketToSend(int lobbyId, const cmn::packetData &packet)
     {
         std::lock_guard const lock(_mutex);
 
@@ -265,26 +265,26 @@ namespace server {
         _lobbyTcpSendQueues[lobbyId].push(packet);
     }
 
-    std::optional<cmn::CustomPacket> ServerSharedData::getLobbyTcpPacketToSend(int lobbyId)
+    std::optional<cmn::packetData> ServerSharedData::getLobbyTcpPacketToSend(int lobbyId)
     {
         std::lock_guard const lock(_mutex);
 
         if (!_lobbyTcpSendQueues.contains(lobbyId) || _lobbyTcpSendQueues[lobbyId].empty()) {
             return std::nullopt;
         }
-        cmn::CustomPacket packet = _lobbyTcpSendQueues[lobbyId].front();
+        cmn::packetData packet = _lobbyTcpSendQueues[lobbyId].front();
         _lobbyTcpSendQueues[lobbyId].pop();
         return packet;
     }
 
-    void ServerSharedData::addTcpPacketToSendToSpecificPlayer(int playerId, const cmn::CustomPacket &packet)
+    void ServerSharedData::addTcpPacketToSendToSpecificPlayer(int playerId, const cmn::packetData &packet)
     {
         std::lock_guard const lock(_mutex);
 
         _tcpPacketQueueToSpecificPlayer.push(std::make_pair(playerId, packet));
     }
 
-    std::optional<std::pair<int, cmn::CustomPacket>> ServerSharedData::getTcpPacketToSendToSpecificPlayer()
+    std::optional<std::pair<int, cmn::packetData>> ServerSharedData::getTcpPacketToSendToSpecificPlayer()
     {
         std::lock_guard const lock(_mutex);
 

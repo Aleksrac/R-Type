@@ -11,7 +11,6 @@
 #include "enums/LobbyState.hpp"
 #include "enums/LobbyType.hpp"
 #include "server_shared_data/ServerSharedData.hpp"
-#include "shared_data/SharedData.hpp"
 #include <queue>
 #include <thread>
 #include <unordered_set>

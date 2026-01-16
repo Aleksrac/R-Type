@@ -11,11 +11,9 @@
 #include "EcsManager.hpp"
 #include "SFML/Graphics/Font.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
-#include "SFML/Graphics/Text.hpp"
 #include "client_shared_data/ClientSharedData.hpp"
 #include "data_translator/DataTranslator.hpp"
 #include "input_manager/InputManager.hpp"
-#include "shared_data/SharedData.hpp"
 
 namespace client {
 
@@ -47,7 +45,7 @@ namespace client {
         void _initEcsSystem();
         void _initBackground();
         void _initKeyboard();
-        void _checkGamePlayerInput();
+        void _checkGamePlayerInput() const;
         void _checkMenuPlayerInput() const;
         void _updateNetwork();
         void _initSound();

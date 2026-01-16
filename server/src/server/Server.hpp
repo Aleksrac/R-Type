@@ -15,10 +15,12 @@
 #include "SFML/Network/UdpSocket.hpp"
 #include "custom_packet/CustomPacket.hpp"
 #include "packet_data/PacketData.hpp"
+#include "packet_header/PacketHeader.hpp"
 #include "server_shared_data/ServerSharedData.hpp"
 
 #include <memory>
 #include <thread>
+#include "reliable_packet/ReliablePacket.hpp"
 #include <vector>
 
 namespace server {
@@ -42,9 +44,12 @@ namespace server {
         [[noreturn]] void _handleTcp();
         void _checkSocket();
         void _handleNewTcpPacket();
+        std::unordered_map<uint32_t, cmn::reliablePacket> _reliablePackets;
+        void _handleUdpReception(cmn::packetHeader header, cmn::packetData data, int lobbyId);
+        void _resendTimedOutPackets();
         void _acceptConnection();
         void _processLobbyPackets();
-        void _routePacket(cmn::CustomPacket &packet, int playerId) const;
+        void _routePacket(const cmn::packetData &packet, int playerId) const;
 
         int _getPlayerIdFromSocket(const sf::TcpSocket &socket) const;
         int _getPlayerIdFromUdp(const sf::IpAddress &ip, unsigned short port) const;

@@ -9,7 +9,6 @@
 #include "lobby_manager/LobbyManager.hpp"
 #include "parser/Parser.hpp"
 #include "server/Server.hpp"
-#include <iostream>
 
 int main(int argc, char **argv)
 {

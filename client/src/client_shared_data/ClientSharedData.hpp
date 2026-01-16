@@ -8,7 +8,6 @@
 #ifndef R_TYPE_CLIENT_SHARED_DATA_HPP
 #define R_TYPE_CLIENT_SHARED_DATA_HPP
 
-#include "custom_packet/CustomPacket.hpp"
 #include "packet_data/PacketData.hpp"
 #include <mutex>
 #include <optional>
@@ -17,26 +16,26 @@
 namespace client {
     class ClientSharedData {
     public:
-        void addUdpReceivedPacket(const cmn::CustomPacket &packet);
-        std::optional<cmn::CustomPacket> getUdpReceivedPacket();
+        void addUdpReceivedPacket(const cmn::packetData &packet);
+        std::optional<cmn::packetData> getUdpReceivedPacket();
 
-        void addUdpPacketToSend(const cmn::CustomPacket &packet);
-        std::optional<cmn::CustomPacket> getUdpPacketToSend();
+        void addUdpPacketToSend(const cmn::packetData &packet);
+        std::optional<cmn::packetData> getUdpPacketToSend();
 
-        void addTcpReceivedPacket(const cmn::CustomPacket &packet);
-        std::optional<cmn::CustomPacket> getTcpReceivedPacket();
+        void addTcpReceivedPacket(const cmn::packetData &packet);
+        std::optional<cmn::packetData> getTcpReceivedPacket();
 
-        void addTcpPacketToSend(const cmn::CustomPacket &packet);
-        std::optional<cmn::CustomPacket> getTcpPacketToSend();
+        void addTcpPacketToSend(const cmn::packetData &packet);
+        std::optional<cmn::packetData> getTcpPacketToSend();
 
         void stopGame();
         bool isGameRunning();
 
     private:
-        std::queue<cmn::CustomPacket> _udpReceivedQueue;
-        std::queue<cmn::CustomPacket> _udpSendQueue;
-        std::queue<cmn::CustomPacket> _tcpReceivedQueue;
-        std::queue<cmn::CustomPacket> _tcpSendQueue;
+        std::queue<cmn::packetData> _udpReceivedQueue;
+        std::queue<cmn::packetData> _udpSendQueue;
+        std::queue<cmn::packetData> _tcpReceivedQueue;
+        std::queue<cmn::packetData> _tcpSendQueue;
         std::mutex _mutex;
 
         bool _isRunning = true;
