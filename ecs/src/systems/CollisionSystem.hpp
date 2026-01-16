@@ -11,7 +11,7 @@
 #include "EcsManager.hpp"
 #include "components/Collision.hpp"
 #include "components/Position.hpp"
-#include "src/constants/GameConstants.hpp"
+#include "EcsConstant.hpp"
 
 namespace ecs {
     class AABB {

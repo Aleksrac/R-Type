@@ -13,7 +13,7 @@ namespace ecs
 {
     void CollisionSystem::_buildQuadTree(const std::vector<std::shared_ptr<Entity>> &entities)
     {
-        _quadTree = std::make_unique<QuadTree>(AABB{0, 0, cmn::windowWidth, cmn::windowHeight});
+        _quadTree = std::make_unique<QuadTree>(AABB{0, 0, ecs::windowWidth, ecs::windowHeight});
         for (const auto &entity : entities) {
             auto collision = entity->getComponent<Collision>();
             auto position = entity->getComponent<Position>();
@@ -127,7 +127,7 @@ namespace ecs
         if (!_bound.intersects(bound)) {
             return;
         }
-        if (_entities.size() < cmn::MAX_ENTITIES || _depth >= cmn::MAX_DEPTH) {
+        if (_entities.size() < ecs::MAX_ENTITIES || _depth >= ecs::MAX_DEPTH) {
             _entities.push_back({entity, bound});
             return;
         }
