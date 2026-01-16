@@ -16,6 +16,7 @@
 #include <SFML/Network/TcpListener.hpp>
 #include <SFML/Network/TcpSocket.hpp>
 #include <thread>
+#include "reliable_packet/ReliablePacket.hpp"
 
 namespace server {
 
@@ -43,8 +44,9 @@ namespace server {
         void _checkSocket();
         void _handleNewTcpPacket();
         std::shared_ptr<cmn::SharedData> _sharedData;
-        std::unordered_map<uint32_t, cmn::CustomPacket> _sequencePacketMap;
-        void _handleUdpReception(cmn::packetHeader header, cmn::packetData data, uint32_t &loopIdx);
+        std::unordered_map<uint32_t, cmn::reliablePacket> _reliablePackets;
+        void _handleUdpReception(cmn::packetHeader header, cmn::packetData data);
+        void _resendTimedOutPackets();
     };
 
 }// namespace server

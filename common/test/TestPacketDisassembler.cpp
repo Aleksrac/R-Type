@@ -21,7 +21,7 @@ namespace cmn {
 
     class PacketDisassemblerTest : public ::testing::Test {
       protected:
-        std::unordered_map<uint32_t, CustomPacket> sequencePacketMap;
+        std::unordered_map<uint32_t, reliablePacket> sequencePacketMap;
 
         void SetUp() override {
             sequencePacketMap.clear();
@@ -122,7 +122,7 @@ namespace cmn {
         };
 
         for (const auto& [entityId, x, y] : positions) {
-            positionData posData{entityId, x, y};
+            positionData posData{static_cast<uint32_t>(entityId), x, y};
             CustomPacket packet = PacketFactory::createPacket(posData, sequencePacketMap);
             auto [header, result] = PacketDisassembler::disassemble(packet);
 

@@ -12,7 +12,8 @@
 
 namespace cmn {
 
-    constexpr uint32_t ticksBeforeResending = 5000;
+    constexpr int ticksBeforeResending = 200;
+    constexpr uint32_t reliabilityRetries = 5;
 
     constexpr uint16_t connectionProtocolId = 0;
     constexpr uint16_t inputProtocolId = 1;

@@ -12,7 +12,8 @@
 
 namespace cmn {
 
-    uint32_t PacketFactory::_sequenceNbr = 0;
+    uint32_t PacketFactory::_udpSequenceNbr = 0;
+    uint32_t PacketFactory::_tcpSequenceNbr = 0;
 
     CustomPacket PacketFactory::_putInPacket(BitPacker &packer)
     {
@@ -25,16 +26,24 @@ namespace cmn {
         return packet;
     }
 
+    void PacketFactory::_handleReliability(CustomPacket &packet,
+        std::unordered_map<uint32_t, reliablePacket> &reliablePackets)
+    {
+        auto now = std::chrono::steady_clock::now();
+        reliablePacket const reliablePacket = {packet, now, 0};
+        reliablePackets[_udpSequenceNbr] = reliablePacket;
+    }
+
     CustomPacket PacketFactory::_createConnectionPacket(connectionData data)
     {
         BitPacker packer;
 
         packer.writeUInt16(connectionProtocolId);
-        packer.writeUInt32(_sequenceNbr);
+        packer.writeUInt32(_tcpSequenceNbr);
         packer.writeBool(false);
         packer.writeUInt32(data.playerId);
 
-        _sequenceNbr++;
+        _tcpSequenceNbr++;
         return _putInPacket(packer);
     }
 
@@ -43,13 +52,13 @@ namespace cmn {
         BitPacker packer;
 
         packer.writeUInt16(inputProtocolId);
-        packer.writeUInt32(_sequenceNbr);
+        packer.writeUInt32(_udpSequenceNbr);
         packer.writeBool(false);
         packer.writeUInt32(data.playerId);
         packer.writeUInt8(static_cast<uint8_t>(data.key));
         packer.writeUInt8(static_cast<uint8_t>(data.keyState));
 
-        _sequenceNbr++;
+        _udpSequenceNbr++;
         return _putInPacket(packer);
     }
 
@@ -58,23 +67,23 @@ namespace cmn {
         BitPacker packer;
 
         packer.writeUInt16(positionProtocolId);
-        packer.writeUInt32(_sequenceNbr);
+        packer.writeUInt32(_udpSequenceNbr);
         packer.writeBool(false);
         packer.writeUInt32(data.entityId);
         packer.writeFloat(data.posX, 0, windowWidth, xPositionFloatPrecision);
         packer.writeFloat(data.posY, 0, windowHeight, yPositionFloatPrecision);
 
-        _sequenceNbr++;
+        _udpSequenceNbr++;
         return _putInPacket(packer);
     }
 
     CustomPacket PacketFactory::_createNewEntityPacket(newEntityData data,
-        std::unordered_map<uint32_t, cmn::CustomPacket> &sequencePacketMap)
+        std::unordered_map<uint32_t, cmn::reliablePacket> &reliablePackets)
     {
         BitPacker packer;
 
         packer.writeUInt16(newEntityProtocolId);
-        packer.writeUInt32(_sequenceNbr);
+        packer.writeUInt32(_udpSequenceNbr);
         packer.writeBool(true);
         packer.writeUInt32(data.entityId);
         packer.writeUInt8(static_cast<uint8_t>(data.type));
@@ -82,26 +91,26 @@ namespace cmn {
         packer.writeFloat(data.posY, 0, windowHeight, yPositionFloatPrecision);
 
         CustomPacket packet = _putInPacket(packer);
+        _handleReliability(packet, reliablePackets);
 
-        sequencePacketMap[_sequenceNbr] = packet;
-        _sequenceNbr++;
+        _udpSequenceNbr++;
         return packet;
     }
 
     CustomPacket PacketFactory::_createDeleteEntityPacket(deleteEntityData data,
-        std::unordered_map<uint32_t, cmn::CustomPacket> &sequencePacketMap)
+        std::unordered_map<uint32_t, cmn::reliablePacket> &reliablePackets)
     {
         BitPacker packer;
 
         packer.writeUInt16(deleteEntityProtocolId);
-        packer.writeUInt32(_sequenceNbr);
+        packer.writeUInt32(_udpSequenceNbr);
         packer.writeBool(true);
         packer.writeUInt32(data.entityId);
 
         CustomPacket packet = _putInPacket(packer);
+        _handleReliability(packet, reliablePackets);
 
-        sequencePacketMap[_sequenceNbr] = packet;
-        _sequenceNbr++;
+        _udpSequenceNbr++;
         return packet;
     }
 
@@ -110,10 +119,10 @@ namespace cmn {
         BitPacker packer;
 
         packer.writeUInt16(startGameProtocolId);
-        packer.writeUInt32(_sequenceNbr);
+        packer.writeUInt32(_tcpSequenceNbr);
         packer.writeBool(false);
 
-        _sequenceNbr++;
+        _tcpSequenceNbr++;
         return _putInPacket(packer);
     }
 
@@ -123,7 +132,7 @@ namespace cmn {
         BitPacker packer;
 
         packer.writeUInt16(soundProtocolId);
-        packer.writeUInt32(_sequenceNbr);
+        packer.writeUInt32(_udpSequenceNbr);
         packer.writeBool(false);
         packer.writeUInt8(data.soundId);
         return _putInPacket(packer);
@@ -133,19 +142,19 @@ namespace cmn {
     {
         BitPacker packer;
 
-        packer.writeUInt16(startGameProtocolId);
-        packer.writeUInt32(_sequenceNbr);
+        packer.writeUInt16(acknowledgeProtocolId);
+        packer.writeUInt32(_udpSequenceNbr);
         packer.writeBool(false);
         packer.writeUInt32(data.sequenceNbr);
 
-        _sequenceNbr++;
+        _udpSequenceNbr++;
         return _putInPacket(packer);
     }
 
     CustomPacket PacketFactory::createPacket(packetData data,
-        std::unordered_map<uint32_t, cmn::CustomPacket> &sequencePacketMap)
+        std::unordered_map<uint32_t, cmn::reliablePacket> &reliablePackets)
     {
-        return std::visit([&sequencePacketMap](auto &&arg)
+        return std::visit([&reliablePackets](auto &&arg)
             {
                 using T = std::decay_t<decltype(arg)>;
                 if constexpr (std::is_same_v<T, connectionData>) {
@@ -159,10 +168,10 @@ namespace cmn {
                     return _createPositionPacket(positionData);
                 } else if constexpr (std::is_same_v<T, newEntityData>) {
                     newEntityData const &newEntityData = arg;
-                    return _createNewEntityPacket(newEntityData, sequencePacketMap);
+                    return _createNewEntityPacket(newEntityData, reliablePackets);
                 } else if constexpr (std::is_same_v<T, deleteEntityData>) {
                     deleteEntityData const &deleteEntityData = arg;
-                    return _createDeleteEntityPacket(deleteEntityData, sequencePacketMap);
+                    return _createDeleteEntityPacket(deleteEntityData, reliablePackets);
                 } else if constexpr (std::is_same_v<T, startGameData>) {
                     return _createStartGamePacket();
                 } else if constexpr (std::is_same_v<T, acknowledgeData>) {

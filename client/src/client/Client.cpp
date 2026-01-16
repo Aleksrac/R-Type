@@ -95,24 +95,45 @@ namespace client {
         }
     }
 
-    void Client::_handleUdpReception(cmn::packetHeader header, cmn::packetData data, uint32_t &loopIdx)
+    void Client::_resendTimedOutPackets() {
+        auto now = std::chrono::steady_clock::now();
+
+        for (auto& [seqNbr, reliablePkt] : _reliablePackets) {
+            auto timeSinceLastSend = std::chrono::duration_cast<std::chrono::milliseconds>(
+                now - reliablePkt.lastSentTime
+                ).count();
+
+            if (timeSinceLastSend > cmn::ticksBeforeResending) {
+                if (reliablePkt.retryCount < cmn::reliabilityRetries) {
+                    sendUdp(reliablePkt.packet);
+                    reliablePkt.lastSentTime = now;
+                    reliablePkt.retryCount++;
+                } else {
+                    _reliablePackets.erase(seqNbr);
+                }
+            }
+        }
+    }
+
+    void Client::_handleUdpReception(cmn::packetHeader header, cmn::packetData data)
     {
         if (header.protocolId == cmn::acknowledgeProtocolId) {
             cmn::acknowledgeData const acknowledgeData = std::get<cmn::acknowledgeData>(data);
             uint32_t const sequenceNbr = acknowledgeData.sequenceNbr;
-            _sequencePacketMap.erase(sequenceNbr);
+            _reliablePackets.erase(sequenceNbr);
             return;
         }
-        if (loopIdx > cmn::ticksBeforeResending) {
-            for (auto &it : _sequencePacketMap) {
-                sendUdp(it.second);
-            }
-            loopIdx = 0;
-        }
         _sharedData->addUdpReceivedPacket(data);
-        if (!_sequencePacketMap.empty()) {
-            loopIdx++;
+        _resendTimedOutPackets();
+    }
+
+    void Client::_sendAckPacket(cmn::packetHeader header)
+    {
+        if (!header.isReliable) {
+            return;
         }
+        cmn::acknowledgeData data = {header.sequenceNbr};
+        sendUdp(cmn::PacketFactory::createPacket(data, _reliablePackets));
     }
 
 
@@ -123,18 +144,18 @@ namespace client {
         std::optional sender = sf::IpAddress::LocalHost;
         unsigned short port = 0;
         cmn::CustomPacket packet {};
-        uint32_t loopIdx = 0;
 
         while (true) {
             auto receivedData = _sharedData->getUdpPacketToSend();
             if (receivedData.has_value()) {
-                sendUdp(cmn::PacketFactory::createPacket(receivedData.value(), _sequencePacketMap));
+                sendUdp(cmn::PacketFactory::createPacket(receivedData.value(), _reliablePackets));
             }
             if (_udpSocket.receive(packet, sender, port) != sf::Socket::Status::Done) {
                 continue;
             }
             auto data = cmn::PacketDisassembler::disassemble(packet);
-            _handleUdpReception(data.first, data.second, loopIdx);
+            _sendAckPacket(data.first);
+            _handleUdpReception(data.first, data.second);
         }
     }
 }

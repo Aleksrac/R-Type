@@ -28,7 +28,7 @@ namespace cmn {
 
     class PacketFactoryTest : public ::testing::Test {
       protected:
-        std::unordered_map<uint32_t, CustomPacket> sequencePacketMap;
+        std::unordered_map<uint32_t, reliablePacket> sequencePacketMap;
 
         void SetUp() override {
             sequencePacketMap.clear();
