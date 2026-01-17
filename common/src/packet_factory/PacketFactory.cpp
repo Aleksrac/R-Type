@@ -227,6 +227,32 @@ namespace cmn {
         return _putInPacket(packer);
     }
 
+    CustomPacket PacketFactory::_createPlayerDeathPacket(playerDeathData data)
+    {
+        BitPacker packer;
+
+        packer.writeUInt16(playerDeathProtocolId);
+        packer.writeUInt32(_udpSequenceNbr);
+        packer.writeBool(true);
+        packer.writeUInt32(data.playerId);
+
+        _udpSequenceNbr++;
+        return _putInPacket(packer);
+    }
+
+    CustomPacket PacketFactory::_createGameResultPacket(gameResultData data)
+    {
+        BitPacker packer;
+
+        packer.writeUInt16(gameResultProtocolId);
+        packer.writeUInt32(_udpSequenceNbr);
+        packer.writeBool(true);
+        packer.writeUInt8(data.gameResultType);
+
+        _udpSequenceNbr++;
+        return _putInPacket(packer);
+    }
+
     CustomPacket PacketFactory::createPacket(
         packetData data,
         std::unordered_map<uint32_t,
@@ -273,6 +299,12 @@ namespace cmn {
                 } else if constexpr (std::is_same_v<T, requestJoinLobbyData>) {
                     requestJoinLobbyData const &requestJoinLobbyData = arg;
                     return _createRequestJoinLobbyPacket(requestJoinLobbyData);
+                } else if constexpr (std::is_same_v<T, playerDeathData>) {
+                    playerDeathData const &playerDeathData = arg;
+                    return _createPlayerDeathPacket(playerDeathData);
+                } else if constexpr (std::is_same_v<T, gameResultData>) {
+                    gameResultData const &gameResultData = arg;
+                    return _createGameResultPacket(gameResultData);
                 }
             }, data);
     }

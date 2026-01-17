@@ -14,6 +14,7 @@
 #include "constants/GameConstants.hpp"
 #include "data_translator/DataTranslator.hpp"
 #include "entity_factory/EntityFactory.hpp"
+#include "enums/GameResultType.hpp"
 #include "packet_data/PacketData.hpp"
 #include "packet_disassembler/PacketDisassembler.hpp"
 #include "packet_factory/PacketFactory.hpp"
@@ -25,6 +26,7 @@
 #include "systems/VelocitySystem.hpp"
 #include <algorithm>
 #include <random>
+#include <thread>
 
 namespace server {
 
@@ -50,12 +52,13 @@ namespace server {
         _sendPlayerEntities();
         _initEcsManager();
         _startGame();
+        _sharedData->setLobbyState(_lobbyId, cmn::LobbyState::EndGame);
     }
 
     void Game::_startGame()
     {
         Level &currentLevel = _levelManager.getCurrentLevel();
-         // TODO: implement win loose -> implement death player mdr cest pas fait
+         // TODO: implement win
         sf::Clock fpsClock;
         sf::Clock clock;
         sf::Clock enemyClock;
@@ -66,12 +69,16 @@ namespace server {
 
         while (_sharedData->getLobbyState(_lobbyId) == cmn::LobbyState::Running) {
             float const deltaTime = clock.restart().asSeconds();
-            auto data = _sharedData->getLobbyUdpReceivedPacket(_lobbyId);
 
+            _handleDisconnectedPlayers();
+            if (_playerIdEntityMap.empty()) {
+                std::cout << "[Game] No players connected, ending game for lobby " << _lobbyId << "\n";
+                break;
+            }
+            auto data = _sharedData->getLobbyUdpReceivedPacket(_lobbyId);
             if (data.has_value()) {
                 cmn::DataTranslator::translate(_ecs, data.value(), _playerIdEntityMap);
             }
-
             _createEnemy(currentLevel, enemyClock, generator);
             _checkSpaceBar();
             if (elapsedTime > frameTimer) {
@@ -80,17 +87,89 @@ namespace server {
             }
             _sendSound();
             _sendDestroy();
+            if (_areAllPlayersDead()) {
+                _sendGameOver();
+                std::cout << "[Game] All players are dead, game over for lobby " << _lobbyId << "\n";
+                break;
+            }
             _ecs.setDeltaTime(deltaTime);
             _ecs.updateSystems();
             elapsedTime = fpsClock.getElapsedTime().asSeconds();
         }
     }
 
-    void Game::_sendDestroy() const
+       void Game::_handleDisconnectedPlayers()
+    {
+        std::vector<int> connectedPlayers = _sharedData->getLobbyPlayers(_lobbyId);
+
+        for (auto it = _playerIdEntityMap.begin(); it != _playerIdEntityMap.end();) {
+            int playerId = it->first;
+
+            bool isConnected = std::ranges::any_of(connectedPlayers,
+                [playerId](int id) { return id == playerId; });
+
+            if (!isConnected) {
+                std::cout << "[Game] Player " << playerId << " disconnected from lobby " << _lobbyId << ", removing from game\n";
+                uint64_t entityId = it->second;
+                auto entities = _ecs.getEntities();
+                for (const auto& entity : entities) {
+                    if (entity->getId() == entityId) {
+                        entity->addComponent<ecs::Destroy>();
+                        cmn::deleteEntityData deleteData = {static_cast<uint32_t>(entityId)};
+                        _sharedData->addLobbyUdpPacketToSend(_lobbyId, deleteData);
+                        break;
+                    }
+                }
+                _entityIdPlayerMap.erase(entityId);
+                it = _playerIdEntityMap.erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
+
+    void Game::_checkPlayerDeaths(const std::shared_ptr<ecs::Entity> &entity)
+    {
+         uint64_t entityId = entity->getId();
+         if (!_entityIdPlayerMap.contains(entityId)) {
+             return;
+         }
+         int playerId = _entityIdPlayerMap[entityId];
+         if (std::ranges::find(_deadPlayersId, playerId) != _deadPlayersId.end()) {
+             return;
+         }
+         std::cout << "[Game] Player " << playerId << " died in lobby " <<  _lobbyId << "\n";
+         _deadPlayersId.push_back(playerId);
+         cmn::playerDeathData deathData = {static_cast<uint32_t>(playerId)};
+         _sharedData->addLobbyUdpPacketToSend(_lobbyId, deathData);
+    }
+
+    bool Game::_areAllPlayersDead() const
+    {
+        if (_playerIdEntityMap.empty()) {
+            return true;
+        }
+
+        return _deadPlayersId.size() == _playerIdEntityMap.size();
+    }
+
+    void Game::_sendGameOver() const
+    {
+        cmn::gameResultData data = {static_cast<uint8_t>(cmn::GameResultType::Lose)};
+        _sharedData->addLobbyUdpPacketToSend(_lobbyId, data);
+         // TODO: might create a bool so it doesnt delete the lobby before sending result
+         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        _sharedData->setLobbyState(_lobbyId, cmn::LobbyState::EndGame);
+    }
+
+    void Game::_sendDestroy()
     {
         for (auto &entity : _ecs.getEntitiesWithComponent<ecs::Destroy>()) {
             cmn::deleteEntityData data = {entity->getId()};
             _sharedData->addLobbyUdpPacketToSend(_lobbyId, data);
+            if (entity->getComponent<ecs::InputPlayer>()) {
+                _checkPlayerDeaths(entity);
+            }
         }
     }
 
@@ -232,6 +311,11 @@ namespace server {
          }
         while (_readyPlayersId.size() != listPlayerIds.size() && _sharedData->getLobbyState(_lobbyId)) {
             listPlayerIds = _sharedData->getLobbyPlayers(_lobbyId);
+            if (listPlayerIds.empty()) {
+                std::cout << "[Game] No players in lobby " << _lobbyId <<", cancelling game start\n";
+                return;
+            }
+
             if (currentNbPlayerEntities != listPlayerIds.size()) {
                 _createNewPlayers(listPlayerIds, currentNbPlayerEntities);
             }

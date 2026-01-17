@@ -11,10 +11,12 @@
 #include "ConnectionData.hpp"
 #include "DeleteEntityData.hpp"
 #include "ErrorTcpData.hpp"
+#include "GameResultData.hpp"
 #include "InputData.hpp"
 #include "JoinLobbyData.hpp"
 #include "LeaveLobbyData.hpp"
 #include "NewEntityData.hpp"
+#include "PlayerDeathData.hpp"
 #include "PositionData.hpp"
 #include "RequestJoinLobbyData.hpp"
 #include "SelectModeData.hpp"
@@ -37,7 +39,10 @@ namespace cmn {
         errorTcpData,
         joinLobbyData,
         selectModeData,
-        requestJoinLobbyData>;
+        requestJoinLobbyData,
+        playerDeathData,
+        gameResultData
+    >;
 }
 
 #endif// R_TYPE_PACKETDATA_HPP

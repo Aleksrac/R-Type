@@ -33,6 +33,7 @@ namespace server {
         std::unordered_map<uint64_t , int> _entityIdPlayerMap;
         int _lobbyId;
         cmn::LobbyType _lobbyType;
+        std::vector<int> _deadPlayersId;
 
         void _initLevels();
         void _initEcsManager();
@@ -45,7 +46,11 @@ namespace server {
         void _createEnemy(Level &currentLevel, sf::Clock &enemyClock, std::minstd_rand0 &generator);
         void _checkSpaceBar();
         void _sendPositions() const;
-        void _sendDestroy() const;
+        void _sendDestroy();
+        void _checkPlayerDeaths(const std::shared_ptr<ecs::Entity> &entity);
+        bool _areAllPlayersDead() const;
+        void _handleDisconnectedPlayers();
+        void _sendGameOver() const;
     };
 }
 

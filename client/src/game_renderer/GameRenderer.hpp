@@ -51,6 +51,8 @@ namespace client {
         void _initSound();
         void _updateMenu(sf::Clock &inputClock, float elapsedTime, float deltaTime);
         void _updateGame(sf::Clock &inputClock, float elapsedTime, float deltaTime);
+        void _resetGame();
+        void _clearGameEntities();
 
         ClientState _currentState = ClientState::Menu;
         uint32_t _playerId = 0;

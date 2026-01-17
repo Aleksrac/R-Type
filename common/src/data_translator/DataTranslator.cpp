@@ -6,7 +6,6 @@
 */
 
 #include "DataTranslator.hpp"
-#include "constants/GameConstants.hpp"
 #include "components/Animation.hpp"
 #include "components/Collision.hpp"
 #include "components/Destroy.hpp"
@@ -19,6 +18,7 @@
 #include "constants/GameConstants.hpp"
 #include "entity_factory/EntityFactory.hpp"
 #include "enums/EntityType.hpp"
+#include "enums/GameResultType.hpp"
 #include "enums/Key.hpp"
 #include <list>
 
@@ -125,6 +125,10 @@ namespace cmn {
                 }  else if constexpr (std::is_same_v<T, soundData>) {
                     soundData &sound = arg;
                     _soundEntity(ecs, sound);
+                } else if constexpr (std::is_same_v<T, playerDeathData>) {
+                    // TODO do something when a player is dead
+                    playerDeathData &death = arg;
+                    std::cout << "[GAME] player " << death.playerId << " is dead" << std::endl;
                 }
             }, data);
     }

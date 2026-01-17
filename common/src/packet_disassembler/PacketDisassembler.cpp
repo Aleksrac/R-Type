@@ -129,6 +129,21 @@ namespace cmn {
         return data;
     }
 
+    packetData PacketDisassembler::_disassembleIntoPlayerDeathData(BitUnpacker &unpacker)
+    {
+        uint32_t const playerId = unpacker.readUInt32();
+        playerDeathData data = {playerId};
+
+        return data;
+    }
+
+    packetData PacketDisassembler::_disassembleIntoGameResultData(BitUnpacker &unpacker)
+    {
+        uint8_t const gameResultType = unpacker.readUInt8();
+        gameResultData data = {gameResultType};
+
+        return data;
+    }
 
     std::pair<packetHeader, packetData> PacketDisassembler::disassemble(CustomPacket &packet)
     {
@@ -174,6 +189,10 @@ namespace cmn {
                 return {header, _disassembleIntoSelectModeData(unpacker)};
             case (requestJoinLobbyProtocolId):
                 return {header, _disassembleIntoRequestJoinLobbyData(unpacker)};
+            case (playerDeathProtocolId):
+                return {header, _disassembleIntoPlayerDeathData(unpacker)};
+            case (gameResultProtocolId):
+                return {header, _disassembleIntoGameResultData(unpacker)};
             default:
                 throw std::exception();
         }

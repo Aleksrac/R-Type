@@ -42,6 +42,8 @@ namespace cmn {
         static CustomPacket _createJoinLobbyPacket(joinLobbyData data);
         static CustomPacket _createSelectModePacket(selectModeData data);
         static CustomPacket _createRequestJoinLobbyPacket(requestJoinLobbyData data);
+        static CustomPacket _createPlayerDeathPacket(playerDeathData data);
+        static CustomPacket _createGameResultPacket(gameResultData data);
         static void _handleReliability(CustomPacket &packet, std::unordered_map<uint32_t, reliablePacket> &reliablePackets);
 
         static uint32_t _udpSequenceNbr;

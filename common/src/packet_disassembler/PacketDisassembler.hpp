@@ -34,6 +34,8 @@ namespace cmn {
         static packetData _disassembleIntoJoinLobbyData(BitUnpacker &unpacker);
         static packetData _disassembleIntoSelectModeData(BitUnpacker &unpacker);
         static packetData _disassembleIntoRequestJoinLobbyData(BitUnpacker &unpacker);
+        static packetData _disassembleIntoPlayerDeathData(BitUnpacker &unpacker);
+        static packetData _disassembleIntoGameResultData(BitUnpacker &unpacker);
     };
 
 }// namespace cmn

@@ -43,14 +43,15 @@ namespace server {
         std::visit([this](auto &&arg) {
             using T = std::decay_t<decltype(arg)>;
             if constexpr (std::is_same_v<T, cmn::selectModeData>) {
-                std::cout << _sharedData->getPlayerLobby(arg.playerId) << std::endl;
-                if (_sharedData->getPlayerLobby(arg.playerId) != -1)
+                if (_sharedData->getPlayerLobby(arg.playerId) != -1) {
                     return;
+                }
                 const cmn::selectModeData &selectModeData = arg;
                 _checkModeSelected(selectModeData);
             } else if constexpr (std::is_same_v<T, cmn::requestJoinLobbyData>) {
-                if (_sharedData->getPlayerLobby(arg.playerId) != -1)
+                if (_sharedData->getPlayerLobby(arg.playerId) != -1) {
                     return;
+                }
                 const cmn::requestJoinLobbyData &joinLobby = arg;
                 _joinLobby(joinLobby.lobbyCode, joinLobby.playerId);
             } else if constexpr (std::is_same_v<T, cmn::leaveLobbyData>) {
@@ -129,20 +130,22 @@ namespace server {
      {
          Lobby const* lobby = _findLobbyByCode(code);
 
-         // TODO: send error
          if (lobby == nullptr) {
              cmn::errorTcpData data {0};
+             _sharedData->addTcpPacketToSendToSpecificPlayer(playerId, data);
              return;
          }
 
          if (lobby->state != cmn::LobbyState::Waiting) {
              cmn::errorTcpData data {1};
+             _sharedData->addTcpPacketToSendToSpecificPlayer(playerId, data);
              return;
          }
 
          int const currentPlayers = _sharedData->getNumberPlayerLobby(lobby->id);
          if (currentPlayers >= cmn::maxPlayers) {
              cmn::errorTcpData data {2};
+             _sharedData->addTcpPacketToSendToSpecificPlayer(playerId, data);
              return;
          }
 
@@ -205,7 +208,6 @@ namespace server {
                 }
                 if (_sharedData->getNumberPlayerLobby(lobbyId) == 0) {
                     _sharedData->setLobbyState(lobbyId, cmn::LobbyState::EndGame);
-                    //_sharedData->deleteLobby(lobbyId);
                     if (_activeGames.contains(lobbyId)) {
                         _activeGames.erase(lobbyId);
                     }
@@ -233,15 +235,11 @@ namespace server {
         _activeGames[lobbyId] = std::jthread([this, lobbyId]() {
             try {
                 Game game(_sharedData, lobbyId, _lobbyMap[lobbyId].type);
-
-                //TODO maybe delete that, thought could be usefull to put waiting screen
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
                 std::cout << "Game launched in lobby: " << lobbyId << std::endl;
                 game.run();
             } catch (const std::exception &e) {
                 std::cerr << "Game error in lobby " << lobbyId << ": " << e.what() << "\n";
             }
-            _lobbyMap[lobbyId].state = cmn::LobbyState::EndGame;
         });
     }
 
@@ -268,7 +266,7 @@ namespace server {
         return rand() % 900000 + 100000;
     }
 
-    Lobby* LobbyManager::_findLobbyByCode(int code)
+    Lobby* LobbyManager::_findLobbyByCode(const int code)
     {
         for (auto &lobby : _lobbyMap | std::views::values) {
             if (lobby.type == cmn::LobbyType::Lobby && lobby.code == code) {
