@@ -47,7 +47,7 @@ namespace server {
         _currentLevelId = id;
     }
 
-    bool LevelManager::getCurrentLevelId() const {
+    bool LevelManager::getGameFinished() const {
        return _gameFinished;
     }
 

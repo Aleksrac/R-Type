@@ -20,7 +20,7 @@ namespace server {
         Level &getCurrentLevel();
         void changeToNextLevel();
         void setCurrentLevelId(uint8_t id);
-        bool getCurrentLevelId() const;
+        bool getGameFinished() const;
 
       private:
         std::list<Level> _levels;
