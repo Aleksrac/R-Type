@@ -1,9 +1,8 @@
 add_library(r-type_common_lib
         shared_data/SharedData.cpp
         shared_data/SharedData.hpp
-        packet_data/input_data/InputData.hpp
+        packet_data/InputData.hpp
         enums/Key.hpp
-        enums/KeyState.hpp
         custom_packet/CustomPacket.cpp
         custom_packet/CustomPacket.hpp
         parser/AParser.cpp
@@ -11,29 +10,34 @@ add_library(r-type_common_lib
         packet_data/PacketData.hpp
         shared_data/SharedData.cpp
         shared_data/SharedData.hpp
-        packet_data/input_data/InputData.hpp
-        packet_data/position_data/PositionData.hpp
-        packet_data/new_entity_data/NewEntityData.hpp
-        packet_data/delete_entity_data/DeleteEntityData.hpp
+        packet_data/InputData.hpp
+        packet_data/PositionData.hpp
+        packet_data/NewEntityData.hpp
+        packet_data/DeleteEntityData.hpp
         enums/EntityType.hpp
         data_translator/DataTranslator.cpp
         data_translator/DataTranslator.hpp
         constants/GameConstants.hpp
         packet_factory/PacketFactory.cpp
         packet_factory/PacketFactory.hpp
-        packet_data/connection_data/ConnectionData.hpp
-        packet_data/start_game_data/StartGameData.hpp
+        packet_data/ConnectionData.hpp
+        packet_data/StartGameData.hpp
         bit_packer/BitPacker.cpp
         bit_packer/BitPacker.hpp
-        constants/ProtocolConstants.hpp
+        constants/NetworkConstants.hpp
         constants/BitPackingConstants.hpp
         bit_unpacker/BitUnpacker.cpp
         bit_unpacker/BitUnpacker.hpp
         packet_disassembler/PacketDisassembler.cpp
         packet_disassembler/PacketDisassembler.hpp
+        packet_header/PacketHeader.hpp
+        packet_data/AcknowledgeData.hpp
+        packet_data/SoundData.hpp
+        reliable_packet/ReliablePacket.hpp
         entity_factory/EntityFactory.cpp
         entity_factory/EntityFactory.hpp
-        packet_data/sound_packet/SoundPacket.hpp
+        entity_factory/EntityFactory.cpp
+        client_network_state/ClientNetworkState.hpp
 )
 
 target_include_directories(r-type_common_lib PUBLIC

@@ -20,6 +20,7 @@ namespace client {
 
     struct InputBinding {
         sf::Keyboard::Key key;
+        sf::Keyboard::Key other_key;
         unsigned int joystickButton;
         bool isAxis;
         sf::Joystick::Axis axis;
@@ -38,7 +39,7 @@ namespace client {
         std::map<cmn::Keys, InputBinding> _bindings;
         void _initDefaultBindings();
         [[nodiscard]] bool _checkGamepad(const InputBinding& bind) const;
-        [[nodiscard]] sf::Keyboard::Key _stringToKey(const std::string& keyName) const;
+        [[nodiscard]] sf::Keyboard::Key _stringToKey(const std::string& keyName) ;
         std::string _shader;
     };
 }

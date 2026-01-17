@@ -27,7 +27,7 @@ namespace cmn {
         EntityType type,
         float x,
         float y,
-        Context context, int hp, int id)
+        Context context, uint32_t hp, int id)
     {
         std::shared_ptr<ecs::Entity> entity;
         if (id != -1)

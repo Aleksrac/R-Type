@@ -28,7 +28,7 @@ namespace cmn {
             float x,
             float y,
             Context context,
-            int hp = 0, int id = -1
+            uint32_t hp = 0, int id = -1
         );
 
     private:

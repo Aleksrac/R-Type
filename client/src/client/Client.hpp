@@ -7,10 +7,13 @@
 
 #ifndef R_TYPE_CLIENT_HPP
 #define R_TYPE_CLIENT_HPP
-#include "packet_data/PacketData.hpp"
 #include "SFML/Network/SocketSelector.hpp"
 #include "SFML/Network/TcpSocket.hpp"
 #include "SFML/Network/UdpSocket.hpp"
+#include "client_network_state/ClientNetworkState.hpp"
+#include "packet_data/PacketData.hpp"
+#include "packet_header/PacketHeader.hpp"
+#include "reliable_packet/ReliablePacket.hpp"
 #include "shared_data/SharedData.hpp"
 
 #include <thread>
@@ -25,8 +28,8 @@ namespace client {
             [[nodiscard]] int connectToHost(const std::string &address, uint16_t port);
             [[noreturn]] int run();
 
-            int sendUdp(cmn::CustomPacket &packet);
-            int sendTcp(cmn::CustomPacket &packet);
+            int sendUdp(cmn::CustomPacket packet);
+            int sendTcp(cmn::CustomPacket packet);
 
         private:
             sf::TcpSocket _tcpSocket;
@@ -39,6 +42,13 @@ namespace client {
             std::jthread _tcpThread;
 
             std::shared_ptr<cmn::SharedData> _sharedData;
+            std::unordered_map<uint32_t, cmn::reliablePacket> _reliablePackets;
+            void _handleUdpReception(cmn::packetHeader header, cmn::packetData data);
+            void _resendTimedOutPackets();
+            void _sendAckPacket(cmn::packetHeader header);
+            static bool _shouldProcessPacket(const cmn::packetHeader &header,
+                cmn::clientNetworkState state);
+            cmn::clientNetworkState _serverState;
     };
 }
 
