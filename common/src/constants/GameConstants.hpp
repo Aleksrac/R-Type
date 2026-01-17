@@ -58,8 +58,8 @@ namespace cmn {
     constexpr std::pair<uint8_t, uint8_t> boss1AnimationSize = {160, 209};
     constexpr uint8_t boss1AnimationOffset = 0;
     constexpr uint8_t boss1AnimationNumberFrame = 4;
-    constexpr uint8_t boss1CollisionHeight = 209;
-    constexpr uint8_t boss1CollisionWidth = 160;
+    constexpr uint16_t boss1CollisionHeight = 420;
+    constexpr uint16_t boss1CollisionWidth = 320;
     constexpr uint16_t boss1SpawnPositionWidth = 1500;
     constexpr uint16_t boss1SpawnPositionHeight = 250;
 
