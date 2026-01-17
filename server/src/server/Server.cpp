@@ -12,7 +12,6 @@
 #include "packet_disassembler/PacketDisassembler.hpp"
 #include "packet_factory/PacketFactory.hpp"
 #include "packet_header/PacketHeader.hpp"
-#include <iostream>
 #include <thread>
 #include <utility>
 
@@ -221,7 +220,7 @@ namespace server {
     {
         _socketSelector.add(_listener);
 
-        _tcpThread = std::jthread{[this]{ _handleTcp(); }};
+        std::jthread const tcpThread = std::jthread{[this]{ _handleTcp(); }};
 
         std::optional<sf::IpAddress> sender;
         unsigned short port = 0;
