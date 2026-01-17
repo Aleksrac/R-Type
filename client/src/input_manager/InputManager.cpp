@@ -120,7 +120,7 @@ namespace client {
 
     bool InputManager::isActionTriggered(cmn::Keys action) const
     {
-        if (_bindings.find(action) == _bindings.end()) {
+        if (!_bindings.contains(action)) {
             return false;
         }
         const auto& bind = _bindings.at(action);

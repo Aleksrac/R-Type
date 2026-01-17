@@ -29,7 +29,6 @@ namespace server {
         }
         _playerList.erase(playerId);
         _playerSocketMap.erase(playerId);
-        std::cout << "========================Player " << playerId << " deleted" << std::endl;
     }
 
     std::optional<std::pair<int, sf::IpAddress>> ServerSharedData::getPlayer(const int playerId)
@@ -92,7 +91,6 @@ namespace server {
                 _playerLobbyMap.erase(playerId);
             }
         }
-        std::cout << "pppppppppppppppppppppppppppp" << std::endl;
         _lobbiesState.erase(lobbyId);
         _lobbyPlayers.erase(lobbyId);
         _lobbyUdpReceivedQueues.erase(lobbyId);
@@ -217,22 +215,6 @@ namespace server {
             std::cerr << "[ERROR] Trying to send UDP packet to a non-existent lobby " << lobbyId << "\n";
             return;
         }
-        std::visit(
-        [&](auto &&arg) -> void {
-            using T = std::decay_t<decltype(arg)>;
-
-            if constexpr (std::is_same_v<T, cmn::deleteEntityData>) {
-                cmn::deleteEntityData deleteData = arg;
-                if (_lobbyPlayers.contains(lobbyId)) {
-                    auto list = _lobbyPlayers[lobbyId];
-                    std::cout << "--------------------------------- adding to queue " << arg.lobbyId  << " " << deleteData.lobbyId << "\n";
-                    for (auto id: list) {
-                        std::cout << ">>>>>>>>>>>>>>>>>>>>>" << id << "\n";
-                    }
-                }
-            }
-        }, packet);
-
         _lobbyUdpSendQueues[lobbyId].push(packet);
     }
 

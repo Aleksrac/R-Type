@@ -212,7 +212,6 @@ namespace server {
                         _activeGames.erase(lobbyId);
                     }
                     it = _lobbyMap.erase(it);
-                    std::cout << "Lobby " << lobbyId << " removed" << std::endl;
                 } else {
                     ++it;
                 }
@@ -235,11 +234,7 @@ namespace server {
         _activeGames[lobbyId] = std::jthread([this, lobbyId]() {
             try {
                 Game game(_sharedData, lobbyId, _lobbyMap[lobbyId].type);
-                std::cout << "===============================================" << std::endl;
                 std::cout << "Game launched in lobby: " << lobbyId << std::endl;
-                for (auto id: _sharedData->getLobbyPlayers(lobbyId))
-                    std::cout << id << std::endl;
-                std::cout << "===============================================" << std::endl;
                 game.run();
             } catch (const std::exception &e) {
                 std::cerr << "Game error in lobby " << lobbyId << ": " << e.what() << "\n";
@@ -249,7 +244,6 @@ namespace server {
 
     void LobbyManager::_cleanupFinishedGames()
     {
-         // TODO: implement that in game,
         for (auto it = _lobbyMap.begin(); it != _lobbyMap.end(); ) {
             int const lobbyId = it->first;
             if (_sharedData->getLobbyState(lobbyId) == cmn::LobbyState::EndGame) {

@@ -116,7 +116,6 @@ namespace server {
                     if (entity->getId() == entityId) {
                         entity->addComponent<ecs::Destroy>();
                         cmn::deleteEntityData deleteData = {static_cast<uint32_t>(entityId), static_cast<uint32_t>(_lobbyId)};
-                        std::cout << "lobby " << _lobbyId << " remove player " << playerId << "from game " << "\n";
                         _sharedData->addLobbyUdpPacketToSend(_lobbyId, deleteData);
                         break;
                     }

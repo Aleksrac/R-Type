@@ -39,14 +39,14 @@ namespace server {
         void broadcastTcp(const cmn::CustomPacket &packet) const;
         void broadcastUdp(const cmn::CustomPacket &packet);
         void broadcastTcpToLobby(int lobbyId, const cmn::CustomPacket &packet);
-        void broadcastUdpToLobby(int lobbyId, cmn::CustomPacket &packet);
+        void broadcastUdpToLobby(int lobbyId, const cmn::CustomPacket &packet);
 
     private:
         [[noreturn]] void _handleTcp();
         void _checkSocket();
         void _handleNewTcpPacket();
-        std::unordered_map<uint32_t, cmn::reliablePacket> _reliablePackets;
-        void _handleUdpReception(cmn::packetHeader header, cmn::packetData data, sf::IpAddress ip, uint16_t port, int lobbyId);
+        void _handleUdpReception(cmn::packetHeader header,
+            const cmn::packetData &data, sf::IpAddress ip, uint16_t port, int lobbyId);
         void _resendTimedOutPackets(int lobbyId);
         void _acceptConnection();
         void _processLobbyPackets();
@@ -65,6 +65,7 @@ namespace server {
         std::shared_ptr<ServerSharedData> _sharedData;
         std::map<std::pair<uint16_t, sf::IpAddress>, uint32_t> _playerList;
         std::unordered_map<uint32_t, cmn::clientNetworkState> _clientStates;
+        std::unordered_map<int, std::unordered_map<uint32_t, cmn::reliablePacket>> _lobbyReliablePackets;
     };
 
 }// namespace server

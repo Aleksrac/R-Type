@@ -85,8 +85,6 @@ namespace cmn {
         for (auto &entity : ecs.getEntitiesWithComponent<ecs::Position>()) {
             if (entity->getId() == deleteEntity.entityId) {
                 entity->addComponent<ecs::Destroy>();
-                if (entity->getComponent<ecs::InputPlayer>())
-                    std::cout << "caca from lobby:" << deleteEntity.lobbyId << std::endl;
                 break;
             }
         }
