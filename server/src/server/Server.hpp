@@ -42,7 +42,6 @@ namespace server {
         void _acceptConnection();
         sf::UdpSocket _udpSocket;
         [[noreturn]] void _handleTcp();
-        std::jthread _tcpThread;
         void _checkSocket();
         void _handleNewTcpPacket();
         std::shared_ptr<cmn::SharedData> _sharedData;
