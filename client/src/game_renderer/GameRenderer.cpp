@@ -181,26 +181,25 @@ namespace client {
         } else {
             if (auto data = _sharedData->getTcpReceivedPacket()) {
                 std::visit([this](auto &&arg) {
-                            using T = std::decay_t<decltype(arg)>;
-                            if constexpr (std::is_same_v<T, cmn::connectionData>) {
-                                _playerId = arg.playerId;
-                                std::cout << "[SYSTEM] your player id: " << _playerId << "\n";
-                            } else if constexpr (std::is_same_v<T, cmn::startGameData>) {
-                                _currentState = ClientState::InGame;
-                                std::cout << "[GAME] starting game\n";
-                            } else if constexpr (std::is_same_v<T, cmn::joinLobbyData>) {
-                                _currentState = ClientState::Waiting;
-                                std::cout << "[GAME]joining lobby" << "\n";
-                                cmn::joinLobbyData data = arg;
-                                if (data.lobbyType == cmn::LobbyType::Lobby) {
-                                    std::cout << "[SYSTEM Lobby code is: " << data.lobbyCode << "\n";
-                                }
-                            } else if constexpr (std::is_same_v<T, cmn::errorTcpData>) {
-                                //TODO: implement error id which are in constant
-                                std::cout << "[SYSTEM] error" << "\n";
-                            }
-                        },
-                        data.value());
+                    using T = std::decay_t<decltype(arg)>;
+                    if constexpr (std::is_same_v<T, cmn::connectionData>) {
+                        _playerId = arg.playerId;
+                        std::cout << "[SYSTEM] your player id: " << _playerId << "\n";
+                    } else if constexpr (std::is_same_v<T, cmn::startGameData>) {
+                        _currentState = ClientState::InGame;
+                        std::cout << "[GAME] starting game\n";
+                    } else if constexpr (std::is_same_v<T, cmn::joinLobbyData>) {
+                        _currentState = ClientState::Waiting;
+                        std::cout << "[GAME]joining lobby" << "\n";
+                        cmn::joinLobbyData data = arg;
+                        if (data.lobbyType == cmn::LobbyType::Lobby) {
+                            std::cout << "[SYSTEM] Lobby code is: " << data.lobbyCode << "\n";
+                        }
+                    } else if constexpr (std::is_same_v<T, cmn::errorTcpData>) {
+                        //TODO: implement error id which are in constant
+                        //std::cout << "[SYSTEM] error" << "\n";
+                    }
+                },data.value());
             }
         }
     }
