@@ -20,7 +20,6 @@
 #include "systems/DestroySystem.hpp"
 #include "systems/HealthSystem.hpp"
 #include "systems/MovementSystem.hpp"
-#include "systems/ShootSystem.hpp"
 #include "systems/VelocitySystem.hpp"
 #include <algorithm>
 #include <random>
@@ -49,6 +48,21 @@ namespace server {
         _startGame();
     }
 
+    void Game::_checkBossDeath(Level &currentLevel, sf::Clock &enemyClock)
+     {
+         if (!currentLevel.hasBossSpawned()) {
+             return;
+         }
+         if (_currentIdBoss != -1) {
+             if (!_ecs.getEntityById(_currentIdBoss)) {
+                 _levelManager.changeToNextLevel();
+                 currentLevel = _levelManager.getCurrentLevel();
+                 _currentIdBoss = -1;
+                 enemyClock.restart();
+             }
+         }
+     }
+
     [[noreturn]] void Game::_startGame()
     {
         Level &currentLevel = _levelManager.getCurrentLevel();
@@ -67,9 +81,10 @@ namespace server {
             if (data.has_value()) {
                 cmn::DataTranslator::translate(_ecs, data.value(), _playerIdEntityMap);
             }
-
+            _checkBossDeath(currentLevel, enemyClock);
             _createEnemy(currentLevel, enemyClock, generator);
             _checkSpaceBar();
+            _enemyShoot();
             if (elapsedTime > frameTimer) {
                 fpsClock.restart();
                 _sendPositions();
@@ -168,6 +183,47 @@ namespace server {
         }
     }
 
+    void Game::_enemyShoot()
+     {
+         for (auto const &entity : _ecs.getEntitiesWithComponent<ecs::Shoot>())
+         {
+             auto input = entity->getComponent<ecs::InputPlayer>();
+             const auto shoot = entity->getComponent<ecs::Shoot>();
+             const auto collision= entity->getComponent<ecs::Collision>();
+
+             if (!shoot && !collision) { continue; }
+
+             if (collision && collision->getTypeCollision() == ecs::ENEMY)
+             {
+                 auto posCpn = entity->getComponent<ecs::Position>();
+                 shoot->setShootTimer(shoot->getShootTimer() + _ecs.getDeltaTime());
+
+                 if (shoot->getShootTimer() >= shoot->getCooldown()) {
+                     shoot->setShootTimer(0);
+
+                     float posX = posCpn->getX() - collision->getWidth() - 10;
+                     float posY = posCpn->getY() + 15;
+
+                     auto projectile = cmn::EntityFactory::createEntity(_ecs,
+                          cmn::EntityType::MonsterProjectile,
+                          posX,
+                          posY,
+                          cmn::EntityFactory::Context::SERVER);
+
+                     cmn::newEntityData data {
+                         projectile->getId(),
+                         cmn::EntityType::MonsterProjectile,
+                         posX,
+                         posY
+                     };
+                     _sharedData->addUdpPacketToSend(data);
+                     shoot->setTimeSinceLastShot(0);
+                     shoot->setShootTimer(0.f);
+                 }
+             }
+         }
+     }
+
     void Game::_createEnemy(Level &currentLevel, sf::Clock &enemyClock, std::minstd_rand0 &generator)
     {
         if (currentLevel.isFinished()) {
@@ -185,6 +241,7 @@ namespace server {
             cmn::newEntityData data = {newEnemy->getId(), cmn::EntityType::Boss1, cmn::boss1SpawnPositionWidth,
                 cmn::boss1SpawnPositionHeight};
 
+            _currentIdBoss = newEnemy->getId();
             _sharedData->addUdpPacketToSend(data);
             currentLevel.setBossSpawned(true);
             return;
@@ -306,7 +363,6 @@ namespace server {
         _ecs.addSystem<ecs::DestroySystem>();
         _ecs.addSystem<ecs::MovementSystem>();
         _ecs.addSystem<ecs::CollisionSystem>();
-        _ecs.addSystem<ecs::ShootSystem>();
         _ecs.addSystem<ecs::VelocitySystem>();
         _ecs.addSystem<ecs::HealthSystem>();
     }
