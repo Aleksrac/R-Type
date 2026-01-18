@@ -55,7 +55,7 @@ namespace server {
         std::pair <std::string, uint32_t> _boss;
         std::vector<std::pair <uint16_t, std::list<tmpEnemy>>> _waves;
         int _currentWave = 0;
-        int _currentRepeat = 0;
+        int _currentRepeat = 1;
         int _totalRepeatWaves = 0;
         bool _bossHasSpawned = false;
         float _bonusSpawnRate = 15.0f;
