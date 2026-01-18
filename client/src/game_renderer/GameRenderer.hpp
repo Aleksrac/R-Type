@@ -17,7 +17,7 @@
 
 namespace client {
 
-    enum class ClientState {
+    enum class ClientState: uint8_t {
         Menu,
         Waiting,
         InGame,
@@ -70,6 +70,7 @@ namespace client {
         void _clearGameEntities();
         void _handleCodeInput(const sf::Event::KeyPressed& keyEvent);
 
+        void _handleTcp();
     };
 }
 

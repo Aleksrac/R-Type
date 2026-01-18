@@ -39,7 +39,6 @@ namespace client {
 
     void GameRenderer::_initEcsSystem()
     {
-       // _gameEcs.addSystem<ecs::InputSystem>();
         _gameEcs.addSystem<ecs::SoundSystem>();
         _gameEcs.addSystem<ecs::PlayerAnimationSystem>();
         _gameEcs.addSystem<ecs::SpriteAnimationSystem>();
@@ -49,7 +48,6 @@ namespace client {
         _gameEcs.addSystem<ecs::BackgroundSystem>();
         _gameEcs.addSystem<ecs::ScoreTextSystem>();
 
-        //_menuEcs.addSystem<ecs::InputSystem>();
         _menuEcs.addSystem<ecs::RenderSystem>(_window, _inputManager.getShaderName());
         _menuEcs.addSystem<ecs::DestroySystem>();
         _menuEcs.addSystem<ecs::BackgroundSystem>();
@@ -81,7 +79,7 @@ namespace client {
         scoreEntity->addComponent<ecs::Position>(cmn::positionScoreX, cmn::positionScoreY);
         scoreEntity->addComponent<ecs::Score>();
         scoreEntity->addComponent<ecs::Text>(
-            _gameEcs.getResourceManager().getFont(cmn::fontPath.data()),
+            _gameEcs.getResourceManager().getFont(std::string(cmn::fontPath)),
             cmn::sizeScore
         );
     }
@@ -153,7 +151,7 @@ namespace client {
         }
         if (keyEvent.scancode == sf::Keyboard::Scancode::Enter) {
             if (!_lobbyCodeInput.empty()) {
-                uint32_t code = std::stoul(_lobbyCodeInput);
+                uint32_t const code = std::stoul(_lobbyCodeInput);
                 std::cout << "[LOBBY] Joining lobby with code: " << code << "\n";
                 cmn::requestJoinLobbyData data{_playerId, code};
                 _sharedData->addTcpPacketToSend(data);
@@ -273,6 +271,39 @@ namespace client {
         }
     }
 
+    void GameRenderer::_handleTcp()
+    {
+        if (auto data = _sharedData->getTcpReceivedPacket()) {
+            std::visit([this](auto &&arg) {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (std::is_same_v<T, cmn::connectionData>) {
+                    _playerId = arg.playerId;
+                    std::cout << "[SYSTEM] your player id: " << _playerId << "\n";
+                } else if constexpr (std::is_same_v<T, cmn::startGameData>) {
+                    _currentState = ClientState::InGame;
+                    std::cout << "[GAME] starting game\n";
+                } else if constexpr (std::is_same_v<T, cmn::joinLobbyData>) {
+                    _currentState = ClientState::Waiting;
+                    std::cout << "[GAME]joining lobby" << "\n";
+                    cmn::joinLobbyData const data = arg;
+                    if (data.lobbyType == cmn::LobbyType::Lobby) {
+                        _currentLobbyCode = data.lobbyCode;
+                        std::cout << "[SYSTEM] Lobby code is: " << data.lobbyCode << "\n";
+                    }
+                } else if constexpr (std::is_same_v<T, cmn::errorTcpData>) {
+                    cmn::errorTcpData const data = arg;
+                    if (data.errorId == cmn::noExistentLobbyError) {
+                        std::cout << "no lobby exist" << '\n';
+                    } else if (data.errorId == cmn::noWaitingLobby) {
+                        std::cout << "no waiting lobby" << '\n';
+                    } else if (data.errorId == cmn::fullLobbyError) {
+                        std::cout << "full lobby" << '\n';
+                    }
+
+                }
+            },data.value());
+        }
+    }
 
     void GameRenderer::_updateNetwork()
     {
@@ -284,9 +315,9 @@ namespace client {
                 using T = std::decay_t<decltype(arg)>;
                 if constexpr (std::is_same_v<T, cmn::gameResultData>) {
                     if (arg.gameResultType == static_cast<uint8_t>(cmn::GameResultType::Lose)) {
-                        std::cout << "[GAME] Game lose" << std::endl;
+                        std::cout << "[GAME] Game lose" << '\n';
                     } else {
-                        std::cout << "[GAME] Game win" << std::endl;
+                        std::cout << "[GAME] Game win" << '\n';
                     }
                     _currentState = ClientState::GameOver;
                 }
@@ -294,36 +325,7 @@ namespace client {
                 _translator.translate(_gameEcs, data.value(), emptyMap);
             }
         } else {
-            if (auto data = _sharedData->getTcpReceivedPacket()) {
-                std::visit([this](auto &&arg) {
-                    using T = std::decay_t<decltype(arg)>;
-                    if constexpr (std::is_same_v<T, cmn::connectionData>) {
-                        _playerId = arg.playerId;
-                        std::cout << "[SYSTEM] your player id: " << _playerId << "\n";
-                    } else if constexpr (std::is_same_v<T, cmn::startGameData>) {
-                        _currentState = ClientState::InGame;
-                        std::cout << "[GAME] starting game\n";
-                    } else if constexpr (std::is_same_v<T, cmn::joinLobbyData>) {
-                        _currentState = ClientState::Waiting;
-                        std::cout << "[GAME]joining lobby" << "\n";
-                        cmn::joinLobbyData data = arg;
-                        if (data.lobbyType == cmn::LobbyType::Lobby) {
-                            _currentLobbyCode = data.lobbyCode;
-                            std::cout << "[SYSTEM] Lobby code is: " << data.lobbyCode << "\n";
-                        }
-                    } else if constexpr (std::is_same_v<T, cmn::errorTcpData>) {
-                        cmn::errorTcpData data = arg;
-                        if (data.errorId == cmn::noExistentLobbyError) {
-                            std::cout << "no lobby exist" << std::endl;
-                        } else if (data.errorId == cmn::noWaitingLobby) {
-                            std::cout << "no waiting lobby" << std::endl;
-                        } else if (data.errorId == cmn::fullLobbyError) {
-                            std::cout << "full lobby" << std::endl;
-                        }
-
-                    }
-                },data.value());
-            }
+            _handleTcp();
         }
     }
 
@@ -343,7 +345,6 @@ namespace client {
         if (elapsedTime > inputCooldown) {
             _checkGamePlayerInput();
             inputClock.restart();
-            elapsedTime = 0;
         }
         _checkMenuPlayerInput();
         _menuEcs.setDeltaTime(deltaTime);
@@ -357,7 +358,6 @@ namespace client {
         if (elapsedTime > inputCooldown) {
             _checkGamePlayerInput();
             inputClock.restart();
-            elapsedTime = 0;
         }
         _gameEcs.setDeltaTime(deltaTime);
         _gameEcs.updateSystems();
@@ -368,7 +368,7 @@ namespace client {
         auto entities = _gameEcs.getEntities();
 
         for (const auto& entity : entities) {
-            uint64_t entityId = entity->getId();
+            uint64_t const entityId = entity->getId();
             if (entityId != cmn::idEntityForMusic &&
                 entityId != cmn::idBg1 &&
                 entityId != cmn::idBg2 &&
@@ -418,25 +418,15 @@ namespace client {
             const float deltaTime = _clock.restart().asSeconds();
             _updateNetwork();
             _handleEvents();
-            switch (_currentState) {
-                case ClientState::Menu:
-                    _updateMenu(inputClock, elapsedTime, deltaTime);
-                    break;
-                case ClientState::EnteringLobbyCode:
-                    _updateMenu(inputClock, elapsedTime, deltaTime);
-                    break;
-                case ClientState::Waiting:
-                    _updateMenu(inputClock, elapsedTime, deltaTime);
-                    break;
-                case ClientState::InGame:
-                    _updateGame(inputClock, elapsedTime, deltaTime);
-                    break;
-                case ClientState::GameOver:
-                    _window.clear();
-                    _window.display();
-                    std::this_thread::sleep_for(std::chrono::seconds(4));
-                    _resetGame();
-                    break;
+            if (_currentState == ClientState::GameOver) {
+                _window.clear();
+                _window.display();
+                std::this_thread::sleep_for(std::chrono::seconds(4));
+                _resetGame();
+            } else if (_currentState == ClientState::InGame) {
+                _updateGame(inputClock, elapsedTime, deltaTime);
+            } else {
+                _updateMenu(inputClock, elapsedTime, deltaTime);
             }
             elapsedTime = inputClock.getElapsedTime().asSeconds();
         }
@@ -450,8 +440,8 @@ namespace client {
 
         entity->addComponent<ecs::Position>(x, y);
 
-        auto font = _menuEcs.getResourceManager().getFont(cmn::fontPath.data());
-            entity->addComponent<ecs::Text>( _menuEcs.getResourceManager().getFont(cmn::fontPath.data()),
+        auto font = _menuEcs.getResourceManager().getFont(std::string(cmn::fontPath));
+            entity->addComponent<ecs::Text>( _menuEcs.getResourceManager().getFont(std::string(cmn::fontPath)),
                     size, color);
             entity->getComponent<ecs::Text>()->setString(content);
     }
@@ -467,8 +457,8 @@ namespace client {
 
         _dynamicTextEntity = nullptr;
 
-        float centerX = _window.getSize().x / 2.0f - 200;
-        float startY = 200.0f;
+        float const centerX = (static_cast<float>(_window.getSize().x) / 2.0F) - 200;
+        float const startY = 200.0F;
 
         if (_currentState == ClientState::Menu) {
             _createMenuText("R-TYPE", centerX + 50, 100, 60, sf::Color::Cyan);
@@ -487,7 +477,7 @@ namespace client {
         }
         else if (_currentState == ClientState::Waiting) {
             _createMenuText("LOBBY WAITING ROOM", centerX - 50, 100, 50);
-            std::string codeStr = "Lobby Code: " + std::to_string(_currentLobbyCode);
+            std::string const codeStr = "Lobby Code: " + std::to_string(_currentLobbyCode);
             _createMenuText(codeStr, centerX, startY, 40, sf::Color::Green);
             _createMenuText("Waiting for other players...", centerX, startY + 100, 30);
             _createMenuText("Press ENTER when Ready!", centerX, startY + 200, 30, sf::Color::Yellow);
