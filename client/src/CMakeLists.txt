@@ -9,6 +9,8 @@ add_library(r-type_client_lib
         game_renderer/GameRenderer.hpp
         input_manager/InputManager.cpp
         input_manager/InputManager.hpp
+        client_shared_data/ClientSharedData.hpp
+        client_shared_data/ClientSharedData.cpp
 )
 
 target_include_directories(r-type_client_lib PUBLIC
@@ -35,6 +37,8 @@ add_executable(r-type_client
         game_renderer/GameRenderer.hpp
         input_manager/InputManager.cpp
         input_manager/InputManager.hpp
+        client_shared_data/ClientSharedData.hpp
+        client_shared_data/ClientSharedData.cpp
 )
 
 target_link_libraries(r-type_client PRIVATE r-type_client_lib r-type_ecs_lib r-type_common_lib config++)

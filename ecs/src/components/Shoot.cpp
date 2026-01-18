@@ -96,7 +96,7 @@ namespace ecs {
     void Shoot::updateShootingType(float deltaTime)
     {
         if (_activeShootingType.second <= 0) {
-            _activeShootingType.first = Shoot::ShootingType::Normal;
+            _activeShootingType.first = Shoot::ShootingType::Gatling;
             _activeShootingType.second = std::numeric_limits<float>::infinity();
         }
         _activeShootingType.second -= deltaTime;

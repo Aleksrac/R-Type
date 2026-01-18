@@ -9,6 +9,10 @@
 #include "constants/BitPackingConstants.hpp"
 #include "constants/GameConstants.hpp"
 #include "constants/NetworkConstants.hpp"
+#include "enums/LobbyType.hpp"
+
+#include <iostream>
+#include <ranges>
 
 namespace cmn {
 
@@ -138,6 +142,8 @@ namespace cmn {
         packer.writeUInt32(_udpSequenceNbr);
         packer.writeBool(false);
         packer.writeUInt8(data.soundId);
+
+        _udpSequenceNbr++;
         return _putInPacket(packer);
     }
 
@@ -154,6 +160,32 @@ namespace cmn {
         return _putInPacket(packer);
     }
 
+    CustomPacket PacketFactory::_createLeaveLobbyPacket(leaveLobbyData data)
+    {
+        BitPacker packer;
+
+        packer.writeUInt16(leaveLobbyProtocolId);
+        packer.writeUInt32(_tcpSequenceNbr);
+        packer.writeBool(false);
+        packer.writeUInt32(data.playerId);
+
+        _tcpSequenceNbr++;
+        return _putInPacket(packer);
+    }
+
+    CustomPacket PacketFactory::_createErrorTcpPacket(errorTcpData data)
+    {
+        BitPacker packer;
+
+        packer.writeUInt16(errorTcpProtocolId);
+        packer.writeUInt32(_tcpSequenceNbr);
+        packer.writeBool(false);
+        packer.writeUInt8(data.errorId);
+
+        _tcpSequenceNbr++;
+        return _putInPacket(packer);
+    }
+
     CustomPacket PacketFactory::_createTextPacket(textData data)
     {
         BitPacker packer;
@@ -164,12 +196,84 @@ namespace cmn {
         packer.writeUInt32(data.entityId);
         packer.writeUInt32(data.score);
 
-        _udpSequenceNbr ++;
+        _udpSequenceNbr++;
         return _putInPacket(packer);
     }
 
-    CustomPacket PacketFactory::createPacket(packetData data,
-        std::unordered_map<uint32_t, cmn::reliablePacket> &reliablePackets)
+    CustomPacket PacketFactory::_createJoinLobbyPacket(joinLobbyData data)
+
+    {
+        BitPacker packer;
+
+        packer.writeUInt16(joinLobbyProtocolId);
+        packer.writeUInt32(_tcpSequenceNbr);
+        packer.writeBool(false);
+        packer.writeUInt32(data.lobbyId);
+        packer.writeUInt8(data.lobbyType);
+        packer.writeUInt32(data.lobbyCode);
+
+        _tcpSequenceNbr++;
+        return _putInPacket(packer);
+    }
+
+    CustomPacket PacketFactory::_createSelectModePacket(selectModeData data)
+    {
+        BitPacker packer;
+
+        packer.writeUInt16(selectModeProtocolId);
+        packer.writeUInt32(_tcpSequenceNbr);
+        packer.writeBool(false);
+        packer.writeUInt8(data.lobbyType);
+        packer.writeUInt32(data.playerId);
+
+        _tcpSequenceNbr++;
+        return _putInPacket(packer);
+    }
+
+    CustomPacket PacketFactory::_createRequestJoinLobbyPacket(requestJoinLobbyData data)
+    {
+        BitPacker packer;
+
+        packer.writeUInt16(requestJoinLobbyProtocolId);
+        packer.writeUInt32(_tcpSequenceNbr);
+        packer.writeBool(false);
+        packer.writeUInt32(data.playerId);
+        packer.writeUInt32(data.lobbyCode);
+
+        _tcpSequenceNbr++;
+        return _putInPacket(packer);
+    }
+
+    CustomPacket PacketFactory::_createPlayerDeathPacket(playerDeathData data)
+    {
+        BitPacker packer;
+
+        packer.writeUInt16(playerDeathProtocolId);
+        packer.writeUInt32(_udpSequenceNbr);
+        packer.writeBool(true);
+        packer.writeUInt32(data.playerId);
+
+        _udpSequenceNbr++;
+        return _putInPacket(packer);
+    }
+
+    CustomPacket PacketFactory::_createGameResultPacket(gameResultData data)
+    {
+        BitPacker packer;
+
+        packer.writeUInt16(gameResultProtocolId);
+        packer.writeUInt32(_udpSequenceNbr);
+        packer.writeBool(true);
+        packer.writeUInt8(data.gameResultType);
+
+        _udpSequenceNbr++;
+        return _putInPacket(packer);
+    }
+
+    CustomPacket PacketFactory::createPacket(
+        packetData data,
+        std::unordered_map<uint32_t,
+        reliablePacket> &reliablePackets)
     {
         return std::visit([&reliablePackets](auto &&arg)
             {
@@ -200,6 +304,27 @@ namespace cmn {
                 } else if constexpr (std::is_same_v<T, textData>) {
                     textData const &textData = arg;
                     return _createTextPacket(textData);
+                } else if constexpr (std::is_same_v<T, leaveLobbyData>) {
+                    leaveLobbyData const &leaveLobbyData = arg;
+                    return _createLeaveLobbyPacket(leaveLobbyData);
+                } else if constexpr (std::is_same_v<T, errorTcpData>) {
+                    errorTcpData const &errorTcpData = arg;
+                    return _createErrorTcpPacket(errorTcpData);
+                } else if constexpr (std::is_same_v<T, joinLobbyData>) {
+                    joinLobbyData const &joinLobbyData = arg;
+                    return _createJoinLobbyPacket(joinLobbyData);
+                } else if constexpr (std::is_same_v<T, selectModeData>) {
+                    selectModeData const &selectLobbyData = arg;
+                    return _createSelectModePacket(selectLobbyData);
+                } else if constexpr (std::is_same_v<T, requestJoinLobbyData>) {
+                    requestJoinLobbyData const &requestJoinLobbyData = arg;
+                    return _createRequestJoinLobbyPacket(requestJoinLobbyData);
+                } else if constexpr (std::is_same_v<T, playerDeathData>) {
+                    playerDeathData const &playerDeathData = arg;
+                    return _createPlayerDeathPacket(playerDeathData);
+                } else if constexpr (std::is_same_v<T, gameResultData>) {
+                    gameResultData const &gameResultData = arg;
+                    return _createGameResultPacket(gameResultData);
                 }
             }, data);
     }

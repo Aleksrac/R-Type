@@ -14,6 +14,10 @@ add_library(r-type_server_lib
         level/TmpEnemy.hpp
         shoot_manager/ShootManager.cpp
         shoot_manager/ShootManager.hpp
+        lobby_manager/LobbyManager.hpp
+        lobby_manager/LobbyManager.cpp
+        server_shared_data/ServerSharedData.hpp
+        server_shared_data/ServerSharedData.cpp
 )
 target_include_directories(r-type_server_lib PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
@@ -43,5 +47,10 @@ add_executable(r-type_server
         level_manager/LevelManager.hpp
         shoot_manager/ShootManager.cpp
         shoot_manager/ShootManager.hpp
+        lobby_manager/LobbyManager.hpp
+        lobby_manager/LobbyManager.cpp
+        server_shared_data/ServerSharedData.hpp
+        server_shared_data/ServerSharedData.cpp
+        lobby_manager/Lobby.hpp
 )
 target_link_libraries(r-type_server PRIVATE r-type_server_lib r-type_ecs_lib r-type_common_lib)

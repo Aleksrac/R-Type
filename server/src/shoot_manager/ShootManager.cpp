@@ -18,20 +18,21 @@
 namespace server {
     ShootManager::ShootManager()
     {
-        _shootMethods[ecs::Shoot::ShootingType::Normal] = [this](ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &shoot) { _normalShoot(ecsManager, sharedData, shoot); };
-        _shootMethods[ecs::Shoot::ShootingType::Shotgun] = [this](ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &shoot) { _shotgun(ecsManager, sharedData, shoot); };
-        _shootMethods[ecs::Shoot::ShootingType::Gatling] = [this](ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &shoot) { _gatling(ecsManager, sharedData, shoot); };
+        _shootMethods[ecs::Shoot::ShootingType::Normal] = [this](ecs::EcsManager &ecsManager, std::shared_ptr<ServerSharedData> &sharedData, const std::shared_ptr<ecs::Entity> &shoot) { _normalShoot(ecsManager, sharedData, shoot); };
+        _shootMethods[ecs::Shoot::ShootingType::Shotgun] = [this](ecs::EcsManager &ecsManager, std::shared_ptr<ServerSharedData> &sharedData, const std::shared_ptr<ecs::Entity> &shoot) { _shotgun(ecsManager, sharedData, shoot); };
+        _shootMethods[ecs::Shoot::ShootingType::Gatling] = [this](ecs::EcsManager &ecsManager, std::shared_ptr<ServerSharedData> &sharedData, const std::shared_ptr<ecs::Entity> &shoot) { _gatling(ecsManager, sharedData, shoot); };
     }
 
-    void ShootManager::shoot(ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &entity)
+    void ShootManager::shoot(ecs::EcsManager &ecsManager, std::shared_ptr<ServerSharedData> &sharedData, const std::shared_ptr<ecs::Entity> &entity, int lobbyId)
     {
         const auto &shootComp = entity->getComponent<ecs::Shoot>();
         shootComp->updateShootingType(ecsManager.getDeltaTime());
         auto shootingType = shootComp->getActiveShootingType();
         _shootMethods[shootingType](ecsManager, sharedData, entity);
+        _gameLobbyId = lobbyId;
     }
 
-    void ShootManager::_normalShoot(ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &entity)
+    void ShootManager::_normalShoot(ecs::EcsManager &ecsManager, std::shared_ptr<ServerSharedData> &sharedData, const std::shared_ptr<ecs::Entity> &entity)
     {
         const auto &shoot = entity->getComponent<ecs::Shoot>();
         if (shoot->getTimeSinceLastShot() >= shoot->getCooldown()) {
@@ -54,11 +55,11 @@ namespace server {
                     {ecs::dir::right, ecs::dir::neutral});
 
             cmn::newEntityData data = {newProjectile->getId(), cmn::EntityType::PlayerProjectile, posX, posY};
-            sharedData->addUdpPacketToSend(data);
+            sharedData->addLobbyUdpPacketToSend(_gameLobbyId, data);
         }
     }
 
-    void ShootManager::_shotgun(ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &entity)
+    void ShootManager::_shotgun(ecs::EcsManager &ecsManager, std::shared_ptr<ServerSharedData> &sharedData, const std::shared_ptr<ecs::Entity> &entity)
     {
         const auto &shoot = entity->getComponent<ecs::Shoot>();
         if (shoot->getTimeSinceLastShot() >= cmn::shotgunCooldown) {
@@ -82,12 +83,12 @@ namespace server {
                         {ecs::dir::right, yDirection}
                 );
                 cmn::newEntityData newProjectileData = {newProjectile->getId(), cmn::EntityType::PlayerProjectile, posX, posY};
-                sharedData->addUdpPacketToSend(newProjectileData);
+                sharedData->addLobbyUdpPacketToSend(_gameLobbyId, newProjectileData);
             }
         }
     }
 
-    void ShootManager::_gatling(ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &entity)
+    void ShootManager::_gatling(ecs::EcsManager &ecsManager, std::shared_ptr<ServerSharedData> &sharedData, const std::shared_ptr<ecs::Entity> &entity)
     {
         const auto &shoot = entity->getComponent<ecs::Shoot>();
         if (shoot->getTimeSinceLastShot() >= cmn::gatlingCooldown) {
@@ -111,7 +112,7 @@ namespace server {
             );
 
             cmn::newEntityData data = {newProjectile->getId(), cmn::EntityType::PlayerProjectile, posX, posY};
-            sharedData->addUdpPacketToSend(data);
+            sharedData->addLobbyUdpPacketToSend(_gameLobbyId, data);
         }
     }
 }

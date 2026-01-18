@@ -6,18 +6,19 @@
 */
 
 #include "DataTranslator.hpp"
-#include "constants/GameConstants.hpp"
 #include "components/Animation.hpp"
-#include "components/Collision.hpp"
 #include "components/Destroy.hpp"
 #include "components/InputPlayer.hpp"
 #include "components/Position.hpp"
 #include "components/Sound.hpp"
+#include "constants/GameConstants.hpp"
 #include "components/Text.hpp"
 #include "components/Score.hpp"
 #include "entity_factory/EntityFactory.hpp"
+#include "enums/GameResultType.hpp"
 #include "enums/Key.hpp"
-#include <list>
+
+#include <iostream>
 
 namespace cmn {
 
@@ -52,6 +53,8 @@ namespace cmn {
                         component->setR(input.pressed);
                         break;
                     case (Keys::None):
+                        break;
+                    default:
                         break;
                 }
             }
@@ -135,6 +138,10 @@ namespace cmn {
                 }  else if constexpr (std::is_same_v<T, soundData>) {
                     soundData &sound = arg;
                     _soundEntity(ecs, sound);
+                } else if constexpr (std::is_same_v<T, playerDeathData>) {
+                    // TODO do something when a player is dead
+                    playerDeathData &death = arg;
+                    std::cout << "[GAME] player " << death.playerId << " is dead" << std::endl;
                 } else if constexpr (std::is_same_v<T, textData>) {
                     textData &text = arg;
                     _injectScore(ecs, text);
