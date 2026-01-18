@@ -171,6 +171,7 @@ namespace server {
 
     bool Server::_shouldProcessPacket(const cmn::packetHeader& header, cmn::clientNetworkState &state) {
         uint32_t const incomingSeq = header.sequenceNbr;
+
         if (state.processedSequences.contains(incomingSeq)) {
             return false;
         }
