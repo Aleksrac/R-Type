@@ -103,7 +103,9 @@ namespace server {
             if (timeOfWave <= 0) {
                 throw LevelParserException("Time of wave out of range");
             }
-            newLevel.addWave(timeOfWave, enemies);
+            for (int i = 0; i < repeatWaves; ++i) {
+                newLevel.addWave(timeOfWave, enemies);
+            }
         }
         newLevel.calculateNumberTotalWave();
     }

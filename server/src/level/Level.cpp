@@ -119,7 +119,7 @@ namespace server {
 
     void Level::calculateNumberTotalWave()
     {
-        _totalRepeatWaves = static_cast<int>(_waves.size()) * _repeatWaves;
+        _totalRepeatWaves = static_cast<int>(_waves.size());
     }
 
     bool Level::hasBossSpawned() const

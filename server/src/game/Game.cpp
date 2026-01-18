@@ -389,7 +389,7 @@ namespace server {
                 enemy.lastSpawnTime = elapsed;
             }
         }
-
+        
         if (elapsed >= static_cast<float>(waveDuration)) {
             currentLevel.nextWave();
             enemyClock.restart();
