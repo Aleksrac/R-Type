@@ -11,7 +11,6 @@
 #include "bit_unpacker/BitUnpacker.hpp"
 #include "custom_packet/CustomPacket.hpp"
 #include "packet_data/PacketData.hpp"
-#include <optional>
 #include "packet_header/PacketHeader.hpp"
 
 namespace cmn {
@@ -22,7 +21,7 @@ namespace cmn {
         static std::pair<packetHeader, packetData> disassemble(CustomPacket &packet);
 
       private:
-        static packetData _disassembleIntoConnectionData(cmn::BitUnpacker &unpacker);
+        static packetData _disassembleIntoConnectionData(BitUnpacker &unpacker);
         static packetData _disassembleIntoInputData(BitUnpacker &unpacker);
         static packetData _disassembleIntoPositionData(BitUnpacker &unpacker);
         static packetData _disassembleIntoNewEntityData(BitUnpacker &unpacker);
@@ -31,7 +30,13 @@ namespace cmn {
         static packetData _disassembleIntoSoundData(BitUnpacker &unpacker);
         static packetData _disassembleIntoAcknowledgeData(BitUnpacker &unpacker);
         static packetData _disassembleIntoTextData(BitUnpacker &unpacker);
-
+        static packetData _disassembleIntoLeaveLobbyData(BitUnpacker &unpacker);
+        static packetData _disassembleIntoErrorTcpData(BitUnpacker &unpacker);
+        static packetData _disassembleIntoJoinLobbyData(BitUnpacker &unpacker);
+        static packetData _disassembleIntoSelectModeData(BitUnpacker &unpacker);
+        static packetData _disassembleIntoRequestJoinLobbyData(BitUnpacker &unpacker);
+        static packetData _disassembleIntoPlayerDeathData(BitUnpacker &unpacker);
+        static packetData _disassembleIntoGameResultData(BitUnpacker &unpacker);
     };
 
 }// namespace cmn

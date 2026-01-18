@@ -12,6 +12,10 @@ add_library(r-type_server_lib
         parser/LevelParser.cpp
         parser/LevelParser.hpp
         level/TmpEnemy.hpp
+        lobby_manager/LobbyManager.hpp
+        lobby_manager/LobbyManager.cpp
+        server_shared_data/ServerSharedData.hpp
+        server_shared_data/ServerSharedData.cpp
 )
 target_include_directories(r-type_server_lib PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
@@ -39,5 +43,10 @@ add_executable(r-type_server
         level/Level.hpp
         level_manager/LevelManager.cpp
         level_manager/LevelManager.hpp
+        lobby_manager/LobbyManager.hpp
+        lobby_manager/LobbyManager.cpp
+        server_shared_data/ServerSharedData.hpp
+        server_shared_data/ServerSharedData.cpp
+        lobby_manager/Lobby.hpp
 )
 target_link_libraries(r-type_server PRIVATE r-type_server_lib r-type_ecs_lib r-type_common_lib)

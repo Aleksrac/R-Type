@@ -36,7 +36,13 @@ namespace client {
             {"Up", sf::Keyboard::Key::Up},       {"Down", sf::Keyboard::Key::Down},
             {"Left", sf::Keyboard::Key::Left},   {"Right", sf::Keyboard::Key::Right},
             {"Space", sf::Keyboard::Key::Space}, {"Enter", sf::Keyboard::Key::Enter},
-            {"Shift", sf::Keyboard::Key::LShift},{"Ctrl", sf::Keyboard::Key::LControl}
+            {"Shift", sf::Keyboard::Key::LShift},{"Ctrl", sf::Keyboard::Key::LControl},
+            {"Escape", sf::Keyboard::Key::Escape},
+            {"Num1", sf::Keyboard::Key::Num1}, {"Num2", sf::Keyboard::Key::Num2},
+            {"Num3", sf::Keyboard::Key::Num3},{"Num4", sf::Keyboard::Key::Num4},
+            {"Num5", sf::Keyboard::Key::Num5}, {"Num6", sf::Keyboard::Key::Num6},
+            {"Num7", sf::Keyboard::Key::Num5}, {"Num8", sf::Keyboard::Key::Num8},
+            {"Num9", sf::Keyboard::Key::Num9}, {"Num0", sf::Keyboard::Key::Num0}
         };
 
         auto it = keyMap.find(keyName);
@@ -78,6 +84,11 @@ namespace client {
             bindKey("right", cmn::Keys::Right);
             bindKey("shoot", cmn::Keys::Space);
             bindKey("ready", cmn::Keys::R);
+            bindKey("menu_solo",         cmn::Keys::MenuSolo);
+            bindKey("menu_matchmaking",  cmn::Keys::MenuMatchmaking);
+            bindKey("menu_lobby",        cmn::Keys::MenuLobby);
+            bindKey("menu_leave",        cmn::Keys::MenuLeave);
+            bindKey("menu_join_lobby",        cmn::Keys::MenuJoinLobby);
 
             if (root.exists("shader")) {
                 const libconfig::Setting& shader = root["shader"];
@@ -100,11 +111,18 @@ namespace client {
         _bindings[cmn::Keys::Right] = {sf::Keyboard::Key::D, sf::Keyboard::Key::Right,    0, true,  sf::Joystick::Axis::X,  50.0f};
         _bindings[cmn::Keys::Space] = {sf::Keyboard::Key::Space, sf::Keyboard::Key::Space, 0, false, sf::Joystick::Axis::Z,  0.0f};
         _bindings[cmn::Keys::R]     = {sf::Keyboard::Key::R, sf::Keyboard::Key::R,    7, false, sf::Joystick::Axis::R,  0.0f};
+
+        // Menu
+        _bindings[cmn::Keys::MenuSolo]         = {sf::Keyboard::Key::Num1, sf::Keyboard::Key::Num1, 0, false, sf::Joystick::Axis::Z, 0.f};
+        _bindings[cmn::Keys::MenuMatchmaking] = {sf::Keyboard::Key::Num2, sf::Keyboard::Key::Num2, 1, false, sf::Joystick::Axis::Z, 0.f};
+        _bindings[cmn::Keys::MenuLobby]        = {sf::Keyboard::Key::Num3, sf::Keyboard::Key::Num3, 2, false, sf::Joystick::Axis::Z, 0.f};
+        _bindings[cmn::Keys::MenuJoinLobby]        = {sf::Keyboard::Key::Num4, sf::Keyboard::Key::Num4, 2, false, sf::Joystick::Axis::Z, 0.f};
+        _bindings[cmn::Keys::MenuLeave]        = {sf::Keyboard::Key::Escape, sf::Keyboard::Key::Escape, 3, false, sf::Joystick::Axis::Z, 0.f};
     }
 
     bool InputManager::isActionTriggered(cmn::Keys action) const
     {
-        if (_bindings.find(action) == _bindings.end()) {
+        if (!_bindings.contains(action)) {
             return false;
         }
         const auto& bind = _bindings.at(action);

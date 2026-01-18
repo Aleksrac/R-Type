@@ -47,3 +47,6 @@ perf.data.old
 
 #valgrind files
 vgcore*
+
+#log files
+log.txt

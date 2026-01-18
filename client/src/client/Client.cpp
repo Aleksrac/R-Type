@@ -19,7 +19,7 @@
 
 namespace client {
 
-     Client::Client(const std::shared_ptr<cmn::SharedData> &data):
+     Client::Client(const std::shared_ptr<ClientSharedData> &data):
         _sharedData(data) {}
 
     int Client::bindPorts()
@@ -75,7 +75,7 @@ namespace client {
         cmn::CustomPacket packet;
         constexpr int waitTime = 50;
 
-        while (true) {
+        while (_sharedData->isGameRunning()) {
             if (!selector.wait(sf::milliseconds(waitTime))) {
                 continue;
             }
@@ -179,10 +179,14 @@ namespace client {
         unsigned short port = 0;
         cmn::CustomPacket packet {};
 
-        while (true) {
-            auto receivedData = _sharedData->getUdpPacketToSend();
-            if (receivedData.has_value()) {
-                sendUdp(cmn::PacketFactory::createPacket(receivedData.value(), _reliablePackets));
+        while (_sharedData->isGameRunning()) {
+            auto udpData = _sharedData->getUdpPacketToSend();
+            if (udpData.has_value()) {
+                sendUdp(cmn::PacketFactory::createPacket(udpData.value(), _reliablePackets));
+            }
+            auto tcpData = _sharedData->getTcpPacketToSend();
+            if (tcpData.has_value()) {
+                sendTcp(cmn::PacketFactory::createPacket(tcpData.value(), _reliablePackets));
             }
             if (_udpSocket.receive(packet, sender, port) != sf::Socket::Status::Done) {
                 continue;
@@ -191,5 +195,6 @@ namespace client {
             _sendAckPacket(data.first);
             _handleUdpReception(data.first, data.second);
         }
+        return 0;
     }
 }

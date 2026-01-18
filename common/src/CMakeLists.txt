@@ -1,6 +1,4 @@
 add_library(r-type_common_lib
-        shared_data/SharedData.cpp
-        shared_data/SharedData.hpp
         packet_data/InputData.hpp
         enums/Key.hpp
         custom_packet/CustomPacket.cpp
@@ -8,8 +6,6 @@ add_library(r-type_common_lib
         parser/AParser.cpp
         parser/AParser.hpp
         packet_data/PacketData.hpp
-        shared_data/SharedData.cpp
-        shared_data/SharedData.hpp
         packet_data/InputData.hpp
         packet_data/PositionData.hpp
         packet_data/NewEntityData.hpp
@@ -36,8 +32,18 @@ add_library(r-type_common_lib
         reliable_packet/ReliablePacket.hpp
         entity_factory/EntityFactory.cpp
         entity_factory/EntityFactory.hpp
+        enums/LobbyType.hpp
+        enums/LobbyState.hpp
+        packet_data/JoinLobbyData.hpp
+        packet_data/SelectModeData.hpp
+        packet_data/LeaveLobbyData.hpp
+        packet_data/ErrorTcpData.hpp
+        packet_data/RequestJoinLobbyData.hpp
         entity_factory/EntityFactory.cpp
         client_network_state/ClientNetworkState.hpp
+        packet_data/PlayerDeathData.hpp
+        packet_data/GameResultData.hpp
+        enums/GameResultType.hpp
 )
 
 target_include_directories(r-type_common_lib PUBLIC

@@ -88,6 +88,51 @@ namespace cmn {
         return data;
     }
 
+    packetData PacketDisassembler::_disassembleIntoLeaveLobbyData(BitUnpacker &unpacker)
+    {
+        uint32_t const playerId = unpacker.readUInt32();
+        leaveLobbyData data = {playerId};
+
+        return data;
+    }
+
+    packetData PacketDisassembler::_disassembleIntoErrorTcpData(BitUnpacker &unpacker)
+    {
+        uint8_t const errorId = unpacker.readUInt8();
+        errorTcpData data = {errorId};
+
+        return data;
+    }
+
+    packetData PacketDisassembler::_disassembleIntoJoinLobbyData(BitUnpacker &unpacker)
+    {
+        uint32_t const lobbyId = unpacker.readUInt32();
+        uint8_t const lobbyType = unpacker.readUInt8();
+        uint32_t const lobbyCode = unpacker.readUInt32();
+
+        joinLobbyData data = {lobbyId, lobbyType, lobbyCode};
+
+        return data;
+    }
+
+    packetData PacketDisassembler::_disassembleIntoSelectModeData(BitUnpacker &unpacker)
+    {
+        uint8_t const lobbyType = unpacker.readUInt8();
+        uint32_t const playerId = unpacker.readUInt32();
+        selectModeData data = {lobbyType, playerId};
+
+        return data;
+    }
+
+    packetData PacketDisassembler::_disassembleIntoRequestJoinLobbyData(BitUnpacker &unpacker)
+    {
+        uint32_t const playerId = unpacker.readUInt32();
+        uint32_t const lobbyCode = unpacker.readUInt32();
+        requestJoinLobbyData data = {playerId, lobbyCode};
+
+        return data;
+    }
+
     packetData PacketDisassembler::_disassembleIntoAcknowledgeData(BitUnpacker &unpacker)
     {
         uint32_t const sequenceNbr = unpacker.readUInt32();
@@ -101,6 +146,22 @@ namespace cmn {
         uint32_t const textId = unpacker.readUInt32();
         uint32_t const score = unpacker.readUInt32();
         textData data = {textId, score};
+
+        return data;
+    }
+
+    packetData PacketDisassembler::_disassembleIntoPlayerDeathData(BitUnpacker &unpacker)
+    {
+        uint32_t const playerId = unpacker.readUInt32();
+        playerDeathData data = {playerId};
+
+        return data;
+    }
+
+    packetData PacketDisassembler::_disassembleIntoGameResultData(BitUnpacker &unpacker)
+    {
+        bool const gameResultType = unpacker.readBool();
+        gameResultData data = {gameResultType};
 
         return data;
     }
@@ -141,6 +202,20 @@ namespace cmn {
                 return {header, _disassembleIntoAcknowledgeData(unpacker)};
             case (textProtocolId):
                 return  {header, _disassembleIntoTextData(unpacker)};
+            case (leaveLobbyProtocolId):
+                return {header, _disassembleIntoLeaveLobbyData(unpacker)};
+            case (errorTcpProtocolId):
+                return {header, _disassembleIntoErrorTcpData(unpacker)};
+            case (joinLobbyProtocolId):
+                return {header, _disassembleIntoJoinLobbyData(unpacker)};
+            case (selectModeProtocolId):
+                return {header, _disassembleIntoSelectModeData(unpacker)};
+            case (requestJoinLobbyProtocolId):
+                return {header, _disassembleIntoRequestJoinLobbyData(unpacker)};
+            case (playerDeathProtocolId):
+                return {header, _disassembleIntoPlayerDeathData(unpacker)};
+            case (gameResultProtocolId):
+                return {header, _disassembleIntoGameResultData(unpacker)};
             default:
                 throw std::exception();
         }
