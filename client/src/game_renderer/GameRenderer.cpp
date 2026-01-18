@@ -421,10 +421,8 @@ namespace client {
             const float deltaTime = _clock.restart().asSeconds();
             _handleEvents();
             _updateNetwork(); 
-            if (_currentState == ClientState::GameOver) {
-                _updateEndGame(deltaTime);
-            } else if (_currentState == ClientState::Win) {
-                _updateEndGame(deltaTime);
+            if (_currentState == ClientState::GameOver || _currentState == ClientState::Win) {
+                _updateEndGame(deltaTime); 
             }
             else if (_currentState == ClientState::InGame) {
                 _updateGame(inputClock, elapsedTime, deltaTime);
