@@ -178,7 +178,7 @@ namespace server {
 
     void Game::_sendGameEndState(cmn::GameResultType type) const
     {
-        cmn::gameResultData data = {static_cast<uint8_t>(type)};
+        cmn::gameResultData data = {static_cast<bool>(type)};
         _sharedData->addLobbyUdpPacketToSend(_lobbyId, data);
          std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         _sharedData->setLobbyState(_lobbyId, cmn::LobbyState::EndGame);

@@ -13,7 +13,7 @@ namespace cmn {
 
     using gameResultData = struct GameResultData
     {
-        uint8_t gameResultType;
+        bool gameResultType;
     };
 
 }

@@ -11,7 +11,7 @@
 
 namespace cmn {
 
-    enum class GameResultType: uint8_t
+    enum class GameResultType: bool
     {
         Win,
         Lose

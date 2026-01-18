@@ -47,5 +47,6 @@ add_executable(r-type_server
         lobby_manager/LobbyManager.cpp
         server_shared_data/ServerSharedData.hpp
         server_shared_data/ServerSharedData.cpp
+        lobby_manager/Lobby.hpp
 )
 target_link_libraries(r-type_server PRIVATE r-type_server_lib r-type_ecs_lib r-type_common_lib)

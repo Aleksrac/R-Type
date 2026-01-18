@@ -160,7 +160,7 @@ namespace cmn {
 
     packetData PacketDisassembler::_disassembleIntoGameResultData(BitUnpacker &unpacker)
     {
-        uint8_t const gameResultType = unpacker.readUInt8();
+        bool const gameResultType = unpacker.readBool();
         gameResultData data = {gameResultType};
 
         return data;

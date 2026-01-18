@@ -7,6 +7,7 @@
 
 #ifndef R_TYPE_LOBBYMANAGER_HPP
 #define R_TYPE_LOBBYMANAGER_HPP
+#include "Lobby.hpp"
 #include "data_translator/DataTranslator.hpp"
 #include "enums/LobbyState.hpp"
 #include "enums/LobbyType.hpp"
@@ -17,18 +18,6 @@
 
 
 namespace server {
-
-    using Lobby = struct Lobby {
-        int id;
-        cmn::LobbyType type;
-        cmn::LobbyState state;
-        int code;
-        std::chrono::steady_clock::time_point createdAt;
-
-        Lobby() : id(-1), type(cmn::LobbyType::Solo),
-                  state(cmn::LobbyState::Waiting), code(0),
-                  createdAt(std::chrono::steady_clock::now()) {}
-    };
 
     class LobbyManager
     {
