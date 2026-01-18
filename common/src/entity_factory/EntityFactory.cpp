@@ -136,7 +136,6 @@ namespace cmn {
         if (context == Context::CLIENT) {
             entity->addComponent<ecs::Sprite>(ecs.getResourceManager().getTexture(std::string(cmn::monsterProjectileSpriteSheet)), cmn::monsterProjectileScale);
             entity->addComponent<ecs::Animation>(cmn::monsterProjectileAnimationSize, cmn::monsterProjectileAnimationOffset, cmn::monsterProjectileAnimationNumberFrame);
-            entity->addComponent<ecs::Sound>(monsterProjectileSoundId, monsterProjectileLoop);
         } else {
             entity->addComponent<ecs::Shoot>(cmn::monsterDamage, 0);
             entity->addComponent<ecs::Collision>(
@@ -151,7 +150,8 @@ namespace cmn {
         if (context == Context::CLIENT) {
             entity->addComponent<ecs::Sprite>(ecs.getResourceManager().getTexture(std::string(cmn::boss1SpriteSheet)), cmn::boss1SpriteScale);
             entity->addComponent<ecs::Animation>(cmn::boss1AnimationSize, cmn::boss1AnimationOffset, cmn::boss1AnimationNumberFrame);
-            entity->addComponent<ecs::Sound>(4, false);
+            entity->addComponent<ecs::Sound>(bossSoundId, false);
+
         } else {
             entity->addComponent<ecs::Health>(hp);
             entity->addComponent<ecs::Collision>(
@@ -207,4 +207,6 @@ namespace cmn {
             );
         }
     }
+
+
 }
