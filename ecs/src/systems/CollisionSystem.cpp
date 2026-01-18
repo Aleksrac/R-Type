@@ -81,7 +81,7 @@ namespace ecs
                         other->addComponent<Destroy>();
                     } else if (typeA == PLAYER &&
                         typeB == POWER_UP) {
-                        entity->addComponent<Sound>(3, false);
+                        entity->addComponent<Sound>(idPowerUpMusic, false);
                         //entity->addComponent<PowerUp>();
                         other->addComponent<Destroy>();
                     }

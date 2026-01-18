@@ -9,7 +9,6 @@
 #define R_TYPE_GAMECONSTANTS_HPP
 
 #include "SFML/System/Vector2.hpp"
-#include "enums/EntityType.hpp"
 
 #include <array>
 #include <cstdint>
@@ -132,7 +131,6 @@ namespace cmn {
     constexpr int idEntityForMusic = 5;
     constexpr int idThemeMusic = 2;
     constexpr int idExplosionMusic = 3;
-
 
 }
 
