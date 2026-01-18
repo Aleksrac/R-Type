@@ -74,6 +74,9 @@ namespace cmn {
     constexpr bool monsterProjectileLoop = false;
 
     constexpr uint8_t boss1Health = 100;
+    constexpr int boss1Damage = 100;
+    constexpr float boss1ShootTimer = 0.0;
+    constexpr float boss1ShootCooldown = 4.0;
     constexpr sf::Vector2f boss1SpriteScale = {2.0F, 2.0F};
     constexpr std::string_view boss1SpriteSheet = "./assets/r-typesheet30e.gif";
     constexpr std::pair<uint8_t, uint8_t> boss1AnimationSize = {161, 207};
@@ -108,6 +111,9 @@ namespace cmn {
     constexpr uint8_t playerProjectileSoundId = 1;
     constexpr bool playerProjectileLoop = false;
 
+    constexpr float gatlingCooldown = 0.1;
+    constexpr float shotgunCooldown = 0.85;
+
     constexpr sf::Vector2f backgroundSpriteScale = {1.0F, 1.0F};
     constexpr std::string_view pathBackgroundStars = "./assets/bg-stars.png";
     constexpr std::string_view pathBackgroundPlanets = "./assets/planets_background.png";
@@ -139,6 +145,7 @@ namespace cmn {
 
     constexpr int idEntityForScore = 8;
     constexpr int idExplosionMusic = 3;
+
 
     constexpr float positionScoreX = 20.F;
     constexpr float positionScoreY = 20.F;

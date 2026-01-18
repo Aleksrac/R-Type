@@ -13,6 +13,7 @@
 #include "enums/GameResultType.hpp"
 #include "enums/LobbyType.hpp"
 #include "level_manager/LevelManager.hpp"
+#include "shoot_manager/ShootManager.hpp"
 #include "server_shared_data/ServerSharedData.hpp"
 #include <random>
 
@@ -29,6 +30,7 @@ namespace server {
         ecs::EcsManager _ecs;
         std::shared_ptr<ServerSharedData> _sharedData;
         LevelManager _levelManager;
+        ShootManager _shootManager;
         std::vector<int> _readyPlayersId;
         std::unordered_map<int, uint64_t> _playerIdEntityMap;
         std::unordered_map<uint64_t , int> _entityIdPlayerMap;
@@ -55,6 +57,7 @@ namespace server {
         void _handleDisconnectedPlayers();
         void _sendGameEndState(cmn::GameResultType type) const;
         void _enemyShoot();
+        void _bossShoot(Level &currentLevel);
         void _sendText();
         void _createBonus(Level &currentLevel, sf::Clock &bonusClock, std::minstd_rand0 &generator);
         float _nextBonusSpawnDelay = 5.0f;

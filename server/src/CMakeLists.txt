@@ -12,6 +12,8 @@ add_library(r-type_server_lib
         parser/LevelParser.cpp
         parser/LevelParser.hpp
         level/TmpEnemy.hpp
+        shoot_manager/ShootManager.cpp
+        shoot_manager/ShootManager.hpp
         lobby_manager/LobbyManager.hpp
         lobby_manager/LobbyManager.cpp
         server_shared_data/ServerSharedData.hpp
@@ -43,6 +45,8 @@ add_executable(r-type_server
         level/Level.hpp
         level_manager/LevelManager.cpp
         level_manager/LevelManager.hpp
+        shoot_manager/ShootManager.cpp
+        shoot_manager/ShootManager.hpp
         lobby_manager/LobbyManager.hpp
         lobby_manager/LobbyManager.cpp
         server_shared_data/ServerSharedData.hpp

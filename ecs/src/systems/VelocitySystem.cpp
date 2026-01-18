@@ -29,6 +29,12 @@ namespace ecs {
                     if (pos->getX() > ecs::windowWidth + entity->getComponent<Collision>()->getWidth() + 500) {
                         entity->addComponent<Destroy>();
                     }
+                    if (pos->getY() < 0 - entity->getComponent<Collision>()->getHeight()) {
+                        entity->addComponent<Destroy>();
+                    }
+                    if (pos->getY() > ecs::windowHeight + entity->getComponent<Collision>()->getHeight() + 500) {
+                        entity->addComponent<Destroy>();
+                    }
                 }
             }
         }

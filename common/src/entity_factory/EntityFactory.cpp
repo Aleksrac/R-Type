@@ -28,7 +28,7 @@ namespace cmn {
         EntityType type,
         float x,
         float y,
-        Context context, uint32_t hp, int id)
+        Context context, uint32_t hp, int id, std::pair<float, float> direction)
     {
         std::shared_ptr<ecs::Entity> entity;
         if (id != -1)
@@ -44,8 +44,8 @@ namespace cmn {
             case EntityType::Plane:
                 _initEnemy(ecs, entity, context, type);
                 break;
-            case cmn::EntityType::PlayerProjectile:
-                _initProjectile(ecs, entity, context);
+        case cmn::EntityType::PlayerProjectile:
+                _initProjectile(ecs, entity, context, direction);
                 break;
             case cmn::EntityType::MonsterProjectile:
                 _initMonsterProjectile(ecs, entity, context);
@@ -113,8 +113,8 @@ namespace cmn {
         }
     }
 
-    void EntityFactory::_initProjectile(ecs::EcsManager &ecs,std::shared_ptr<ecs::Entity> entity, Context context) {
-        entity->addComponent<ecs::Velocity>(cmn::playerProjectileSpeed, std::make_pair(ecs::dir::right, ecs::dir::neutral));
+    void EntityFactory::_initProjectile(ecs::EcsManager &ecs,std::shared_ptr<ecs::Entity> entity, Context context, std::pair<float, float> direction) {
+        entity->addComponent<ecs::Velocity>(cmn::playerProjectileSpeed, direction);
 
         if (context == Context::CLIENT) {
             entity->addComponent<ecs::Sprite>(ecs.getResourceManager().getTexture(std::string(cmn::playerProjectileSpriteSheet)), cmn::playerProjectileScale);
@@ -151,8 +151,8 @@ namespace cmn {
             entity->addComponent<ecs::Sprite>(ecs.getResourceManager().getTexture(std::string(cmn::boss1SpriteSheet)), cmn::boss1SpriteScale);
             entity->addComponent<ecs::Animation>(cmn::boss1AnimationSize, cmn::boss1AnimationOffset, cmn::boss1AnimationNumberFrame);
             entity->addComponent<ecs::Sound>(bossSoundId, false);
-
         } else {
+            entity->addComponent<ecs::Shoot>(cmn::boss1Damage, cmn::boss1ShootCooldown, cmn::boss1ShootTimer);
             entity->addComponent<ecs::Health>(hp);
             entity->addComponent<ecs::Collision>(
                 ecs::TypeCollision::ENEMY,

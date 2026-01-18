@@ -28,14 +28,14 @@ namespace cmn {
             float x,
             float y,
             Context context,
-            uint32_t hp = 0, int id = -1
+            uint32_t hp = 0, int id = -1, std::pair<float, float> direction = {0, 0}
         );
 
     private:
         static void _initPlayer(ecs::EcsManager &ecs, std::shared_ptr<ecs::Entity> entity, Context context);
         static void _initPowerUp(ecs::EcsManager &ecs, std::shared_ptr<ecs::Entity> entity, Context context);
         static void _initEnemy(ecs::EcsManager &ecs, std::shared_ptr<ecs::Entity> entity, Context context, EntityType type);
-        static void _initProjectile(ecs::EcsManager& ecs, std::shared_ptr<ecs::Entity> entity, Context context);
+        static void _initProjectile(ecs::EcsManager& ecs, std::shared_ptr<ecs::Entity> entity, Context context, std::pair<float, float> direction);
         static void _initMonsterProjectile(ecs::EcsManager& ecs, std::shared_ptr<ecs::Entity> entity, Context context);
         static void _initBoss(ecs::EcsManager &ecs, std::shared_ptr<ecs::Entity> entity, Context context, int hp);
         static void _initBackground(ecs::EcsManager &ecs, std::shared_ptr<ecs::Entity> entity, Context context, EntityType type);
