@@ -24,6 +24,10 @@ void InputSystem::update(EcsManager & ecs) {
                            || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right));
         inputPtr->setSpacebar(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space));
         inputPtr->setR(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R));
+        inputPtr->setOne(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1));
+        inputPtr->setTwo(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2));
+        inputPtr->setThree(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3));
+        inputPtr->setFour(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num4));
     }
 }
 }

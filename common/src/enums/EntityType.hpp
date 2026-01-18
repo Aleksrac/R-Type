@@ -14,10 +14,17 @@ namespace cmn {
     enum class EntityType: uint8_t
     {
         Player,
-        Monster,
+        Plane,
+        Crochet,
+        Boss1,
         PlayerProjectile,
         MonsterProjectile,
+        BackgroundStars,
+        BackgroundPlanets,
+        PowerUp,
     };
+
+
 
 }
 

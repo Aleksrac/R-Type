@@ -7,28 +7,46 @@
 #ifndef R_TYPE_PACKETDATA_HPP
 #define R_TYPE_PACKETDATA_HPP
 
-#include "packet_data/connection_packet/ConnectionPacket.hpp"
-#include "packet_data/delete_entity_packet/DeleteEntityPacket.hpp"
-#include "packet_data/input_packet/InputPacket.hpp"
-#include "packet_data/new_entity_packet/NewEntityPacket.hpp"
-#include "packet_data/position_packet/PositionPacket.hpp"
-#include "packet_data/start_game_packet/StartGamePacket.hpp"
+#include "AcknowledgeData.hpp"
+#include "ConnectionData.hpp"
+#include "DeleteEntityData.hpp"
+#include "ErrorTcpData.hpp"
+#include "GameResultData.hpp"
+#include "InputData.hpp"
+#include "JoinLobbyData.hpp"
+#include "LeaveLobbyData.hpp"
+#include "NewEntityData.hpp"
+#include "PlayerDeathData.hpp"
+#include "PositionData.hpp"
+#include "RequestJoinLobbyData.hpp"
+#include "SelectModeData.hpp"
+#include "SoundData.hpp"
+#include "StartGameData.hpp"
+#include "StartGameData.hpp"
+#include "TextData.hpp"
+
 #include <variant>
 
 namespace cmn {
 
-    using packetContent = std::variant<connectionPacket, inputPacket, positionPacket, newEntityPacket, deleteEntityPacket, startGamePacket>;
-
-    using packetData = struct packetData {
-        uint16_t packetId;
-        packetContent content;
-    };
-
-    sf::Packet &operator << (sf::Packet &packet, const packetContent &content);
-    sf::Packet &operator >> (sf::Packet &packet, packetContent &data);
-    sf::Packet &operator << (sf::Packet &packet, const packetData &data);
-    sf::Packet &operator >> (sf::Packet &packet, packetData &data);
-
+    using packetData = std::variant<
+        connectionData,
+        inputData,
+        positionData,
+        newEntityData,
+        deleteEntityData,
+        startGameData,
+        soundData,
+        textData,
+        acknowledgeData,
+        leaveLobbyData,
+        errorTcpData,
+        joinLobbyData,
+        selectModeData,
+        requestJoinLobbyData,
+        playerDeathData,
+        gameResultData
+    >;
 }
 
 #endif// R_TYPE_PACKETDATA_HPP

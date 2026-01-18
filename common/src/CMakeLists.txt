@@ -1,43 +1,59 @@
 add_library(r-type_common_lib
-        shared_data/SharedData.cpp
-        shared_data/SharedData.hpp
-        packet_data/input_packet/InputPacket.hpp
+        packet_data/InputData.hpp
         enums/Key.hpp
-        enums/KeyState.hpp
         custom_packet/CustomPacket.cpp
         custom_packet/CustomPacket.hpp
         parser/AParser.cpp
         parser/AParser.hpp
         packet_data/PacketData.hpp
-        packet_data/PacketData.cpp
-        shared_data/SharedData.cpp
-        shared_data/SharedData.hpp
-        packet_data/input_packet/InputPacket.hpp
-        packet_data/input_packet/InputPacket.cpp
-        packet_data/position_packet/PositionPacket.cpp
-        packet_data/position_packet/PositionPacket.hpp
-        packet_data/new_entity_packet/NewEntityPacket.cpp
-        packet_data/new_entity_packet/NewEntityPacket.hpp
-        packet_data/delete_entity_packet/DeleteEntityPacket.cpp
-        packet_data/delete_entity_packet/DeleteEntityPacket.hpp
+        packet_data/InputData.hpp
+        packet_data/PositionData.hpp
+        packet_data/NewEntityData.hpp
+        packet_data/DeleteEntityData.hpp
         enums/EntityType.hpp
         data_translator/DataTranslator.cpp
         data_translator/DataTranslator.hpp
-        Constants.hpp
+        constants/GameConstants.hpp
         packet_factory/PacketFactory.cpp
         packet_factory/PacketFactory.hpp
-        packet_data/connection_packet/ConnectionPacket.cpp
-        packet_data/connection_packet/ConnectionPacket.hpp
-        packet_data/start_game_packet/StartGamePacket.cpp
-        packet_data/start_game_packet/StartGamePacket.hpp
+        packet_data/ConnectionData.hpp
+        packet_data/StartGameData.hpp
+        bit_packer/BitPacker.cpp
+        bit_packer/BitPacker.hpp
+        constants/NetworkConstants.hpp
+        constants/BitPackingConstants.hpp
+        bit_unpacker/BitUnpacker.cpp
+        bit_unpacker/BitUnpacker.hpp
+        packet_disassembler/PacketDisassembler.cpp
+        packet_disassembler/PacketDisassembler.hpp
+        packet_header/PacketHeader.hpp
+        packet_data/AcknowledgeData.hpp
+        packet_data/SoundData.hpp
+        reliable_packet/ReliablePacket.hpp
+        entity_factory/EntityFactory.cpp
+        entity_factory/EntityFactory.hpp
+        enums/LobbyType.hpp
+        enums/LobbyState.hpp
+        packet_data/JoinLobbyData.hpp
+        packet_data/SelectModeData.hpp
+        packet_data/LeaveLobbyData.hpp
+        packet_data/ErrorTcpData.hpp
+        packet_data/RequestJoinLobbyData.hpp
+        entity_factory/EntityFactory.cpp
+        client_network_state/ClientNetworkState.hpp
+        packet_data/PlayerDeathData.hpp
+        packet_data/GameResultData.hpp
+        enums/GameResultType.hpp
 )
 
 target_include_directories(r-type_common_lib PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
+        ${LZ4_SOURCE_DIR}/lib
 )
 
 target_link_libraries(r-type_common_lib
         PUBLIC
         sfml-network
         r-type_ecs_lib
+        lz4_static
 )

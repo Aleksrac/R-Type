@@ -6,10 +6,9 @@
 */
 
 #include "client/Client.hpp"
+#include "client_shared_data/ClientSharedData.hpp"
 #include "game_renderer/GameRenderer.hpp"
 #include "parser/Parser.hpp"
-#include "shared_data/SharedData.hpp"
-
 #include <iostream>
 
 int main(const int argc, char *argv[])
@@ -20,7 +19,7 @@ int main(const int argc, char *argv[])
         return parser.checkHelp(argc, argv);
     }
 
-    auto data = std::make_shared<cmn::SharedData>();
+    auto data = std::make_shared<client::ClientSharedData>();
 
     client::Client client(data);
 
@@ -40,7 +39,9 @@ int main(const int argc, char *argv[])
         client::GameRenderer game(data);
         auto networkThread = std::jthread([&client] { client.run(); });
         game.run();
+        data->stopGame();
     } catch (std::exception &e) {
+        data->stopGame();
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;

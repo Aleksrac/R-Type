@@ -6,6 +6,7 @@ project(
 
 set(CPM_DOWNLOAD_VERSION 0.27.2)
 set(CPM_DOWNLOAD_LOCATION "${CMAKE_BINARY_DIR}/cmake/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if(NOT (EXISTS ${CPM_DOWNLOAD_LOCATION}))
     message(STATUS "Downloading CPM.cmake")
@@ -19,6 +20,8 @@ CPMAddPackage(
         GITHUB_REPOSITORY SFML/SFML
         GIT_TAG 3.0.2
 )
+
+
 
 include(FetchContent)
 FetchContent_Declare(

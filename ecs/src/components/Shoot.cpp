@@ -6,6 +6,8 @@
 */
 
 #include "Shoot.hpp"
+#include "EcsConstant.hpp"
+#include <random>
 
 namespace ecs {
     /**
@@ -61,4 +63,59 @@ namespace ecs {
     {
         _timeSinceLastShot = t;
     }
+
+    /**
+     * @brief Gets the shooter time
+     * @return The shoot timer
+     */
+    float Shoot::getShootTimer() const
+    {
+        return _shootTimer;
+    }
+
+    /**
+     * @brief Sets the shooter
+     * @param t New shot of the shoot
+     */
+    void Shoot::setShootTimer(float t)
+    {
+        _shootTimer = t;
+    }
+
+    void Shoot::setActiveShootingType(ShootingType type)
+    {
+        _activeShootingType.first = type;
+        if (type == ShootingType::Shotgun) {
+            _activeShootingType.second = nbAmmoShotgun;
+        }
+        if (type == ShootingType::Gatling) {
+            _activeShootingType.second = nbAmmoGatling;
+        }
+    }
+
+    Shoot::ShootingType Shoot::getActiveShootingType() const
+    {
+        return _activeShootingType.first;
+    }
+
+    void Shoot::updateShootingType()
+    {
+        if (_activeShootingType.second == 0) {
+            _activeShootingType.first = Shoot::ShootingType::Normal;
+            _activeShootingType.second = nbAmmoNormalGun;
+        } else {
+            _activeShootingType.second -= 1;
+        }
+    }
+
+    Shoot::ShootingType Shoot::getRandomShootingType()
+    {
+        static std::random_device rand;
+        static std::mt19937 gen(rand());
+
+        std::uniform_int_distribution<> distrib(1, 2);
+        return static_cast<ShootingType>(distrib(gen));
+    }
+
+
 }

@@ -11,6 +11,7 @@
 
 constexpr int  SIZE_X_PLAYER = 33;
 constexpr int SIZE_Y_PLAYER = 17;
+constexpr int numberPlayerOnSprite = 5;
 
 namespace ecs {
 
@@ -52,7 +53,7 @@ void PlayerAnimationSystem::update(EcsManager& ecs)
         } else {
             x = 2 * SIZE_X_PLAYER;
         }
-        sprite->setTextureRect(x, playerId * SIZE_Y_PLAYER,SIZE_X_PLAYER, SIZE_Y_PLAYER);
+        sprite->setTextureRect(x, playerId % numberPlayerOnSprite * SIZE_Y_PLAYER,SIZE_X_PLAYER, SIZE_Y_PLAYER);
     }
 }
 

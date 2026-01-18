@@ -6,6 +6,7 @@
 */
 
 #include "VelocitySystem.hpp"
+#include "EcsConstant.hpp"
 
 namespace ecs {
 
@@ -16,18 +17,26 @@ namespace ecs {
             auto pos = entity->getComponent<Position>();
             auto direction = entity->getComponent<Velocity>()->getDirection();
             auto velocity = entity->getComponent<Velocity>()->getVelocity();
-                if (direction == 0) {
-                    pos->setX(pos->getX() - (velocity * dt));
+            auto collision = entity->getComponent<Collision>();
+
+            if (pos) {
+                pos->setX(pos->getX() + (direction.first * velocity * dt));
+                pos->setY(pos->getY() + (direction.second * velocity * dt));
+                if (collision) {
+                    if (pos->getX() < 0 - entity->getComponent<Collision>()->getWidth()) {
+                        entity->addComponent<Destroy>();
+                    }
+                    if (pos->getX() > ecs::windowWidth + entity->getComponent<Collision>()->getWidth() + 500) {
+                        entity->addComponent<Destroy>();
+                    }
+                    if (pos->getY() < 0 - entity->getComponent<Collision>()->getHeight()) {
+                        entity->addComponent<Destroy>();
+                    }
+                    if (pos->getY() > ecs::windowHeight + entity->getComponent<Collision>()->getHeight() + 500) {
+                        entity->addComponent<Destroy>();
+                    }
                 }
-                if (direction == 1) {
-                    pos->setX(pos->getX() + (velocity * dt));
-                }
-                if (direction == 2) {
-                    pos->setY(pos->getY() - (velocity * dt));
-                }
-                if (direction == 3) {
-                    pos->setY(pos->getY() + (velocity * dt));
-                }
+            }
         }
     }
 }

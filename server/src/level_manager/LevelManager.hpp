@@ -16,13 +16,16 @@ namespace server {
     {
       public:
         void addLevel(Level &level);
+        void loadLevelFromFolder();
         Level &getCurrentLevel();
         void changeToNextLevel();
         void setCurrentLevelId(uint8_t id);
+        bool getGameFinished() const;
 
       private:
         std::list<Level> _levels;
-        uint8_t _currentLevelId;
+        uint8_t _currentLevelId = 0;
+        bool _gameFinished = false;
     };
 
 }// namespace server
