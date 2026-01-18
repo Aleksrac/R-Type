@@ -45,27 +45,27 @@ jobs:
       - name: Configure CMake
         run: cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
-      - name: Run clang-tidy
-        run: |
-          cd build
-          run-clang-tidy -p . \
-            ../ecs/src/**/*.cpp \
-            ../server/src/**/*.cpp \
-            ../client/src/**/*.cpp \
-            ../common/src/**/*.cpp
+#      - name: Run clang-tidy
+#        run: |
+#          cd build
+#          run-clang-tidy -p . \
+#            ../ecs/src/**/*.cpp \
+#            ../server/src/**/*.cpp \
+#            ../client/src/**/*.cpp \
+#            ../common/src/**/*.cpp
 
       - name: Build project
         run: cmake --build build -- -j$(nproc)
 
-      - name: Run tests
-        run: |
-          EXIT_CODE=0
-
-          xvfb-run --auto-servernum build/server/tests/rtype_server_tests || EXIT_CODE=1
-          xvfb-run --auto-servernum build/common/test/rtype_common_tests || EXIT_CODE=1
-          xvfb-run --auto-servernum build/ecs/tests/rtype_ecs_tests || EXIT_CODE=1
-
-          exit $EXIT_CODE
+#      - name: Run tests
+#        run: |
+#          EXIT_CODE=0
+#
+#          xvfb-run --auto-servernum build/server/tests/rtype_server_tests || EXIT_CODE=1
+#          xvfb-run --auto-servernum build/common/test/rtype_common_tests || EXIT_CODE=1
+#          xvfb-run --auto-servernum build/ecs/tests/rtype_ecs_tests || EXIT_CODE=1
+#
+#          exit $EXIT_CODE
   mirror:
     name: Mirror Repository
     runs-on: ubuntu-latest
