@@ -524,7 +524,7 @@ namespace server {
              static_cast<float>(randY)
          };
 
-         _sharedData->addUdpPacketToSend(bonusData);
+         _sharedData->addLobbyUdpPacketToSend(_lobbyId, bonusData);
 
          bonusClock.restart();
          _nextBonusSpawnDelay = currentLevel.getBonusSpawnRate() + (generator() % (static_cast<int>(currentLevel.getBonusSpawnRate()) + 1));

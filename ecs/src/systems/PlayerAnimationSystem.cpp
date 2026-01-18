@@ -7,7 +7,6 @@
 
 #include "PlayerAnimationSystem.hpp"
 
-#include "../../../common/src/constants/GameConstants.hpp"
 #include "components/PlayerAnimation.hpp"
 
 constexpr int  SIZE_X_PLAYER = 33;
@@ -53,7 +52,7 @@ void PlayerAnimationSystem::update(EcsManager& ecs)
         } else {
             x = 2 * SIZE_X_PLAYER;
         }
-        sprite->setTextureRect(x, playerId % cmn::numberPlayerOnSprite * SIZE_Y_PLAYER,SIZE_X_PLAYER, SIZE_Y_PLAYER);
+        sprite->setTextureRect(x, playerId % 5 * SIZE_Y_PLAYER,SIZE_X_PLAYER, SIZE_Y_PLAYER);
     }
 }
 
