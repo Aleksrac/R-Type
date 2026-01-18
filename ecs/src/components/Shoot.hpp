@@ -38,15 +38,16 @@ namespace ecs {
         float getTimeSinceLastShot() const;
         void setTimeSinceLastShot(float t);
 
-        void addActiveShootingType(ShootingType type, float duration);
-        std::vector<ShootingType> getActiveShootingTypes() const;
+        void setActiveShootingType(ShootingType type, float duration);
+        ShootingType getActiveShootingType() const;
+        void updateShootingType(float deltaTime);
 
     private:
         float _cooldown;
         int _damage;
         float _timeSinceLastShot = 0;
         float _shootTimer;
-        std::unordered_map<ShootingType, float> _activeShootingTypes;
+        std::pair<ShootingType, float> _activeShootingType;
     };
 }
 

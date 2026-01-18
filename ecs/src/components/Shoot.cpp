@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "Shoot.hpp"
+#include <limits>
 
 namespace ecs {
     /**
@@ -81,21 +82,23 @@ namespace ecs {
         _shootTimer = t;
     }
 
-    void Shoot::addActiveShootingType(ShootingType type, float duration)
+    void Shoot::setActiveShootingType(ShootingType type, float duration)
     {
-        _activeShootingTypes[type] = duration;
+        _activeShootingType.first = type;
+        _activeShootingType.second = duration;
     }
 
-    std::vector<Shoot::ShootingType> Shoot::getActiveShootingTypes() const
+    Shoot::ShootingType Shoot::getActiveShootingType() const
     {
-        std::vector<ShootingType> types;
+        return _activeShootingType.first;
+    }
 
-        if (_activeShootingTypes.empty()) {
-            types.push_back(ShootingType::Normal);
+    void Shoot::updateShootingType(float deltaTime)
+    {
+        if (_activeShootingType.second <= 0) {
+            _activeShootingType.first = Shoot::ShootingType::Normal;
+            _activeShootingType.second = std::numeric_limits<float>::infinity();
         }
-        for (const auto &pair : _activeShootingTypes) {
-            types.push_back(pair.first);
-        }
-        return types;
+        _activeShootingType.second -= deltaTime;
     }
 }

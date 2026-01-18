@@ -93,6 +93,9 @@ namespace cmn {
     constexpr uint8_t playerProjectileSoundId = 1;
     constexpr bool playerProjectileLoop = false;
 
+    constexpr float gatlingCooldown = 0.1;
+    constexpr float shotgunCooldown = 0.85;
+
     constexpr sf::Vector2f backgroundSpriteScale = {1.0F, 1.0F};
     constexpr std::string_view pathBackgroundStars = "./assets/bg-stars.png";
     constexpr std::string_view pathBackgroundPlanets = "./assets/planets_background.png";

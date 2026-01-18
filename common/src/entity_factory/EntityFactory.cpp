@@ -28,7 +28,7 @@ namespace cmn {
         EntityType type,
         float x,
         float y,
-        Context context, uint32_t hp, int id)
+        Context context, uint32_t hp, int id, std::pair<float, float> direction)
     {
         std::shared_ptr<ecs::Entity> entity;
         if (id != -1)
@@ -45,7 +45,7 @@ namespace cmn {
                 _initEnemy(ecs, entity, context, type);
                 break;
         case cmn::EntityType::PlayerProjectile:
-                _initProjectile(ecs, entity, context);
+                _initProjectile(ecs, entity, context, direction);
                 break;
             case cmn::EntityType::MonsterProjectile:
                 _initMonsterProjectile(ecs, entity, context);
@@ -110,8 +110,8 @@ namespace cmn {
         }
     }
 
-    void EntityFactory::_initProjectile(ecs::EcsManager &ecs,std::shared_ptr<ecs::Entity> entity, Context context) {
-        entity->addComponent<ecs::Velocity>(cmn::playerProjectileSpeed, std::make_pair(ecs::dir::right, ecs::dir::neutral));
+    void EntityFactory::_initProjectile(ecs::EcsManager &ecs,std::shared_ptr<ecs::Entity> entity, Context context, std::pair<float, float> direction) {
+        entity->addComponent<ecs::Velocity>(cmn::playerProjectileSpeed, direction);
 
         if (context == Context::CLIENT) {
             entity->addComponent<ecs::Sprite>(ecs.getResourceManager().getTexture(std::string(cmn::playerProjectileSpriteSheet)), cmn::playerProjectileScale);

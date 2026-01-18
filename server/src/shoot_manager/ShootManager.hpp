@@ -25,6 +25,8 @@ namespace server {
         void shoot(ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &entity);
     private:
         void _normalShoot(ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &shoot);
+        void _shotgun(ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &shoot);
+        void _gatling(ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &shoot);
         std::unordered_map<ecs::Shoot::ShootingType, std::function<void(ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &entity)>> _shootMethods;
     };
 }

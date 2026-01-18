@@ -11,19 +11,24 @@
 #include "components/Collision.hpp"
 #include "entity_factory/EntityFactory.hpp"
 #include "packet_data/NewEntityData.hpp"
+#include "EcsConstant.hpp"
+#include "constants/GameConstants.hpp"
+#include <vector>
 
 namespace server {
     ShootManager::ShootManager()
     {
         _shootMethods[ecs::Shoot::ShootingType::Normal] = [this](ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &shoot) { _normalShoot(ecsManager, sharedData, shoot); };
+        _shootMethods[ecs::Shoot::ShootingType::Shotgun] = [this](ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &shoot) { _shotgun(ecsManager, sharedData, shoot); };
+        _shootMethods[ecs::Shoot::ShootingType::Gatling] = [this](ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &shoot) { _gatling(ecsManager, sharedData, shoot); };
     }
 
     void ShootManager::shoot(ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &entity)
     {
         const auto &shootComp = entity->getComponent<ecs::Shoot>();
-        for (auto const &shootingType : shootComp->getActiveShootingTypes()) {
-            _shootMethods[shootingType](ecsManager, sharedData, entity);
-        }
+        shootComp->updateShootingType(ecsManager.getDeltaTime());
+        auto shootingType = shootComp->getActiveShootingType();
+        _shootMethods[shootingType](ecsManager, sharedData, entity);
     }
 
     void ShootManager::_normalShoot(ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &entity)
@@ -38,13 +43,74 @@ namespace server {
             float const posX = positionCpn->getX() + collisionCpn->getHeight();
             float const posY = entity->getComponent<ecs::Position>()->getY();
 
-            auto projectile = cmn::EntityFactory::createEntity(ecsManager,
-                                                               cmn::EntityType::PlayerProjectile,
-                                                               posX,
-                                                               posY,
-                                                               cmn::EntityFactory::Context::SERVER);
+            auto newProjectile = cmn::EntityFactory::createEntity(
+                    ecsManager,
+                    cmn::EntityType::PlayerProjectile,
+                    posX,
+                    posY,
+                    cmn::EntityFactory::Context::SERVER,
+                    0,
+                    -1,
+                    {ecs::dir::right, ecs::dir::neutral});
 
-            cmn::newEntityData data = {projectile->getId(), cmn::EntityType::PlayerProjectile, posX, posY};
+            cmn::newEntityData data = {newProjectile->getId(), cmn::EntityType::PlayerProjectile, posX, posY};
+            sharedData->addUdpPacketToSend(data);
+        }
+    }
+
+    void ShootManager::_shotgun(ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &entity)
+    {
+        const auto &shoot = entity->getComponent<ecs::Shoot>();
+        if (shoot->getTimeSinceLastShot() >= cmn::shotgunCooldown) {
+            auto positionCpn = entity->getComponent<ecs::Position>();
+            auto collisionCpn = entity->getComponent<ecs::Collision>();
+
+            shoot->setTimeSinceLastShot(0);
+
+            float const posX = positionCpn->getX() + collisionCpn->getHeight();
+            float const posY = entity->getComponent<ecs::Position>()->getY();
+            std::vector<float> yDirections = {ecs::dir::up, ecs::dir::neutral, ecs::dir::down};
+            for (auto yDirection : yDirections) {
+                auto newProjectile = cmn::EntityFactory::createEntity(
+                        ecsManager,
+                        cmn::EntityType::PlayerProjectile,
+                        posX,
+                        posY,
+                        cmn::EntityFactory::Context::SERVER,
+                        0,
+                        -1,
+                        {ecs::dir::right, yDirection}
+                );
+                cmn::newEntityData newProjectileData = {newProjectile->getId(), cmn::EntityType::PlayerProjectile, posX, posY};
+                sharedData->addUdpPacketToSend(newProjectileData);
+            }
+        }
+    }
+
+    void ShootManager::_gatling(ecs::EcsManager &ecsManager, std::shared_ptr<cmn::SharedData> &sharedData, const std::shared_ptr<ecs::Entity> &entity)
+    {
+        const auto &shoot = entity->getComponent<ecs::Shoot>();
+        if (shoot->getTimeSinceLastShot() >= cmn::gatlingCooldown) {
+            auto positionCpn = entity->getComponent<ecs::Position>();
+            auto collisionCpn = entity->getComponent<ecs::Collision>();
+
+            shoot->setTimeSinceLastShot(0);
+
+            float const posX = positionCpn->getX() + collisionCpn->getHeight();
+            float const posY = entity->getComponent<ecs::Position>()->getY();
+
+            auto newProjectile = cmn::EntityFactory::createEntity(
+                    ecsManager,
+                    cmn::EntityType::PlayerProjectile,
+                    posX,
+                    posY,
+                    cmn::EntityFactory::Context::SERVER,
+                    0,
+                    -1,
+                    {ecs::dir::right, ecs::dir::neutral}
+            );
+
+            cmn::newEntityData data = {newProjectile->getId(), cmn::EntityType::PlayerProjectile, posX, posY};
             sharedData->addUdpPacketToSend(data);
         }
     }
